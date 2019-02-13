@@ -1,0 +1,65 @@
+{
+  "type" : "record",
+  "name" : "TradeCollection",
+  "namespace": "com.example.avro",
+  "fields" : [ {
+    "name" : "producerId",
+    "type" : "string",
+    "default" : ""
+  }, {
+    "name" : "exchange",
+    "type" : "string",
+    "default" : ""
+  }, {
+    "name" : "market",
+    "type" : "string",
+    "default" : ""
+  }, {
+    "name" : "trades",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Trade",
+        "fields" : [ {
+          "name" : "id",
+          "type" : "string",
+          "default" : ""
+        }, {
+          "name" : "price",
+          "type" : "double",
+          "default" : 0
+        }, {
+          "name" : "amount",
+          "type" : "double",
+          "default" : 0
+        }, {
+          "name" : "datetime",
+          "type" : "string",
+          "default" : ""
+        }, {
+          "name" : "timestamp",
+          "type" : "long",
+          "default" : 0
+        }, {
+          "name" : "type",
+          "type" : [ "null", {
+            "type" : "enum",
+            "name" : "TradeType",
+            "symbols" : [ "Market", "Limit" ]
+          } ],
+          "default" : null
+        }, {
+          "name" : "side",
+          "type" : [ "null", {
+            "type" : "enum",
+            "name" : "TradeDirection",
+            "symbols" : [ "Buy", "Sell" ]
+          } ],
+          "default" : null
+        } ]
+      }
+    },
+    "default" : [ ]
+  } ]
+}

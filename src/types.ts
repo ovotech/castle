@@ -46,37 +46,3 @@ export interface LogicalType extends BaseType {
 export interface NamedType extends BaseType {
   type: string;
 }
-
-export function isRecordType(type: BaseType): type is RecordType {
-  return type.type === 'record';
-}
-
-export function isArrayType(type: BaseType): type is ArrayType {
-  return type.type === 'array';
-}
-
-export function isMapType(type: BaseType): type is MapType {
-  return type.type === 'map';
-}
-
-export function isEnumType(type: BaseType): type is EnumType {
-  return type.type === 'enum';
-}
-
-export function isLogicalType(type: BaseType): type is LogicalType {
-  return 'logicalType' in type;
-}
-
-export function isUnion(type: Type): type is NamedType[] {
-  return type instanceof Array;
-}
-
-export function isOptional(type: Type): boolean {
-  if (isUnion(type)) {
-    const t1 = type[0];
-    if (typeof t1 === 'string') {
-      return t1 === 'null';
-    }
-  }
-  return false;
-}

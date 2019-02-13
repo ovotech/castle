@@ -1,201 +1,505 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AvroDeserializer test test complex 1`] = `
-"export interface EventMetadata {
-	/**
-	* A globally unique ID for this Kafka message
-	*/
-	eventId: string;
-	/**
-	* An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
-	*/
-	traceToken: string;
-	/**
-	* A timestamp for when the event was created (in epoch millis)
-	*/
-	createdAt: number;
+exports[`Avro ts test Should convert ComplexRecord.avsc successfully 1`] = `
+"export interface Foo {
+  label: string;
 }
 
-export interface AccountMigrationCancelledEvent {
-	metadata: EventMetadata;
-	/**
-	* Globally unique identifier for the enrollment
-	*/
-	enrollmentId: string;
-	/**
-	* Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
-	*/
-	accountId: string;
-	/**
-	* The unique national reference for Meter Point Administration Number
-	*/
-	mpan: string;
-	/**
-	* The date when the account is going to be enrolled for the new balance platform (in epoch days)
-	*/
-	effectiveEnrollmentDate: number;
-	/**
-	* The time when the migration was cancelled (in epoch millis)
-	*/
-	cancelledAt: number;
+export interface EmailAddress {
+  /**
+   * The email address, e.g. \`foo@example.com\`
+   */
+  address: string;
+  /**
+   * true if the user has clicked the link in a confirmation email to this address.
+   */
+  verified: boolean;
+  /**
+   * Timestamp (milliseconds since epoch) when the email address was added to the account.
+   */
+  dateAdded: number;
 }
 
-export interface AccountMigrationCompletedEvent {
-	metadata: EventMetadata;
-	/**
-	* Globally unique identifier for the enrollment
-	*/
-	enrollmentId: string;
-	/**
-	* Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
-	*/
-	accountId: string;
-	/**
-	* The date when the account is going to be enrolled for the new balance platform (in epoch days)
-	*/
-	effectiveEnrollmentDate: number;
-	/**
-	* The time when the migration was completed (in epoch millis)
-	*/
-	completedAt: number;
-}
-
-export interface AccountMigrationRollBackInitiatedEvent {
-	metadata: EventMetadata;
-	/**
-	* Globally unique identifier for the enrollment
-	*/
-	enrollmentId: string;
-	/**
-	* Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
-	*/
-	accountId: string;
-	/**
-	* The date when the account is going to be enrolled for the new balance platform (in epoch days)
-	*/
-	effectiveEnrollmentDate: number;
-	/**
-	* The time when the migration rollback was initiated (in epoch millis)
-	*/
-	rollBackInitiatedAt: number;
-}
-
-export interface AccountMigrationRolledBackEvent {
-	metadata: EventMetadata;
-	/**
-	* Globally unique identifier for the enrollment
-	*/
-	enrollmentId: string;
-	/**
-	* Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
-	*/
-	accountId: string;
-	/**
-	* The date when the account is going to be enrolled for the new balance platform (in epoch days)
-	*/
-	effectiveEnrollmentDate: number;
-	/**
-	* The time when the migration was rolled back (in epoch millis)
-	*/
-	rolledBackAt: number;
-}
-
-export interface AccountMigrationScheduledEvent {
-	metadata: EventMetadata;
-	/**
-	* Globally unique identifier for the enrollment
-	*/
-	enrollmentId: string;
-	/**
-	* Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
-	*/
-	accountId: string;
-	/**
-	* The unique national reference for Meter Point Administration Number
-	*/
-	mpan: string;
-	/**
-	* The date when the customer came on supply with Boost (in epoch days)
-	*/
-	supplyStartDate: number;
-	/**
-	* The date when the account is going to be enrolled for the new balance platform (in epoch days)
-	*/
-	effectiveEnrollmentDate: number;
-	/**
-	* The time when the migration was scheduled (in epoch millis)
-	*/
-	scheduledAt: number;
-}
-
-export interface AccountMigrationValidatedEvent {
-	metadata: EventMetadata;
-	/**
-	* Globally unique identifier for the enrollment
-	*/
-	enrollmentId: string;
-	/**
-	* Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
-	*/
-	accountId: string;
-	/**
-	* The date when the account is going to be enrolled for the new balance platform (in epoch days)
-	*/
-	effectiveEnrollmentDate: number;
-	/**
-	* The time when the migrated balance and transactions were validated (in epoch millis)
-	*/
-	validatedAt: number;
-}
-
-export interface BalanceRetrievedMigrationEvent {
-	metadata: EventMetadata;
-	/**
-	* Globally unique identifier for the enrollment
-	*/
-	enrollmentId: string;
-	/**
-	* Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
-	*/
-	accountId: string;
-	/**
-	* The unique national reference for Meter Point Administration Number
-	*/
-	mpan: string;
-	/**
-	* The date when the account is going to be enrolled for the new balance platform (in epoch days)
-	*/
-	effectiveEnrollmentDate: number;
-	/**
-	* The time when the balance and transaction history was fetched (in epoch millis)
-	*/
-	retrievedAt: number;
-}
-
-export interface AccountMigrationEvent {
-	event: AccountMigrationCancelledEvent | AccountMigrationCompletedEvent | AccountMigrationRollBackInitiatedEvent | AccountMigrationRolledBackEvent | AccountMigrationScheduledEvent | AccountMigrationValidatedEvent | BalanceRetrievedMigrationEvent;
+export interface User {
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * The username chosen by the user. Can be changed by the user.
+   */
+  username: string;
+  /**
+   * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+   */
+  passwordHash: string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user signed up
+   */
+  signupDate: number;
+  mapField: { [index:string]:Foo };
+  /**
+   * All email addresses on the user's account
+   */
+  emailAddresses: EmailAddress[];
+  /**
+   * Indicator of whether this authorization is currently active, or has been revoked
+   */
+  status: \\"ACTIVE\\" | \\"INACTIVE\\";
 }
 "
 `;
 
-exports[`AvroDeserializer test test simple 1`] = `
+exports[`Avro ts test Should convert ComplexUnionLogicalTypes.avsc successfully 1`] = `
+"export interface EventMetadata {
+  /**
+   * A globally unique ID for this Kafka message
+   */
+  eventId: string;
+  /**
+   * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+   */
+  traceToken: string;
+  /**
+   * A timestamp for when the event was created (in epoch millis)
+   */
+  createdAt: string;
+}
+
+export interface AccountMigrationCancelledEvent {
+  metadata: EventMetadata;
+  /**
+   * Globally unique identifier for the enrollment
+   */
+  enrollmentId: string;
+  /**
+   * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+   */
+  accountId: string;
+  /**
+   * The unique national reference for Meter Point Administration Number
+   */
+  mpan: string;
+  /**
+   * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+   */
+  effectiveEnrollmentDate: string;
+  /**
+   * The time when the migration was cancelled (in epoch millis)
+   */
+  cancelledAt: string;
+}
+
+export interface AccountMigrationCompletedEvent {
+  metadata: EventMetadata;
+  /**
+   * Globally unique identifier for the enrollment
+   */
+  enrollmentId: string;
+  /**
+   * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+   */
+  accountId: string;
+  /**
+   * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+   */
+  effectiveEnrollmentDate: string;
+  /**
+   * The time when the migration was completed (in epoch millis)
+   */
+  completedAt: string;
+}
+
+export interface AccountMigrationRollBackInitiatedEvent {
+  metadata: EventMetadata;
+  /**
+   * Globally unique identifier for the enrollment
+   */
+  enrollmentId: string;
+  /**
+   * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+   */
+  accountId: string;
+  /**
+   * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+   */
+  effectiveEnrollmentDate: string;
+  /**
+   * The time when the migration rollback was initiated (in epoch millis)
+   */
+  rollBackInitiatedAt: string;
+}
+
+export interface AccountMigrationRolledBackEvent {
+  metadata: EventMetadata;
+  /**
+   * Globally unique identifier for the enrollment
+   */
+  enrollmentId: string;
+  /**
+   * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+   */
+  accountId: string;
+  /**
+   * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+   */
+  effectiveEnrollmentDate: string;
+  /**
+   * The time when the migration was rolled back (in epoch millis)
+   */
+  rolledBackAt: string;
+}
+
+export interface AccountMigrationScheduledEvent {
+  metadata: EventMetadata;
+  /**
+   * Globally unique identifier for the enrollment
+   */
+  enrollmentId: string;
+  /**
+   * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+   */
+  accountId: string;
+  /**
+   * The unique national reference for Meter Point Administration Number
+   */
+  mpan: string;
+  /**
+   * The date when the customer came on supply with Boost (in epoch days)
+   */
+  supplyStartDate: string;
+  /**
+   * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+   */
+  effectiveEnrollmentDate: string;
+  /**
+   * The time when the migration was scheduled (in epoch millis)
+   */
+  scheduledAt: string;
+}
+
+export interface AccountMigrationValidatedEvent {
+  metadata: EventMetadata;
+  /**
+   * Globally unique identifier for the enrollment
+   */
+  enrollmentId: string;
+  /**
+   * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+   */
+  accountId: string;
+  /**
+   * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+   */
+  effectiveEnrollmentDate: string;
+  /**
+   * The time when the migrated balance and transactions were validated (in epoch millis)
+   */
+  validatedAt: string;
+}
+
+export interface BalanceRetrievedMigrationEvent {
+  metadata: EventMetadata;
+  /**
+   * Globally unique identifier for the enrollment
+   */
+  enrollmentId: string;
+  /**
+   * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+   */
+  accountId: string;
+  /**
+   * The unique national reference for Meter Point Administration Number
+   */
+  mpan: string;
+  /**
+   * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+   */
+  effectiveEnrollmentDate: string;
+  /**
+   * The time when the balance and transaction history was fetched (in epoch millis)
+   */
+  retrievedAt: string;
+}
+
+export interface AccountMigrationEvent {
+  event: { 'uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent' : AccountMigrationCancelledEvent } | { 'uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent' : AccountMigrationCompletedEvent } | { 'uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent' : AccountMigrationRollBackInitiatedEvent } | { 'uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent' : AccountMigrationRolledBackEvent } | { 'uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent' : AccountMigrationScheduledEvent } | { 'uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent' : AccountMigrationValidatedEvent } | { 'uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent' : BalanceRetrievedMigrationEvent };
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithEnum.avsc successfully 1`] = `
 "export interface User {
-	/**
-	* System-assigned numeric user ID. Cannot be changed by the user.
-	*/
-	id: number;
-	/**
-	* The username chosen by the user. Can be changed by the user.
-	*/
-	username: string;
-	/**
-	* The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
-	*/
-	passwordHash: string;
-	/**
-	* Timestamp (milliseconds since epoch) when the user signed up
-	*/
-	signupDate: number;
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * The username chosen by the user. Can be changed by the user.
+   */
+  username: string;
+  /**
+   * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+   */
+  passwordHash: string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user signed up
+   */
+  signupDate: number;
+  /**
+   * Indicator of whether this authorization is currently active, or has been revoked
+   */
+  status: \\"ACTIVE\\" | \\"INACTIVE\\";
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithInterface.avsc successfully 1`] = `
+"export interface EmailAddress {
+  /**
+   * The email address, e.g. \`foo@example.com\`
+   */
+  address: string;
+  /**
+   * true if the user has clicked the link in a confirmation email to this address.
+   */
+  verified: boolean;
+  /**
+   * Timestamp (milliseconds since epoch) when the email address was added to the account.
+   */
+  dateAdded: number;
+}
+
+export interface User {
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * The username chosen by the user. Can be changed by the user.
+   */
+  username: string;
+  /**
+   * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+   */
+  passwordHash: string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user signed up
+   */
+  signupDate: number;
+  /**
+   * All email addresses on the user's account
+   */
+  emailAddresses: EmailAddress[];
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully 1`] = `
+"export interface Event {
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * A timestamp for when the event was created (in epoch millis)
+   */
+  createdAt: string;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithMap.avsc successfully 1`] = `
+"export interface Foo {
+  label: string;
+}
+
+export interface User {
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * The username chosen by the user. Can be changed by the user.
+   */
+  username: string;
+  /**
+   * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+   */
+  passwordHash: string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user signed up
+   */
+  signupDate: number;
+  mapField: { [index:string]:Foo };
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithUnion.avsc successfully 1`] = `
+"export interface User {
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * The username chosen by the user. Can be changed by the user.
+   */
+  username: string;
+  /**
+   * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+   */
+  passwordHash: string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user signed up
+   */
+  signupDate: number;
+  unionType?: null | string;
+}
+"
+`;
+
+exports[`Avro ts test Should convert SimpleRecord.avsc successfully 1`] = `
+"export interface User {
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * The username chosen by the user. Can be changed by the user.
+   */
+  username: string;
+  /**
+   * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+   */
+  passwordHash: string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user signed up
+   */
+  signupDate: number;
+}
+"
+`;
+
+exports[`Avro ts test Should convert TradeCollection.avsc successfully 1`] = `
+"export interface Trade {
+  id: string;
+  price: number;
+  amount: number;
+  datetime: string;
+  timestamp: number;
+  type?: null | \\"Market\\" | \\"Limit\\";
+  side?: null | \\"Buy\\" | \\"Sell\\";
+}
+
+export interface TradeCollection {
+  producerId: string;
+  exchange: string;
+  market: string;
+  trades: Trade[];
+}
+"
+`;
+
+exports[`Avro ts test Should convert User.avsc successfully 1`] = `
+"export interface EmailAddress {
+  /**
+   * The email address, e.g. \`foo@example.com\`
+   */
+  address: string;
+  /**
+   * true if the user has clicked the link in a confirmation email to this address.
+   */
+  verified: boolean;
+  /**
+   * Timestamp (milliseconds since epoch) when the email address was added to the account.
+   */
+  dateAdded: number;
+  /**
+   * Timestamp (milliseconds since epoch) when an email sent to this address last bounced. Reset to null when the address no longer bounces.
+   */
+  dateBounced?: null | number;
+}
+
+export interface TwitterAccount {
+  /**
+   * Indicator of whether this authorization is currently active, or has been revoked
+   */
+  status: \\"PENDING\\" | \\"ACTIVE\\" | \\"DENIED\\" | \\"EXPIRED\\" | \\"REVOKED\\";
+  /**
+   * Twitter's numeric ID for this user
+   */
+  userId: number;
+  /**
+   * The twitter username for this account (can be changed by the user)
+   */
+  screenName: string;
+  /**
+   * The OAuth token for this Twitter account
+   */
+  oauthToken: string;
+  /**
+   * The OAuth secret, used for signing requests on behalf of this Twitter account. \`null\` whilst the OAuth flow is not yet complete.
+   */
+  oauthTokenSecret?: null | string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user last authorized this Twitter account
+   */
+  dateAuthorized: number;
+}
+
+export interface ToDoItem {
+  /**
+   * User-selected state for this item (e.g. whether or not it is marked as done)
+   */
+  status: \\"HIDDEN\\" | \\"ACTIONABLE\\" | \\"DONE\\" | \\"ARCHIVED\\" | \\"DELETED\\";
+  /**
+   * One-line summary of the item
+   */
+  title: string;
+  /**
+   * Detailed description (may contain HTML markup)
+   */
+  description?: null | string;
+  /**
+   * Timestamp (milliseconds since epoch) at which the item should go from \`HIDDEN\` to \`ACTIONABLE\` status
+   */
+  snoozeDate?: null | number;
+  /**
+   * List of children of this to-do tree node
+   */
+  subItems: any[];
+}
+
+export interface User {
+  /**
+   * System-assigned numeric user ID. Cannot be changed by the user.
+   */
+  id: number;
+  /**
+   * The username chosen by the user. Can be changed by the user.
+   */
+  username: string;
+  /**
+   * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+   */
+  passwordHash: string;
+  /**
+   * Timestamp (milliseconds since epoch) when the user signed up
+   */
+  signupDate: number;
+  /**
+   * All email addresses on the user's account
+   */
+  emailAddresses: EmailAddress[];
+  /**
+   * All Twitter accounts that the user has OAuthed
+   */
+  twitterAccounts: TwitterAccount[];
+  /**
+   * The top-level items in the user's to-do list
+   */
+  toDoItems: ToDoItem[];
 }
 "
 `;

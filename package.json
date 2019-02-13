@@ -8,7 +8,9 @@
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "jest --runInBand",
+    "test-js": "jest --runInBand",
+    "test-ts": "tsc test/integration.ts --strict --noEmit",
+    "test": "yarn test-js && yarn test-ts",
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",
     "lint": "yarn lint-prettier && yarn lint-tslint",
@@ -17,6 +19,8 @@
   "devDependencies": {
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.12",
+    "@ovotech/avro-logical-types": "^1.0.0",
+    "avsc": "^5.4.7",
     "jest": "^23.6.0",
     "prettier": "^1.15.3",
     "ts-jest": "^23.10.5",
