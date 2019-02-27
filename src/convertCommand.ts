@@ -1,6 +1,6 @@
 import { avroTs } from '@ovotech/avro-ts';
 import chalk from 'chalk';
-import { existsSync, lstatSync, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { basename, join } from 'path';
 import { CommandModule } from 'yargs';
 
