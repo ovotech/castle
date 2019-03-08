@@ -17,16 +17,16 @@
     "build": "tsc --outDir dist --declaration"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.10",
-    "@types/node": "^10.12.12",
     "@ovotech/avro-logical-types": "^1.0.0",
+    "@types/jest": "^24.0.9",
+    "@types/node": "^11.10.5",
     "avsc": "^5.4.7",
-    "jest": "^23.6.0",
-    "prettier": "^1.15.3",
-    "ts-jest": "^23.10.5",
-    "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.2"
+    "jest": "^24.3.1",
+    "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.13.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.3333"
   },
   "jest": {
     "preset": "../../jest-preset.json"
