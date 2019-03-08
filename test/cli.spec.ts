@@ -1,5 +1,3 @@
-// import { startCapture, stopCapture } from 'capture-console';
-// import chalk from 'chalk';
 import { readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { convertCommand } from '../src';
@@ -19,15 +17,24 @@ describe('Cli', () => {
   });
 
   it('Should convert single file', async () => {
-    await convertCommand.handler({ input: [join(avroDir, 'ComplexRecord.avsc')], 'logical-type': [] });
+    await convertCommand.handler({
+      _: [],
+      $0: '',
+      input: [join(avroDir, 'ComplexRecord.avsc')],
+      'output-dir': '',
+      'logical-type': [],
+    });
 
     const file = readFileSync(join(avroDir, 'ComplexRecord.avsc.ts'));
     expect(String(file)).toMatchSnapshot();
   });
 
-  it('Should convert multiple file', async () => {
+  it('Should convert multiple files', async () => {
     await convertCommand.handler({
+      _: [],
+      $0: '',
       input: [join(avroDir, 'ComplexRecord.avsc'), join(avroDir, 'ComplexUnionLogicalTypes.avsc')],
+      'output-dir': '',
       'logical-type': [],
     });
 
@@ -39,6 +46,8 @@ describe('Cli', () => {
 
   it('Should convert files into output folder file', async () => {
     await convertCommand.handler({
+      _: [],
+      $0: '',
       input: [join(avroDir, 'ComplexRecord.avsc'), join(avroDir, 'ComplexUnionLogicalTypes.avsc')],
       'output-dir': generatedDir,
       'logical-type': [],
@@ -52,6 +61,8 @@ describe('Cli', () => {
 
   it('Should convert files with logical types', async () => {
     await convertCommand.handler({
+      _: [],
+      $0: '',
       input: [join(avroDir, 'ComplexRecord.avsc'), join(avroDir, 'ComplexUnionLogicalTypes.avsc')],
       'output-dir': generatedDir,
       'logical-type': ['timestamp-millis=string', 'date=string'],
@@ -65,6 +76,8 @@ describe('Cli', () => {
 
   it('Should check for generated folder', async () => {
     const result = convertCommand.handler({
+      _: [],
+      $0: '',
       input: [join(avroDir, 'ComplexRecord.avsc')],
       'output-dir': 'unknown-folder',
       'logical-type': [],

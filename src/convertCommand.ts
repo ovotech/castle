@@ -2,7 +2,7 @@ import { avroTs } from '@ovotech/avro-ts';
 import chalk from 'chalk';
 import { readFileSync, writeFileSync } from 'fs';
 import { basename, join } from 'path';
-import { CommandModule } from 'yargs';
+import { Arguments, CommandModule } from 'yargs';
 
 export interface ConvertTags {
   input: string[];
@@ -10,7 +10,7 @@ export interface ConvertTags {
   ['logical-type']: string[];
 }
 
-export const convertCommand: CommandModule = {
+export const convertCommand: CommandModule<{}, ConvertTags> = {
   command: 'convert [input..]',
   builder: {
     input: {
@@ -28,7 +28,7 @@ export const convertCommand: CommandModule = {
     },
   },
   describe: 'Convert avsc to typescript files',
-  handler: async (args: ConvertTags) => {
+  handler: async args => {
     const logicalTypes = args['logical-type'].reduce(
       (types, logicalType) => {
         const [name, type] = logicalType.split('=');

@@ -456,7 +456,7 @@ export interface AccountMigrationEvent {
 "
 `;
 
-exports[`Cli Should convert multiple file 1`] = `
+exports[`Cli Should convert multiple files 1`] = `
 "export interface Foo {
   label: string;
 }
@@ -506,7 +506,7 @@ export interface User {
 "
 `;
 
-exports[`Cli Should convert multiple file 2`] = `
+exports[`Cli Should convert multiple files 2`] = `
 "export interface EventMetadata {
   /**
    * A globally unique ID for this Kafka message
