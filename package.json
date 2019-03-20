@@ -18,15 +18,15 @@
   },
   "devDependencies": {
     "@ovotech/avro-logical-types": "^1.0.0",
-    "@types/jest": "^24.0.9",
-    "@types/node": "^11.10.5",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.11.4",
     "avsc": "^5.4.7",
-    "jest": "^24.3.1",
+    "jest": "^24.5.0",
     "prettier": "^1.16.4",
     "ts-jest": "^24.0.0",
-    "tslint": "^5.13.1",
+    "tslint": "^5.14.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.4000"
   },
   "jest": {
     "preset": "../../jest-preset.json"
