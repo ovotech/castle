@@ -152,6 +152,7 @@ const user: User = {
   ],
 };
 
+// tslint:disable-next-line:no-console
 console.log(
   complexRecord,
   complexUnionLogicalTypes,
