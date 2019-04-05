@@ -47,10 +47,6 @@ Have a bug? File an issue with a simple example that reproduces this so we can t
 
 Want to make a change? Submit a PR, explain why it's useful, and make sure you've updated the docs (this file) and the tests (see [test folder](test)).
 
-## Responsible Team
-
-- OVO Energy's Boost Internal Tools (BIT)
-
 ## License
 
 This project is licensed under Apache 2 - see the [LICENSE](LICENSE) file for details
