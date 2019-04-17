@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-ts",
   "description": "Convert avro schemas into typescript interfaces",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -25,10 +25,12 @@
     "prettier": "^1.16.4",
     "ts-jest": "^24.0.0",
     "tslint": "^5.14.0",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.4000"
+    "tslint-config-prettier": "^1.18.0"
   },
   "jest": {
     "preset": "../../jest-preset.json"
+  },
+  "dependencies": {
+    "typescript": "^3.4.3"
   }
 }

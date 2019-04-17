@@ -1,4 +1,59 @@
-import { ArrayType, BaseType, EnumType, Field, LogicalType, MapType, NamedType, RecordType, Type } from './types';
+import { Schema, schema } from 'avsc';
+import * as ts from 'typescript';
+
+export interface Registry {
+  [key: string]: ts.InterfaceDeclaration;
+}
+
+export interface Context {
+  registry: Registry;
+  root: boolean;
+  namespace?: string;
+  namespaces: { [key: string]: ts.TypeReferenceNode };
+  logicalTypes: { [key: string]: ts.TypeReferenceNode };
+}
+
+export interface Result<TsType = ts.TypeNode> {
+  type: TsType;
+  context: Context;
+}
+
+export type Convert<TType = Schema> = (context: Context, type: TType) => Result<any>;
+
+export const result = <TsType = ts.TypeNode>(context: Context, type: TsType): Result<TsType> => ({
+  context,
+  type,
+});
+
+export const mapContext = <T = any, TsType = ts.TypeNode>(
+  context: Context,
+  items: T[],
+  callbackfn: (context: Context, item: T) => Result<TsType>,
+) =>
+  items.reduce<{ items: TsType[]; context: Context }>(
+    (all, item) => {
+      const current = callbackfn(all.context, item);
+      return {
+        items: [...all.items, current.type],
+        context: current.context,
+      };
+    },
+    { items: [], context },
+  );
+
+export const withEntry = (context: Context, entry: ts.InterfaceDeclaration): Context => ({
+  ...context,
+  registry: { ...context.registry, [entry.name.text]: entry },
+});
+
+export const withNamespace = (context: Context, record: schema.RecordType): Context => ({
+  ...context,
+  namespace: record.namespace,
+  namespaces: {
+    ...context.namespaces,
+    [fullyQualifiedName(context, record)]: ts.createTypeReferenceNode(record.name, undefined),
+  },
+});
 
 export interface State {
   output: string[];
@@ -6,127 +61,169 @@ export interface State {
   logicalTypes: { [key: string]: string };
 }
 
-export function avroTs(recordType: RecordType, logicalTypes: State['logicalTypes'] = {}): string {
-  const state: State = { output: [], repository: {}, logicalTypes };
+const docToJSDoc = (doc: string) =>
+  `*\n${doc
+    .split('\n')
+    .map(line => ` * ${line}`)
+    .join('\n')}\n `;
 
-  convertRecord(recordType, state);
-  return state.output.join('\n');
-}
+const convertRecord: Convert<schema.RecordType> = (context, type) => {
+  const namespaceContext = type.namespace ? withNamespace(context, type) : context;
 
-function convertRecord(recordType: RecordType, state: State, namespace?: string): string {
-  if (recordType.namespace) {
-    state.repository[fullyQualifiedName(recordType)] = recordType.name;
+  const fields = mapContext({ ...namespaceContext, root: false }, type.fields, (fieldContext, fieldType) => {
+    const field = convertType(fieldContext, fieldType.type);
+    const prop = ts.createPropertySignature(
+      undefined,
+      fieldType.name,
+      isOptional(fieldType.type) ? ts.createToken(ts.SyntaxKind.QuestionToken) : undefined,
+      field.type,
+      undefined,
+    );
+
+    const propWithDoc = fieldType.doc
+      ? ts.addSyntheticLeadingComment(prop, ts.SyntaxKind.MultiLineCommentTrivia, docToJSDoc(fieldType.doc), true)
+      : prop;
+
+    return result(field.context, propWithDoc);
+  });
+
+  const interfaceType = ts.createInterfaceDeclaration(
+    undefined,
+    [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+    type.name,
+    undefined,
+    undefined,
+    fields.items,
+  );
+
+  if (context.root) {
+    return result(fields.context, interfaceType);
+  } else {
+    return result(withEntry(fields.context, interfaceType), ts.createTypeReferenceNode(type.name, undefined));
   }
+};
 
-  let buffer = `export interface ${recordType.name} {\n`;
-  for (const field of recordType.fields) {
-    buffer += convertFieldDec(field, state, recordType.namespace) + '\n';
-  }
-  buffer += '}\n';
-  state.output.push(buffer);
-  return recordType.name;
-}
-
-function convertFieldDec(field: Field, state: State, namespace?: string): string {
-  const optional = isOptional(field.type) ? '?' : '';
-  const doc = field.doc ? `/**\n * ${field.doc}\n */\n` : '';
-
-  return indent(`${doc}${field.name}${optional}: ${convertType(field.type, state, namespace)};`);
-}
-
-function convertType(type: Type, state: State, namespace?: string): string {
+const convertType: Convert = (context, type) => {
   if (typeof type === 'string') {
-    return convertPredefinedType(type, state) || convertPrimitive(type) || type;
-  } else if (type instanceof Array) {
-    return convertArrayType(type, state, namespace);
+    return convertPredefinedType(context, type);
+  } else if (Array.isArray(type)) {
+    return convertArrayType(context, type);
   } else if (isLogicalType(type)) {
-    return convertLogicalType(type, state);
+    return convertLogicalType(context, type);
   } else if (isRecordType(type)) {
-    return convertRecord(type, state, namespace);
+    return convertRecord(context, type);
   } else if (isArrayType(type)) {
-    return convertType(type.items, state, namespace) + '[]';
+    const itemType = convertType(context, type.items);
+    return result(itemType.context, ts.createArrayTypeNode(itemType.type));
   } else if (isMapType(type)) {
-    return convertMapType(type, state, namespace);
+    return convertMapType(context, type);
   } else if (isEnumType(type)) {
-    return convertEnum(type);
+    return convertEnum(context, type);
   } else {
     throw new Error(`Cannot work out type ${type}`);
   }
-}
+};
 
-function convertPrimitive(avroType: string): string {
+const convertPrimitive: Convert = (context, avroType) => {
   switch (avroType) {
     case 'long':
     case 'int':
     case 'double':
     case 'float':
-      return 'number';
+      return result(context, ts.createKeywordTypeNode(ts.SyntaxKind.NumberKeyword));
     case 'bytes':
-      return 'Buffer';
+      return result(context, ts.createTypeReferenceNode('Buffer', undefined));
     case 'null':
-      return 'null';
+      return result(context, ts.createNull());
     case 'boolean':
-      return 'boolean';
+      return result(context, ts.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword));
     case 'string':
-      return 'string';
+      return result(context, ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword));
     default:
-      return 'any';
+      return result(context, ts.createKeywordTypeNode(ts.SyntaxKind.AnyKeyword));
   }
-}
+};
 
-function convertEnum(enumType: EnumType): string {
-  return enumType.symbols.map(symbol => JSON.stringify(symbol)).join(' | ');
-}
+const convertEnum: Convert<schema.EnumType> = (context, enumType) =>
+  result(
+    context,
+    ts.createUnionTypeNode(enumType.symbols.map(symbol => ts.createLiteralTypeNode(ts.createLiteral(symbol)))),
+  );
 
-function convertLogicalType(type: LogicalType, state: State): string {
-  return state.logicalTypes[type.logicalType] || convertPrimitive(type.type);
-}
+const convertLogicalType: Convert<schema.LogicalType> = (context, type) =>
+  context.logicalTypes[type.logicalType]
+    ? result(context, context.logicalTypes[type.logicalType])
+    : convertPrimitive(context, type.type);
 
-function convertPredefinedType(type: string, state: State): string {
-  return state.repository[type];
-}
+const convertPredefinedType: Convert<string> = (context, type) =>
+  context.namespaces[type] ? result(context, context.namespaces[type]) : convertPrimitive(context, type);
 
-function convertArrayType(type: Type[], state: State, namespace?: string): string {
-  return type
-    .map(t => {
-      if (typeof t === 'object' && !(t instanceof Array) && isRecordType(t)) {
-        return `{ '${fullyQualifiedName(t, namespace)}' : ${convertType(t, state, namespace)} }`;
-      } else {
-        return convertType(t, state);
-      }
-    })
-    .join(' | ');
-}
+const convertArrayType: Convert<any[]> = (context, type) => {
+  const map = mapContext(context, type, (itemContext, item) => {
+    if (typeof item === 'object' && !Array.isArray(item) && isRecordType(item)) {
+      const itemType = convertType(itemContext, item);
+      return result(
+        itemType.context,
+        ts.createTypeLiteralNode([
+          ts.createPropertySignature(
+            undefined,
+            ts.createStringLiteral(fullyQualifiedName(context, item)),
+            undefined,
+            itemType.type,
+            undefined,
+          ),
+        ]),
+      );
+    } else {
+      return convertType(itemContext, item);
+    }
+  });
 
-function convertMapType(type: MapType, state: State, namespace?: string): string {
-  return `{ [index:string]:${convertType(type.values, state, namespace)} }`;
-}
+  return result(map.context, ts.createUnionTypeNode(map.items));
+};
 
-function isRecordType(type: BaseType): type is RecordType {
-  return type.type === 'record';
-}
+const convertMapType: Convert<schema.MapType> = (context, type) => {
+  const map = convertType(context, type.values);
+  return result(
+    map.context,
+    ts.createTypeLiteralNode([
+      ts.createIndexSignature(
+        undefined,
+        undefined,
+        [
+          ts.createParameter(
+            undefined,
+            undefined,
+            undefined,
+            'index',
+            undefined,
+            ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+            undefined,
+          ),
+        ],
+        map.type,
+      ),
+    ]),
+  );
+};
 
-function isArrayType(type: BaseType): type is ArrayType {
-  return type.type === 'array';
-}
+const isRecordType = (type: Schema): type is schema.RecordType =>
+  typeof type === 'object' && 'type' in type && type.type === 'record';
 
-function isMapType(type: BaseType): type is MapType {
-  return type.type === 'map';
-}
+const isArrayType = (type: Schema): type is schema.ArrayType =>
+  typeof type === 'object' && 'type' in type && type.type === 'array';
 
-function isEnumType(type: BaseType): type is EnumType {
-  return type.type === 'enum';
-}
+const isMapType = (type: Schema): type is schema.MapType =>
+  typeof type === 'object' && 'type' in type && type.type === 'map';
 
-function isLogicalType(type: BaseType): type is LogicalType {
-  return 'logicalType' in type;
-}
+const isEnumType = (type: Schema): type is schema.EnumType =>
+  typeof type === 'object' && 'type' in type && type.type === 'enum';
 
-function isUnion(type: Type): type is NamedType[] {
-  return type instanceof Array;
-}
+const isLogicalType = (type: Schema): type is schema.LogicalType => typeof type === 'object' && 'logicalType' in type;
 
-function isOptional(type: Type): boolean {
+const isUnion = (type: Schema): type is schema.NamedType[] => typeof type === 'object' && Array.isArray(type);
+
+const isOptional = (type: Schema): boolean => {
   if (isUnion(type)) {
     const t1 = type[0];
     if (typeof t1 === 'string') {
@@ -134,16 +231,35 @@ function isOptional(type: Type): boolean {
     }
   }
   return false;
-}
+};
 
-function fullyQualifiedName(type: RecordType, namespace?: string) {
-  const currentNamespace = type.namespace || namespace;
+const fullyQualifiedName = (context: Context, type: schema.RecordType) => {
+  const currentNamespace = type.namespace || context.namespace;
   return currentNamespace ? `${currentNamespace}.${type.name}` : type.name;
-}
+};
 
-function indent(text: string, prefix = '  ') {
-  return text
-    .split('\n')
-    .map(row => prefix + row)
-    .join('\n');
+export const printAstNode = (node: Result): string => {
+  const resultFile = ts.createSourceFile('someFileName.ts', '', ts.ScriptTarget.Latest);
+  const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
+  const entries = Object.values(node.context.registry);
+  const fullSourceFile = ts.updateSourceFileNode(resultFile, entries);
+
+  return [
+    printer.printNode(ts.EmitHint.Unspecified, node.type, fullSourceFile),
+    ...entries.map(entry => printer.printNode(ts.EmitHint.Unspecified, entry, fullSourceFile)),
+  ].join('\n\n');
+};
+
+export function avroTs(recordType: schema.RecordType, logicalTypes: { [key: string]: string } = {}): string {
+  const context: Context = {
+    root: true,
+    registry: {},
+    namespaces: {},
+    logicalTypes: Object.entries(logicalTypes).reduce(
+      (all, [name, type]) => ({ ...all, [name]: ts.createTypeReferenceNode(type, undefined) }),
+      {},
+    ),
+  };
+
+  return printAstNode(convertRecord(context, recordType));
 }

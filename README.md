@@ -2,7 +2,7 @@
 
 Generate typescript from avro types.
 
-It consists of a very quick sequential, functional parser. No dependencies.
+It consists of a very quick sequential, functional parser. Uses typescript's compiler api to convert avro to typescript AST, and pretty prints the results. No dependencies apart from typescript.
 
 ### Using
 
@@ -13,9 +13,10 @@ yarn add @ovotech/avro-ts
 And then you can use the function to get typescript types:
 
 ```typescript
+import { schema } from 'avsc';
 import { avroTs } from '@ovotech/avro-ts';
 
-const avro: RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
+const avro: schema.RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
 const ts = avroTs(avro, { 'timestamp-millis': 'string', date: 'string' });
 
 console.log(ts);
