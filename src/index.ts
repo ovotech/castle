@@ -41,6 +41,16 @@ export const mapContext = <T = any, TsType = ts.TypeNode>(
     { items: [], context },
   );
 
+export const withContexts = (context: Context, items: Context[]) =>
+  items.reduce(
+    (all, itemContext) => ({
+      ...all,
+      registry: { ...all.registry, ...itemContext.registry },
+      namespaces: { ...all.namespaces, ...itemContext.namespaces },
+    }),
+    context,
+  );
+
 export const withEntry = (context: Context, entry: ts.InterfaceDeclaration): Context => ({
   ...context,
   registry: { ...context.registry, [entry.name.text]: entry },
@@ -69,8 +79,9 @@ const docToJSDoc = (doc: string) =>
 
 const convertRecord: Convert<schema.RecordType> = (context, type) => {
   const namespaceContext = type.namespace ? withNamespace(context, type) : context;
+  const fieldContext = { ...namespaceContext, root: false };
 
-  const fields = mapContext({ ...namespaceContext, root: false }, type.fields, (fieldContext, fieldType) => {
+  const fields = type.fields.map(fieldType => {
     const field = convertType(fieldContext, fieldType.type);
     const prop = ts.createPropertySignature(
       undefined,
@@ -93,13 +104,15 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
     type.name,
     undefined,
     undefined,
-    fields.items,
+    fields.map(field => field.type),
   );
 
+  const recordContext = withContexts(fieldContext, fields.map(item => item.context));
+
   if (context.root) {
-    return result(fields.context, interfaceType);
+    return result(recordContext, interfaceType);
   } else {
-    return result(withEntry(fields.context, interfaceType), ts.createTypeReferenceNode(type.name, undefined));
+    return result(withEntry(recordContext, interfaceType), ts.createTypeReferenceNode(type.name, undefined));
   }
 };
 

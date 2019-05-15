@@ -1,5 +1,87 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Avro ts test Should convert BalanceAdjustment.avsc successfully 1`] = `
+"export interface BalanceAdjustment {
+    metadata: EventMetadata;
+    event: {
+        \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\": BalanceAdjustmentRequest;
+    } | {
+        \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\": BalanceAdjustmentResponse;
+    };
+}
+
+export interface Config {
+    tokenId: string;
+}
+
+export interface ConfigExtended {
+    tokenId: string;
+    extensionId: string;
+}
+
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: string;
+    config: {
+        \\"com.ovoenergy.kafka.common.event.Config\\": Config;
+    } | {
+        \\"com.ovoenergy.kafka.common.event.ConfigExtended\\": ConfigExtended;
+    };
+}
+
+export interface BalanceAdjustmentRequest {
+    /**
+     * A unique balance adjustment job id. Will correspond with the jobId of BalanceAdjustmentResponse
+     */
+    jobId: string;
+    /**
+     * Unique identifier for the customer. Gentrack Account ID. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * Meter Serial Number of the meter having its balance adjusted
+     */
+    msn: string;
+    /**
+     * A Meter Point Administration Number (Electricity) or Meter Point Reference Number (Gas). It is expected that the specified meter supplies this Supply Point.
+     */
+    mpxn: string;
+    /**
+     * Type of fuel of the meter
+     */
+    fuel: \\"Gas\\" | \\"Electricity\\";
+    /**
+     * The amount the balance was adjusted with, in thousands of a penny
+     */
+    amount: number;
+}
+
+export interface BalanceAdjustmentResponse {
+    /**
+     * A unique adjustment job id. Will correspond with the jobId S2BalanceAdjustmentRequest
+     */
+    jobId: string;
+    /**
+     * The status of the balance adjustment when its completed
+     */
+    status: \\"Error\\" | \\"Success\\";
+    /**
+     * The resulting the balance after the adjustemt, in thousands of a penny
+     */
+    balance: number;
+}"
+`;
+
 exports[`Avro ts test Should convert ComplexRecord.avsc successfully 1`] = `
 "export interface User {
     /**
