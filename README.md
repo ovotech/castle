@@ -21,6 +21,12 @@ Logical types are also supported:
 yarn avro-ts convert avro/*.avsc --logical-type date=string --logical-type timestamp-millis=string
 ```
 
+And custom imports:
+
+```bash
+yarn avro-ts convert avro/*.avsc --logical-type date=Decimal --logical-type-import "Decimal='import { Decimal } from 'my-library'"
+```
+
 ## Running the tests
 
 You can run the tests with:

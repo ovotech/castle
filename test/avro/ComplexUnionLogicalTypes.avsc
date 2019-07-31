@@ -65,6 +65,14 @@
               "doc": "The date when the account is going to be enrolled for the new balance platform (in epoch days)"
             },
             {
+              "name": "effectiveEnrollmentDateAsDecimal",
+              "type": {
+                "type": "int",
+                "logicalType": "Decimal"
+              },
+              "doc": "Because dates as Decimal are the best!"
+            },
+            {
               "name": "cancelledAt",
               "type": {
                 "type": "long",

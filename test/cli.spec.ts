@@ -23,6 +23,7 @@ describe('Cli', () => {
       input: [join(avroDir, 'ComplexRecord.avsc')],
       'output-dir': '',
       'logical-type': [],
+      'logical-type-import': [],
     });
 
     const file = readFileSync(join(avroDir, 'ComplexRecord.avsc.ts'));
@@ -36,6 +37,7 @@ describe('Cli', () => {
       input: [join(avroDir, 'ComplexRecord.avsc'), join(avroDir, 'ComplexUnionLogicalTypes.avsc')],
       'output-dir': '',
       'logical-type': [],
+      'logical-type-import': [],
     });
 
     const file1 = readFileSync(join(avroDir, 'ComplexRecord.avsc.ts'));
@@ -51,6 +53,7 @@ describe('Cli', () => {
       input: [join(avroDir, 'ComplexRecord.avsc'), join(avroDir, 'ComplexUnionLogicalTypes.avsc')],
       'output-dir': generatedDir,
       'logical-type': [],
+      'logical-type-import': [],
     });
 
     const file1 = readFileSync(join(generatedDir, 'ComplexRecord.avsc.ts'));
@@ -66,11 +69,26 @@ describe('Cli', () => {
       input: [join(avroDir, 'ComplexRecord.avsc'), join(avroDir, 'ComplexUnionLogicalTypes.avsc')],
       'output-dir': generatedDir,
       'logical-type': ['timestamp-millis=string', 'date=string'],
+      'logical-type-import': [],
     });
 
     const file1 = readFileSync(join(generatedDir, 'ComplexRecord.avsc.ts'));
     const file2 = readFileSync(join(generatedDir, 'ComplexUnionLogicalTypes.avsc.ts'));
     expect(String(file1)).toMatchSnapshot();
+    expect(String(file2)).toMatchSnapshot();
+  });
+
+  it('Should convert files with logical types and imports', async () => {
+    await convertCommand.handler({
+      _: [],
+      $0: '',
+      input: [join(avroDir, 'ComplexRecord.avsc'), join(avroDir, 'ComplexUnionLogicalTypes.avsc')],
+      'output-dir': generatedDir,
+      'logical-type': ['date=Decimal'],
+      'logical-type-import': ["date=import { Decimal } from 'decimal.js'"],
+    });
+
+    const file2 = readFileSync(join(generatedDir, 'ComplexUnionLogicalTypes.avsc.ts'));
     expect(String(file2)).toMatchSnapshot();
   });
 
@@ -81,6 +99,7 @@ describe('Cli', () => {
       input: [join(avroDir, 'ComplexRecord.avsc')],
       'output-dir': 'unknown-folder',
       'logical-type': [],
+      'logical-type-import': [],
     });
 
     await expect(result).rejects.toMatchObject({

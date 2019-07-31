@@ -104,6 +104,10 @@ export interface AccountMigrationCancelledEvent {
      */
     effectiveEnrollmentDate: number;
     /**
+     * Because dates as Decimal are the best!
+     */
+    effectiveEnrollmentDateAsDecimal: number;
+    /**
      * The time when the migration was cancelled (in epoch millis)
      */
     cancelledAt: number;
@@ -346,6 +350,10 @@ export interface AccountMigrationCancelledEvent {
      */
     effectiveEnrollmentDate: string;
     /**
+     * Because dates as Decimal are the best!
+     */
+    effectiveEnrollmentDateAsDecimal: number;
+    /**
      * The time when the migration was cancelled (in epoch millis)
      */
     cancelledAt: string;
@@ -484,6 +492,203 @@ export interface BalanceRetrievedMigrationEvent {
 }"
 `;
 
+exports[`Cli Should convert files with logical types and imports 1`] = `
+"import { Decimal } from 'decimal.js'
+
+export interface AccountMigrationEvent {
+    event: {
+        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+    } | {
+        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
+    } | {
+        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+    } | {
+        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
+    } | {
+        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+    } | {
+        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
+    } | {
+        \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
+    };
+}
+
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: number;
+}
+
+export interface AccountMigrationCancelledEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: Decimal;
+    /**
+     * Because dates as Decimal are the best!
+     */
+    effectiveEnrollmentDateAsDecimal: number;
+    /**
+     * The time when the migration was cancelled (in epoch millis)
+     */
+    cancelledAt: number;
+}
+
+export interface AccountMigrationCompletedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: Decimal;
+    /**
+     * The time when the migration was completed (in epoch millis)
+     */
+    completedAt: number;
+}
+
+export interface AccountMigrationRollBackInitiatedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: Decimal;
+    /**
+     * The time when the migration rollback was initiated (in epoch millis)
+     */
+    rollBackInitiatedAt: number;
+}
+
+export interface AccountMigrationRolledBackEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: Decimal;
+    /**
+     * The time when the migration was rolled back (in epoch millis)
+     */
+    rolledBackAt: number;
+}
+
+export interface AccountMigrationScheduledEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the customer came on supply with Boost (in epoch days)
+     */
+    supplyStartDate: Decimal;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: Decimal;
+    /**
+     * The time when the migration was scheduled (in epoch millis)
+     */
+    scheduledAt: number;
+}
+
+export interface AccountMigrationValidatedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: Decimal;
+    /**
+     * The time when the migrated balance and transactions were validated (in epoch millis)
+     */
+    validatedAt: number;
+}
+
+export interface BalanceRetrievedMigrationEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: Decimal;
+    /**
+     * The time when the balance and transaction history was fetched (in epoch millis)
+     */
+    retrievedAt: number;
+}"
+`;
+
 exports[`Cli Should convert multiple files 1`] = `
 "export interface User {
     /**
@@ -587,6 +792,10 @@ export interface AccountMigrationCancelledEvent {
      * The date when the account is going to be enrolled for the new balance platform (in epoch days)
      */
     effectiveEnrollmentDate: number;
+    /**
+     * Because dates as Decimal are the best!
+     */
+    effectiveEnrollmentDateAsDecimal: number;
     /**
      * The time when the migration was cancelled (in epoch millis)
      */
