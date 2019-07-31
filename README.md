@@ -17,7 +17,14 @@ import { schema } from 'avsc';
 import { avroTs } from '@ovotech/avro-ts';
 
 const avro: schema.RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
-const ts = avroTs(avro, { 'timestamp-millis': 'string', date: 'string' });
+const ts = avroTs(avro, {
+  'timestamp-millis': 'string',
+  date: 'string',
+  decimal: {
+    type: 'Decimal',
+    import: "import { Decimal } from 'decimal.js'",
+  },
+});
 
 console.log(ts);
 ```

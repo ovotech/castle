@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-ts",
   "description": "Convert avro schemas into typescript interfaces",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",

@@ -402,6 +402,25 @@ exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully 1`
 }"
 `;
 
+exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully 1`] = `
+"import { Decimal } from 'my-library'
+
+export interface Event {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * A Decimal that we need a library for
+     */
+    decimalValue: Decimal;
+    /**
+     * Another decimal to make sure we don't add the import more than once
+     */
+    anotherDecimal: Decimal;
+}"
+`;
+
 exports[`Avro ts test Should convert RecordWithMap.avsc successfully 1`] = `
 "export interface User {
     /**

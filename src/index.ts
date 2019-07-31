@@ -11,6 +11,7 @@ export interface Context {
   namespace?: string;
   namespaces: { [key: string]: ts.TypeReferenceNode };
   logicalTypes: { [key: string]: ts.TypeReferenceNode };
+  visitedLogicalTypes: Array<string>;
 }
 
 export interface Result<TsType = ts.TypeNode> {
@@ -163,10 +164,13 @@ const convertEnum: Convert<schema.EnumType> = (context, enumType) =>
     ts.createUnionTypeNode(enumType.symbols.map(symbol => ts.createLiteralTypeNode(ts.createLiteral(symbol)))),
   );
 
-const convertLogicalType: Convert<schema.LogicalType> = (context, type) =>
-  context.logicalTypes[type.logicalType]
-    ? result(context, context.logicalTypes[type.logicalType])
-    : convertPrimitive(context, type.type);
+const convertLogicalType: Convert<schema.LogicalType> = (context, type) => {
+  if (context.logicalTypes[type.logicalType]) {
+    if (!context.visitedLogicalTypes.includes(type.logicalType)) context.visitedLogicalTypes.push(type.logicalType);
+    return result(context, context.logicalTypes[type.logicalType]);
+  }
+  return convertPrimitive(context, type.type);
+};
 
 const convertPredefinedType: Convert<string> = (context, type) =>
   context.namespaces[type] ? result(context, context.namespaces[type]) : convertPrimitive(context, type);
@@ -252,27 +256,54 @@ const fullyQualifiedName = (context: Context, type: schema.RecordType) => {
 };
 
 export const printAstNode = (node: Result): string => {
+  console.error(
+    'DEPRECATED',
+    'printAstNode() will soon not be exported anymore. See the official Typescript documentation for steps to write your own. https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#creating-and-printing-a-typescript-ast',
+  );
+  return printAstNodeFullyFeatured(node);
+};
+
+const printAstNodeFullyFeatured = (node: Result, extras: { importLines?: Array<string> } = {}): string => {
   const resultFile = ts.createSourceFile('someFileName.ts', '', ts.ScriptTarget.Latest);
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
   const entries = Object.values(node.context.registry);
   const fullSourceFile = ts.updateSourceFileNode(resultFile, entries);
 
-  return [
-    printer.printNode(ts.EmitHint.Unspecified, node.type, fullSourceFile),
-    ...entries.map(entry => printer.printNode(ts.EmitHint.Unspecified, entry, fullSourceFile)),
-  ].join('\n\n');
+  const importLines = extras.importLines || [];
+
+  return importLines
+    .concat(
+      printer.printNode(ts.EmitHint.Unspecified, node.type, fullSourceFile),
+      entries.map(entry => printer.printNode(ts.EmitHint.Unspecified, entry, fullSourceFile)),
+    )
+    .join('\n\n');
 };
 
-export function avroTs(recordType: schema.RecordType, logicalTypes: { [key: string]: string } = {}): string {
+type LogicalTypeWithImport = { import: string; type: string };
+type LogicalTypeDefinition = string | LogicalTypeWithImport;
+
+export function avroTs(
+  recordType: schema.RecordType,
+  logicalTypes: { [key: string]: LogicalTypeDefinition } = {},
+): string {
   const context: Context = {
     root: true,
     registry: {},
     namespaces: {},
-    logicalTypes: Object.entries(logicalTypes).reduce(
-      (all, [name, type]) => ({ ...all, [name]: ts.createTypeReferenceNode(type, undefined) }),
-      {},
-    ),
+    visitedLogicalTypes: [],
+    logicalTypes: Object.entries(logicalTypes).reduce((all, [name, type]) => {
+      const typeStr = (type as LogicalTypeWithImport).type ? (type as LogicalTypeWithImport).type : (type as string);
+      return {
+        ...all,
+        [name]: ts.createTypeReferenceNode(typeStr, undefined),
+      };
+    }, {}),
   };
 
-  return printAstNode(convertRecord(context, recordType));
+  const node = convertRecord(context, recordType);
+  const importLines = context.visitedLogicalTypes
+    .map(visitedType => (logicalTypes[visitedType] as LogicalTypeWithImport).import)
+    .filter(Boolean);
+
+  return printAstNodeFullyFeatured(node, { importLines });
 }
