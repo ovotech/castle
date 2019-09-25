@@ -6,8 +6,10 @@ export interface Registry {
 }
 
 export interface Context {
+  recordAlias: string;
+  namespacedPrefix: string;
   registry: Registry;
-  root: boolean;
+  unionMember: boolean;
   namespace?: string;
   namespaces: { [key: string]: ts.TypeReferenceNode };
   logicalTypes: { [key: string]: ts.TypeReferenceNode };
@@ -80,7 +82,7 @@ const docToJSDoc = (doc: string) =>
 
 const convertRecord: Convert<schema.RecordType> = (context, type) => {
   const namespaceContext = type.namespace ? withNamespace(context, type) : context;
-  const fieldContext = { ...namespaceContext, root: false };
+  const fieldContext = { ...namespaceContext, unionMember: false };
 
   const fields = type.fields.map(fieldType => {
     const field = convertType(fieldContext, fieldType.type);
@@ -107,14 +109,31 @@ const convertRecord: Convert<schema.RecordType> = (context, type) => {
     undefined,
     fields.map(field => field.type),
   );
+  const recordContext = withContexts(withEntry(fieldContext, interfaceType), fields.map(item => item.context));
 
-  const recordContext = withContexts(fieldContext, fields.map(item => item.context));
-
-  if (context.root) {
-    return result(recordContext, interfaceType);
-  } else {
-    return result(withEntry(recordContext, interfaceType), ts.createTypeReferenceNode(type.name, undefined));
+  if (context.unionMember) {
+    const namespaced = fullyQualifiedName(context, type);
+    const prop = ts.createPropertySignature(
+      undefined,
+      ts.createStringLiteral(namespaced),
+      undefined,
+      ts.createTypeReferenceNode(type.name, undefined),
+      undefined,
+    );
+    const namespacedInterfaceType = ts.createInterfaceDeclaration(
+      undefined,
+      [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+      `${context.namespacedPrefix}${type.name}`,
+      undefined,
+      undefined,
+      [prop],
+    );
+    return result(
+      withEntry(recordContext, namespacedInterfaceType),
+      ts.createTypeReferenceNode(namespacedInterfaceType.name.text, undefined),
+    );
   }
+  return result(recordContext, ts.createTypeReferenceNode(type.name, undefined));
 };
 
 const convertType: Convert = (context, type) => {
@@ -178,19 +197,7 @@ const convertPredefinedType: Convert<string> = (context, type) =>
 const convertArrayType: Convert<any[]> = (context, type) => {
   const map = mapContext(context, type, (itemContext, item) => {
     if (typeof item === 'object' && !Array.isArray(item) && isRecordType(item)) {
-      const itemType = convertType(itemContext, item);
-      return result(
-        itemType.context,
-        ts.createTypeLiteralNode([
-          ts.createPropertySignature(
-            undefined,
-            ts.createStringLiteral(fullyQualifiedName(context, item)),
-            undefined,
-            itemType.type,
-            undefined,
-          ),
-        ]),
-      );
+      return convertType({ ...itemContext, unionMember: true }, item);
     } else {
       return convertType(itemContext, item);
     }
@@ -255,15 +262,7 @@ const fullyQualifiedName = (context: Context, type: schema.RecordType) => {
   return currentNamespace ? `${currentNamespace}.${type.name}` : type.name;
 };
 
-export const printAstNode = (node: Result): string => {
-  console.error(
-    'DEPRECATED',
-    'printAstNode() will soon not be exported anymore. See the official Typescript documentation for steps to write your own. https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#creating-and-printing-a-typescript-ast',
-  );
-  return printAstNodeFullyFeatured(node);
-};
-
-const printAstNodeFullyFeatured = (node: Result, extras: { importLines?: Array<string> } = {}): string => {
+const printAstNode = (node: Result<ts.Node>, extras: { importLines?: Array<string> } = {}): string => {
   const resultFile = ts.createSourceFile('someFileName.ts', '', ts.ScriptTarget.Latest);
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
   const entries = Object.values(node.context.registry);
@@ -282,12 +281,22 @@ const printAstNodeFullyFeatured = (node: Result, extras: { importLines?: Array<s
 type LogicalTypeWithImport = { import: string; type: string };
 type LogicalTypeDefinition = string | LogicalTypeWithImport;
 
-export function avroTs(
-  recordType: schema.RecordType,
-  logicalTypes: { [key: string]: LogicalTypeDefinition } = {},
-): string {
+type AvroTsOptions = {
+  logicalTypes?: { [key: string]: LogicalTypeDefinition };
+  recordAlias?: string;
+  namespacedPrefix?: string;
+};
+const defaultOptions = {
+  recordAlias: 'Record',
+  namespacedPrefix: 'Namespaced',
+};
+
+export function avroTs(recordType: schema.RecordType, options: AvroTsOptions = {}): string {
+  const logicalTypes = options.logicalTypes || {};
   const context: Context = {
-    root: true,
+    ...defaultOptions,
+    ...options,
+    unionMember: Array.isArray(recordType),
     registry: {},
     namespaces: {},
     visitedLogicalTypes: [],
@@ -300,10 +309,24 @@ export function avroTs(
     }, {}),
   };
 
-  const node = convertRecord(context, recordType);
+  const nodes = convertType(context, recordType);
+
   const importLines = context.visitedLogicalTypes
     .map(visitedType => (logicalTypes[visitedType] as LogicalTypeWithImport).import)
     .filter(Boolean);
 
-  return printAstNodeFullyFeatured(node, { importLines });
+  return printAstNode(
+    {
+      context: nodes.context,
+
+      type: ts.createTypeAliasDeclaration(
+        undefined,
+        [ts.createToken(ts.SyntaxKind.ExportKeyword)],
+        context.recordAlias,
+        undefined,
+        nodes.type,
+      ),
+    },
+    { importLines },
+  );
 }

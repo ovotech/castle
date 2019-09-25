@@ -15,11 +15,25 @@ describe('Avro ts test', () => {
   it.each(avscFiles)('Should convert %s successfully', file => {
     const avro: schema.RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
     const ts = avroTs(avro, {
-      'timestamp-millis': 'string',
-      date: 'string',
-      decimal: { import: "import { Decimal } from 'my-library'", type: 'Decimal' },
+      logicalTypes: {
+        'timestamp-millis': 'string',
+        date: 'string',
+        decimal: { import: "import { Decimal } from 'my-library'", type: 'Decimal' },
+      },
     });
     expect(ts).toMatchSnapshot();
     writeFileSync(join(__dirname, '__generated__', file + '.ts'), ts);
+  });
+
+  it('supports providing different names for record and namespaced type', () => {
+    const file = 'TopLevelUnion.avsc';
+    const avro: schema.RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
+    const ts = avroTs(avro, {
+      recordAlias: 'Event',
+      namespacedPrefix: 'NS',
+    });
+
+    expect(ts).toMatchSnapshot();
+    writeFileSync(join(__dirname, '__generated__', `renamed-${file}.ts`), ts);
   });
 });

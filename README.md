@@ -18,12 +18,16 @@ import { avroTs } from '@ovotech/avro-ts';
 
 const avro: schema.RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
 const ts = avroTs(avro, {
-  'timestamp-millis': 'string',
-  date: 'string',
-  decimal: {
-    type: 'Decimal',
-    import: "import { Decimal } from 'decimal.js'",
+  logicalTypes: {
+    'timestamp-millis': 'string',
+    date: 'string',
+    decimal: {
+      type: 'Decimal',
+      import: "import { Decimal } from 'decimal.js'",
+    },
   },
+  recordAlias: 'Record',
+  namespacedPrefix: 'Namespaced',
 });
 
 console.log(ts);
@@ -40,6 +44,7 @@ This converter currently supports
 - Enum
 - Map
 - Array
+- Root-level union types
 
 ## Running the tests
 
