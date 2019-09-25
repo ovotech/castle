@@ -2,7 +2,7 @@ import { avroTs } from '@ovotech/avro-ts';
 import chalk from 'chalk';
 import { readFileSync, writeFileSync } from 'fs';
 import { basename, join } from 'path';
-import { Arguments, CommandModule } from 'yargs';
+import { CommandModule } from 'yargs';
 
 export interface ConvertTags {
   input: string[];
@@ -32,6 +32,14 @@ export const convertCommand: CommandModule<{}, ConvertTags> = {
       type: 'array',
       default: [],
     },
+    ['record-alias']: {
+      description: 'What name to give the exported Record type',
+      default: 'Record',
+    },
+    ['namespace-prefix']: {
+      description: 'What prefix to use for the name of namespaced types',
+      default: 'Namespaced',
+    },
   },
   describe: 'Convert avsc to typescript files',
   handler: async args => {
@@ -42,7 +50,9 @@ export const convertCommand: CommandModule<{}, ConvertTags> = {
 
     for (const file of args.input) {
       const avroSchema = JSON.parse(String(readFileSync(file)));
-      const ts = avroTs(avroSchema, mergeTypesAndImport(rawLogicalTypes, logicalTypeImports));
+      const ts = avroTs(avroSchema, {
+        logicalTypes: mergeTypesAndImport(rawLogicalTypes, logicalTypeImports),
+      });
       const outputFile = args['output-dir'] ? join(args['output-dir'], `${basename(file)}.ts`) : `${file}.ts`;
       writeFileSync(outputFile, ts);
 
