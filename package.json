@@ -19,7 +19,7 @@
     "avro-ts-cli": "ts-node src/cli.ts"
   },
   "dependencies": {
-    "@ovotech/avro-ts": "^1.2.0",
+    "@ovotech/avro-ts": "^2.0.0",
     "yargs": "^13.2.4"
   },
   "devDependencies": {
