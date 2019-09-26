@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Cli Should convert files into output folder file 1`] = `
-"export interface User {
+"export type Record = User;
+
+export interface User {
     /**
      * System-assigned numeric user ID. Cannot be changed by the user.
      */
@@ -52,37 +54,10 @@ export interface EmailAddress {
 `;
 
 exports[`Cli Should convert files into output folder file 2`] = `
-"export interface AccountMigrationEvent {
-    event: {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
-    };
-}
+"export type Record = AccountMigrationEvent;
 
-export interface EventMetadata {
-    /**
-     * A globally unique ID for this Kafka message
-     */
-    eventId: string;
-    /**
-     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
-     */
-    traceToken: string;
-    /**
-     * A timestamp for when the event was created (in epoch millis)
-     */
-    createdAt: number;
+export interface AccountMigrationEvent {
+    event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
 }
 
 export interface AccountMigrationCancelledEvent {
@@ -113,6 +88,25 @@ export interface AccountMigrationCancelledEvent {
     cancelledAt: number;
 }
 
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: number;
+}
+
+export interface NamespacedAccountMigrationCancelledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+}
+
 export interface AccountMigrationCompletedEvent {
     metadata: EventMetadata;
     /**
@@ -131,6 +125,10 @@ export interface AccountMigrationCompletedEvent {
      * The time when the migration was completed (in epoch millis)
      */
     completedAt: number;
+}
+
+export interface NamespacedAccountMigrationCompletedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -153,6 +151,10 @@ export interface AccountMigrationRollBackInitiatedEvent {
     rollBackInitiatedAt: number;
 }
 
+export interface NamespacedAccountMigrationRollBackInitiatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+}
+
 export interface AccountMigrationRolledBackEvent {
     metadata: EventMetadata;
     /**
@@ -171,6 +173,10 @@ export interface AccountMigrationRolledBackEvent {
      * The time when the migration was rolled back (in epoch millis)
      */
     rolledBackAt: number;
+}
+
+export interface NamespacedAccountMigrationRolledBackEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -201,6 +207,10 @@ export interface AccountMigrationScheduledEvent {
     scheduledAt: number;
 }
 
+export interface NamespacedAccountMigrationScheduledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+}
+
 export interface AccountMigrationValidatedEvent {
     metadata: EventMetadata;
     /**
@@ -219,6 +229,10 @@ export interface AccountMigrationValidatedEvent {
      * The time when the migrated balance and transactions were validated (in epoch millis)
      */
     validatedAt: number;
+}
+
+export interface NamespacedAccountMigrationValidatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -243,11 +257,17 @@ export interface BalanceRetrievedMigrationEvent {
      * The time when the balance and transaction history was fetched (in epoch millis)
      */
     retrievedAt: number;
+}
+
+export interface NamespacedBalanceRetrievedMigrationEvent {
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
 }"
 `;
 
 exports[`Cli Should convert files with logical types 1`] = `
-"export interface User {
+"export type Record = User;
+
+export interface User {
     /**
      * System-assigned numeric user ID. Cannot be changed by the user.
      */
@@ -298,37 +318,10 @@ export interface EmailAddress {
 `;
 
 exports[`Cli Should convert files with logical types 2`] = `
-"export interface AccountMigrationEvent {
-    event: {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
-    };
-}
+"export type Record = AccountMigrationEvent;
 
-export interface EventMetadata {
-    /**
-     * A globally unique ID for this Kafka message
-     */
-    eventId: string;
-    /**
-     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
-     */
-    traceToken: string;
-    /**
-     * A timestamp for when the event was created (in epoch millis)
-     */
-    createdAt: string;
+export interface AccountMigrationEvent {
+    event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
 }
 
 export interface AccountMigrationCancelledEvent {
@@ -359,6 +352,25 @@ export interface AccountMigrationCancelledEvent {
     cancelledAt: string;
 }
 
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: string;
+}
+
+export interface NamespacedAccountMigrationCancelledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+}
+
 export interface AccountMigrationCompletedEvent {
     metadata: EventMetadata;
     /**
@@ -377,6 +389,10 @@ export interface AccountMigrationCompletedEvent {
      * The time when the migration was completed (in epoch millis)
      */
     completedAt: string;
+}
+
+export interface NamespacedAccountMigrationCompletedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -399,6 +415,10 @@ export interface AccountMigrationRollBackInitiatedEvent {
     rollBackInitiatedAt: string;
 }
 
+export interface NamespacedAccountMigrationRollBackInitiatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+}
+
 export interface AccountMigrationRolledBackEvent {
     metadata: EventMetadata;
     /**
@@ -417,6 +437,10 @@ export interface AccountMigrationRolledBackEvent {
      * The time when the migration was rolled back (in epoch millis)
      */
     rolledBackAt: string;
+}
+
+export interface NamespacedAccountMigrationRolledBackEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -447,6 +471,10 @@ export interface AccountMigrationScheduledEvent {
     scheduledAt: string;
 }
 
+export interface NamespacedAccountMigrationScheduledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+}
+
 export interface AccountMigrationValidatedEvent {
     metadata: EventMetadata;
     /**
@@ -465,6 +493,10 @@ export interface AccountMigrationValidatedEvent {
      * The time when the migrated balance and transactions were validated (in epoch millis)
      */
     validatedAt: string;
+}
+
+export interface NamespacedAccountMigrationValidatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -489,43 +521,20 @@ export interface BalanceRetrievedMigrationEvent {
      * The time when the balance and transaction history was fetched (in epoch millis)
      */
     retrievedAt: string;
+}
+
+export interface NamespacedBalanceRetrievedMigrationEvent {
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
 }"
 `;
 
 exports[`Cli Should convert files with logical types and imports 1`] = `
 "import { Decimal } from 'decimal.js'
 
-export interface AccountMigrationEvent {
-    event: {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
-    };
-}
+export type Record = AccountMigrationEvent;
 
-export interface EventMetadata {
-    /**
-     * A globally unique ID for this Kafka message
-     */
-    eventId: string;
-    /**
-     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
-     */
-    traceToken: string;
-    /**
-     * A timestamp for when the event was created (in epoch millis)
-     */
-    createdAt: number;
+export interface AccountMigrationEvent {
+    event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
 }
 
 export interface AccountMigrationCancelledEvent {
@@ -556,6 +565,25 @@ export interface AccountMigrationCancelledEvent {
     cancelledAt: number;
 }
 
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: number;
+}
+
+export interface NamespacedAccountMigrationCancelledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+}
+
 export interface AccountMigrationCompletedEvent {
     metadata: EventMetadata;
     /**
@@ -574,6 +602,10 @@ export interface AccountMigrationCompletedEvent {
      * The time when the migration was completed (in epoch millis)
      */
     completedAt: number;
+}
+
+export interface NamespacedAccountMigrationCompletedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -596,6 +628,10 @@ export interface AccountMigrationRollBackInitiatedEvent {
     rollBackInitiatedAt: number;
 }
 
+export interface NamespacedAccountMigrationRollBackInitiatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+}
+
 export interface AccountMigrationRolledBackEvent {
     metadata: EventMetadata;
     /**
@@ -614,6 +650,10 @@ export interface AccountMigrationRolledBackEvent {
      * The time when the migration was rolled back (in epoch millis)
      */
     rolledBackAt: number;
+}
+
+export interface NamespacedAccountMigrationRolledBackEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -644,6 +684,10 @@ export interface AccountMigrationScheduledEvent {
     scheduledAt: number;
 }
 
+export interface NamespacedAccountMigrationScheduledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+}
+
 export interface AccountMigrationValidatedEvent {
     metadata: EventMetadata;
     /**
@@ -662,6 +706,10 @@ export interface AccountMigrationValidatedEvent {
      * The time when the migrated balance and transactions were validated (in epoch millis)
      */
     validatedAt: number;
+}
+
+export interface NamespacedAccountMigrationValidatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -686,11 +734,17 @@ export interface BalanceRetrievedMigrationEvent {
      * The time when the balance and transaction history was fetched (in epoch millis)
      */
     retrievedAt: number;
+}
+
+export interface NamespacedBalanceRetrievedMigrationEvent {
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
 }"
 `;
 
 exports[`Cli Should convert multiple files 1`] = `
-"export interface User {
+"export type Record = User;
+
+export interface User {
     /**
      * System-assigned numeric user ID. Cannot be changed by the user.
      */
@@ -741,37 +795,10 @@ export interface EmailAddress {
 `;
 
 exports[`Cli Should convert multiple files 2`] = `
-"export interface AccountMigrationEvent {
-    event: {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
-    } | {
-        \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
-    };
-}
+"export type Record = AccountMigrationEvent;
 
-export interface EventMetadata {
-    /**
-     * A globally unique ID for this Kafka message
-     */
-    eventId: string;
-    /**
-     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
-     */
-    traceToken: string;
-    /**
-     * A timestamp for when the event was created (in epoch millis)
-     */
-    createdAt: number;
+export interface AccountMigrationEvent {
+    event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
 }
 
 export interface AccountMigrationCancelledEvent {
@@ -802,6 +829,25 @@ export interface AccountMigrationCancelledEvent {
     cancelledAt: number;
 }
 
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: number;
+}
+
+export interface NamespacedAccountMigrationCancelledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+}
+
 export interface AccountMigrationCompletedEvent {
     metadata: EventMetadata;
     /**
@@ -820,6 +866,10 @@ export interface AccountMigrationCompletedEvent {
      * The time when the migration was completed (in epoch millis)
      */
     completedAt: number;
+}
+
+export interface NamespacedAccountMigrationCompletedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -842,6 +892,10 @@ export interface AccountMigrationRollBackInitiatedEvent {
     rollBackInitiatedAt: number;
 }
 
+export interface NamespacedAccountMigrationRollBackInitiatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+}
+
 export interface AccountMigrationRolledBackEvent {
     metadata: EventMetadata;
     /**
@@ -860,6 +914,10 @@ export interface AccountMigrationRolledBackEvent {
      * The time when the migration was rolled back (in epoch millis)
      */
     rolledBackAt: number;
+}
+
+export interface NamespacedAccountMigrationRolledBackEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -890,6 +948,10 @@ export interface AccountMigrationScheduledEvent {
     scheduledAt: number;
 }
 
+export interface NamespacedAccountMigrationScheduledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+}
+
 export interface AccountMigrationValidatedEvent {
     metadata: EventMetadata;
     /**
@@ -908,6 +970,10 @@ export interface AccountMigrationValidatedEvent {
      * The time when the migrated balance and transactions were validated (in epoch millis)
      */
     validatedAt: number;
+}
+
+export interface NamespacedAccountMigrationValidatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -932,11 +998,17 @@ export interface BalanceRetrievedMigrationEvent {
      * The time when the balance and transaction history was fetched (in epoch millis)
      */
     retrievedAt: number;
+}
+
+export interface NamespacedBalanceRetrievedMigrationEvent {
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
 }"
 `;
 
 exports[`Cli Should convert single file 1`] = `
-"export interface User {
+"export type Record = User;
+
+export interface User {
     /**
      * System-assigned numeric user ID. Cannot be changed by the user.
      */
