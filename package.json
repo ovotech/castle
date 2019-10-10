@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-ts",
   "description": "Convert avro schemas into typescript interfaces",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "test-js": "jest --runInBand",
-    "test-ts": "tsc test/integration.ts --strict --noEmit",
+    "test-ts": "tsc test/integration.ts --strict --noEmit && ! tsc test/integration-should-fail.ts --strict --noEmit",
     "test": "yarn test-js && yarn test-ts",
     "lint-prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint-tslint": "tslint --config tslint.json '{src,test}/**/*.ts'",

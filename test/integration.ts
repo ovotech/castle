@@ -1,5 +1,8 @@
 import { User as ComplexRecord } from './__generated__/ComplexRecord.avsc';
-import { AccountMigrationEvent as ComplexUnionLogicalTypes } from './__generated__/ComplexUnionLogicalTypes.avsc';
+import {
+  Names as AccountNames,
+  AccountMigrationEvent as ComplexUnionLogicalTypes,
+} from './__generated__/ComplexUnionLogicalTypes.avsc';
 import { User as RecordWithEnum } from './__generated__/RecordWithEnum.avsc';
 import { User as RecordWithInterface } from './__generated__/RecordWithInterface.avsc';
 import { Event as RecordWithLogicalTypes } from './__generated__/RecordWithLogicalTypes.avsc';
@@ -25,7 +28,7 @@ const complexRecord: ComplexRecord = {
 
 const complexUnionLogicalTypes: ComplexUnionLogicalTypes = {
   event: {
-    'uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent': {
+    [AccountNames.AccountMigrationCancelledEvent]: {
       metadata: {
         eventId: '123',
         traceToken: '123',
@@ -166,4 +169,5 @@ console.log(
   simpleRecord,
   tradeCollection,
   user,
+  complexUnionLogicalTypes.event[AccountNames.AccountMigrationCancelledEvent],
 );
