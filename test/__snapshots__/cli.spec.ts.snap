@@ -54,7 +54,17 @@ export interface EmailAddress {
 `;
 
 exports[`Cli Should convert files into output folder file 2`] = `
-"export type Record = AccountMigrationEvent;
+"export namespace Names {
+    export const AccountMigrationCancelledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\";
+    export const AccountMigrationCompletedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\";
+    export const AccountMigrationRollBackInitiatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\";
+    export const AccountMigrationRolledBackEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\";
+    export const AccountMigrationScheduledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\";
+    export const AccountMigrationValidatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\";
+    export const BalanceRetrievedMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\";
+}
+
+export type Record = AccountMigrationEvent;
 
 export interface AccountMigrationEvent {
     event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
@@ -105,6 +115,12 @@ export interface EventMetadata {
 
 export interface NamespacedAccountMigrationCancelledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationCompletedEvent {
@@ -129,6 +145,12 @@ export interface AccountMigrationCompletedEvent {
 
 export interface NamespacedAccountMigrationCompletedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -153,6 +175,12 @@ export interface AccountMigrationRollBackInitiatedEvent {
 
 export interface NamespacedAccountMigrationRollBackInitiatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRolledBackEvent {
@@ -177,6 +205,12 @@ export interface AccountMigrationRolledBackEvent {
 
 export interface NamespacedAccountMigrationRolledBackEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -209,6 +243,12 @@ export interface AccountMigrationScheduledEvent {
 
 export interface NamespacedAccountMigrationScheduledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationValidatedEvent {
@@ -233,6 +273,12 @@ export interface AccountMigrationValidatedEvent {
 
 export interface NamespacedAccountMigrationValidatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -261,6 +307,12 @@ export interface BalanceRetrievedMigrationEvent {
 
 export interface NamespacedBalanceRetrievedMigrationEvent {
     \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
 }"
 `;
 
@@ -318,7 +370,17 @@ export interface EmailAddress {
 `;
 
 exports[`Cli Should convert files with logical types 2`] = `
-"export type Record = AccountMigrationEvent;
+"export namespace Names {
+    export const AccountMigrationCancelledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\";
+    export const AccountMigrationCompletedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\";
+    export const AccountMigrationRollBackInitiatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\";
+    export const AccountMigrationRolledBackEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\";
+    export const AccountMigrationScheduledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\";
+    export const AccountMigrationValidatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\";
+    export const BalanceRetrievedMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\";
+}
+
+export type Record = AccountMigrationEvent;
 
 export interface AccountMigrationEvent {
     event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
@@ -369,6 +431,12 @@ export interface EventMetadata {
 
 export interface NamespacedAccountMigrationCancelledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationCompletedEvent {
@@ -393,6 +461,12 @@ export interface AccountMigrationCompletedEvent {
 
 export interface NamespacedAccountMigrationCompletedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -417,6 +491,12 @@ export interface AccountMigrationRollBackInitiatedEvent {
 
 export interface NamespacedAccountMigrationRollBackInitiatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRolledBackEvent {
@@ -441,6 +521,12 @@ export interface AccountMigrationRolledBackEvent {
 
 export interface NamespacedAccountMigrationRolledBackEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -473,6 +559,12 @@ export interface AccountMigrationScheduledEvent {
 
 export interface NamespacedAccountMigrationScheduledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationValidatedEvent {
@@ -497,6 +589,12 @@ export interface AccountMigrationValidatedEvent {
 
 export interface NamespacedAccountMigrationValidatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -525,11 +623,27 @@ export interface BalanceRetrievedMigrationEvent {
 
 export interface NamespacedBalanceRetrievedMigrationEvent {
     \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
 }"
 `;
 
 exports[`Cli Should convert files with logical types and imports 1`] = `
 "import { Decimal } from 'decimal.js'
+
+export namespace Names {
+    export const AccountMigrationCancelledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\";
+    export const AccountMigrationCompletedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\";
+    export const AccountMigrationRollBackInitiatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\";
+    export const AccountMigrationRolledBackEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\";
+    export const AccountMigrationScheduledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\";
+    export const AccountMigrationValidatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\";
+    export const BalanceRetrievedMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\";
+}
 
 export type Record = AccountMigrationEvent;
 
@@ -582,6 +696,12 @@ export interface EventMetadata {
 
 export interface NamespacedAccountMigrationCancelledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationCompletedEvent {
@@ -606,6 +726,12 @@ export interface AccountMigrationCompletedEvent {
 
 export interface NamespacedAccountMigrationCompletedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -630,6 +756,12 @@ export interface AccountMigrationRollBackInitiatedEvent {
 
 export interface NamespacedAccountMigrationRollBackInitiatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRolledBackEvent {
@@ -654,6 +786,12 @@ export interface AccountMigrationRolledBackEvent {
 
 export interface NamespacedAccountMigrationRolledBackEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -686,6 +824,12 @@ export interface AccountMigrationScheduledEvent {
 
 export interface NamespacedAccountMigrationScheduledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationValidatedEvent {
@@ -710,6 +854,12 @@ export interface AccountMigrationValidatedEvent {
 
 export interface NamespacedAccountMigrationValidatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -738,6 +888,12 @@ export interface BalanceRetrievedMigrationEvent {
 
 export interface NamespacedBalanceRetrievedMigrationEvent {
     \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
 }"
 `;
 
@@ -795,7 +951,17 @@ export interface EmailAddress {
 `;
 
 exports[`Cli Should convert multiple files 2`] = `
-"export type Record = AccountMigrationEvent;
+"export namespace Names {
+    export const AccountMigrationCancelledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\";
+    export const AccountMigrationCompletedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\";
+    export const AccountMigrationRollBackInitiatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\";
+    export const AccountMigrationRolledBackEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\";
+    export const AccountMigrationScheduledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\";
+    export const AccountMigrationValidatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\";
+    export const BalanceRetrievedMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\";
+}
+
+export type Record = AccountMigrationEvent;
 
 export interface AccountMigrationEvent {
     event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
@@ -846,6 +1012,12 @@ export interface EventMetadata {
 
 export interface NamespacedAccountMigrationCancelledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationCompletedEvent {
@@ -870,6 +1042,12 @@ export interface AccountMigrationCompletedEvent {
 
 export interface NamespacedAccountMigrationCompletedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRollBackInitiatedEvent {
@@ -894,6 +1072,12 @@ export interface AccountMigrationRollBackInitiatedEvent {
 
 export interface NamespacedAccountMigrationRollBackInitiatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationRolledBackEvent {
@@ -918,6 +1102,12 @@ export interface AccountMigrationRolledBackEvent {
 
 export interface NamespacedAccountMigrationRolledBackEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationScheduledEvent {
@@ -950,6 +1140,12 @@ export interface AccountMigrationScheduledEvent {
 
 export interface NamespacedAccountMigrationScheduledEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface AccountMigrationValidatedEvent {
@@ -974,6 +1170,12 @@ export interface AccountMigrationValidatedEvent {
 
 export interface NamespacedAccountMigrationValidatedEvent {
     \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
 }
 
 export interface BalanceRetrievedMigrationEvent {
@@ -1002,6 +1204,12 @@ export interface BalanceRetrievedMigrationEvent {
 
 export interface NamespacedBalanceRetrievedMigrationEvent {
     \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
 }"
 `;
 

@@ -36,6 +36,10 @@ export const convertCommand: CommandModule<{}, ConvertTags> = {
       description: 'What name to give the exported Record type',
       default: 'Record',
     },
+    ['names-alias']: {
+      description: 'What name to give the exported namespaces containing names reverse lookup',
+      default: 'Names',
+    },
     ['namespace-prefix']: {
       description: 'What prefix to use for the name of namespaced types',
       default: 'Namespaced',
@@ -52,6 +56,9 @@ export const convertCommand: CommandModule<{}, ConvertTags> = {
       const avroSchema = JSON.parse(String(readFileSync(file)));
       const ts = avroTs(avroSchema, {
         logicalTypes: mergeTypesAndImport(rawLogicalTypes, logicalTypeImports),
+        recordAlias: args['record-alias'] as string,
+        namesAlias: args['name-alias'] as string,
+        namespacedPrefix: args['namespacePrefix'] as string,
       });
       const outputFile = args['output-dir'] ? join(args['output-dir'], `${basename(file)}.ts`) : `${file}.ts`;
       writeFileSync(outputFile, ts);
