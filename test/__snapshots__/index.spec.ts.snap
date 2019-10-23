@@ -415,6 +415,73 @@ export interface NamespacedBalanceRetrievedMigrationEvent {
 }"
 `;
 
+exports[`Avro ts test Should convert NestedRecordNamespace.avsc successfully 1`] = `
+"export namespace Names {
+    export const Level1Record = \\"com.avro.example.Level1Record\\";
+    export const Level1Sibling = \\"com.avro.example.Level1Sibling\\";
+    export const Level2Record = \\"com.avro.example.Level2Record\\";
+    export const Level2Sibling = \\"com.avro.example.Level2Sibling\\";
+}
+
+export type Record = NestRecordEvent;
+
+export interface NestRecordEvent {
+    event: NamespacedLevel1Record | NamespacedLevel1Sibling;
+}
+
+export interface Level1Record {
+    id: string;
+    child: NamespacedLevel2Record | NamespacedLevel2Sibling;
+}
+
+export interface Level2Record {
+    id: string;
+}
+
+export interface NamespacedLevel2Record {
+    \\"com.avro.example.Level2Record\\": Level2Record;
+    \\"com.avro.example.Level2Sibling\\"?: never;
+}
+
+export interface Level2Sibling {
+    id: string;
+}
+
+export interface NamespacedLevel2Sibling {
+    \\"com.avro.example.Level2Sibling\\": Level2Sibling;
+    \\"com.avro.example.Level2Record\\"?: never;
+}
+
+export interface NamespacedLevel1Record {
+    \\"com.avro.example.Level1Record\\": Level1Record;
+    \\"com.avro.example.Level1Sibling\\"?: never;
+}
+
+export interface Level1Sibling {
+    id: string;
+}
+
+export interface NamespacedLevel1Sibling {
+    \\"com.avro.example.Level1Sibling\\": Level1Sibling;
+    \\"com.avro.example.Level1Record\\"?: never;
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithDefault.avsc successfully 1`] = `
+"export type Record = RecordWithDefault;
+
+export interface RecordWithDefault {
+    pleaseNoNamespace?: null | NoNeedForNamespace;
+}
+
+export interface NoNeedForNamespace {
+    /**
+     * A fictitious id
+     */
+    id: string;
+}"
+`;
+
 exports[`Avro ts test Should convert RecordWithEnum.avsc successfully 1`] = `
 "export type Record = User;
 
