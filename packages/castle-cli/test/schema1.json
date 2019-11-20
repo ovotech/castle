@@ -1,0 +1,10 @@
+{
+  "name": "Event",
+  "type": "record",
+  "fields": [
+    {
+      "name": "field1",
+      "type": "string"
+    }
+  ]
+}

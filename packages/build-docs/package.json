@@ -1,0 +1,10 @@
+{
+  "name": "@ovotech/build-docs",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "build-docs": "scripts/build-docs"
+  }
+}

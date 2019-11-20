@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "strict": true,
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "target": "es2018",
+    "sourceMap": false,
+    "lib": ["es2018"],
+    "outDir": "dist"
+  }
+}

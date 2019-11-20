@@ -1,0 +1,50 @@
+{
+  "name": "@ovotech/castle-cli",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "description": "A kafka avro cli",
+  "author": "Ivan Kerin <ikerin@gmail.com>",
+  "repository": "git@github.com:ovotech/laminar.git",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/jest": "^24.0.19",
+    "@types/long": "^4.0.0",
+    "@types/node": "^12.11.1",
+    "@types/uuid": "^3.4.6",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
+    "ts-retry-promise": "^0.2.0",
+    "typescript": "^3.6.4",
+    "uuid": "^3.3.3"
+  },
+  "bin": {
+    "castle": "./bin/castle"
+  },
+  "scripts": {
+    "castle": "node -r ts-node/register src/castle.ts",
+    "build": "tsc --declaration",
+    "test": "jest test --runInBand",
+    "lint:prettier": "prettier --list-different {src,test}/**/*.ts",
+    "lint:eslint": "eslint '{src,test}/**/*.ts'",
+    "lint": "yarn lint:prettier && yarn lint:eslint"
+  },
+  "jest": {
+    "preset": "../../jest.json"
+  },
+  "dependencies": {
+    "@ovotech/avro-kafkajs": "^0.1.0",
+    "@ovotech/json-schema": "^0.4.0",
+    "ansi-regex": "^5.0.0",
+    "chalk": "^3.0.0",
+    "commander": "^3.0.2",
+    "kafkajs": "^1.11.0",
+    "long": "^4.0.0"
+  }
+}

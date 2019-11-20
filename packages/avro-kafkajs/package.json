@@ -1,0 +1,46 @@
+{
+  "name": "@ovotech/avro-kafkajs",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "description": "A wrapper around Kafkajs to transparently use Schema Registry for producing and consuming messages with avro schemas.",
+  "author": "Ivan Kerin <ikerin@gmail.com>",
+  "repository": "git@github.com:ovotech/castle.git",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/jest": "^24.0.19",
+    "@types/node": "^12.11.1",
+    "@types/uuid": "^3.4.6",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
+    "ts-retry-promise": "^0.2.0",
+    "typescript": "^3.6.4",
+    "uuid": "^3.3.3",
+    "@ovotech/build-docs": "^0.1.0",
+    "kafkajs": "^1.11.0"
+  },
+  "scripts": {
+    "build:docs": "build-docs README.md",
+    "build": "tsc --declaration",
+    "test": "jest test --runInBand",
+    "lint:prettier": "prettier --list-different {src,test}/**/*.ts",
+    "lint:eslint": "eslint '{src,test}/**/*.ts'",
+    "lint": "yarn lint:prettier && yarn lint:eslint"
+  },
+  "jest": {
+    "preset": "../../jest.json"
+  },
+  "peerDependencies": {
+    "kafkajs": "^1.11.0"
+  },
+  "dependencies": {
+    "@ovotech/schema-registry-api": "^1.0.5",
+    "avsc": "^5.4.15"
+  }
+}
