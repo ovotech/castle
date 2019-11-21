@@ -4,6 +4,8 @@ import {
   TopicPartitionOffsetAndMedata,
   GroupDescription,
   TopicPartitions,
+  ConsumerEvents,
+  ValueOf,
 } from 'kafkajs';
 import { AvroConsumerRun } from './types';
 import { toAvroEachMessage, toAvroEachBatch } from './avro';
@@ -63,5 +65,9 @@ export class AvroConsumer {
 
   public resume(topics: Array<{ topic: string; partitions?: number[] }>): void {
     return this.consumer.resume(topics);
+  }
+
+  public on(eventName: ValueOf<ConsumerEvents>, listener: (...args: any[]) => void): void {
+    return this.consumer.on(eventName, listener);
   }
 }

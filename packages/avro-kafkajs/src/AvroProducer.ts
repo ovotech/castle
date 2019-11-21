@@ -1,5 +1,5 @@
 import { SchemaRegistry } from './SchemaRegistry';
-import { Producer, Logger, RecordMetadata } from 'kafkajs';
+import { Producer, Logger, RecordMetadata, ProducerEvents, ValueOf } from 'kafkajs';
 import { AvroProducerRecord, AvroProducerBatch } from './types';
 import { AvroTransaction } from './AvroTransaction';
 import { toProducerRecord, toProducerBatch } from './avro';
@@ -33,5 +33,9 @@ export class AvroProducer {
 
   public async sendBatch(batch: AvroProducerBatch): Promise<RecordMetadata[]> {
     return this.producer.sendBatch(await toProducerBatch(this.schemaRegistry, batch));
+  }
+
+  public on(eventName: ValueOf<ProducerEvents>, listener: (...args: any[]) => void): void {
+    return this.producer.on(eventName, listener);
   }
 }
