@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
-import { loadConfigFile } from '../config';
-import { Output } from '../output';
+import { loadConfigFile } from '../../config';
+import { Output } from '../../output';
 import { Kafka } from 'kafkajs';
 import { AvroProducerRecord } from '@ovotech/avro-kafkajs/dist/types';
 import { Schema as JSONSchema, ensureValid } from '@ovotech/json-schema';
@@ -38,16 +38,16 @@ const loadAvroProducerRecordFile = async (file: string): Promise<AvroProducerRec
 interface Options {
   config?: string;
 }
-export const produceCommand = (command: Command, output = new Output(console)): Command =>
+export const castleTopicProduce = (command: Command, output = new Output(console)): Command =>
   command
-    .name('castle produce')
+    .name('castle topic produce')
     .arguments('<file>')
     .description(
       `Produce messages for a topic.
 Using a file that contains schema, topic and messages to be produced.
 
 Example:
-  castle produce my-produce-file.json
+  castle topic produce my-produce-file.json
 
 Example produce file:
 {

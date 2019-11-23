@@ -58,12 +58,14 @@ export const defaults: Config = {
   kafka: { brokers: ['localhost:29092'], logLevel: logLevel.ERROR },
 };
 
+export const configsDir = join(homedir(), '.castle-cli');
+
 export const loadConfigFile = async (file?: string): Promise<Config> => {
   if (!file) {
     return defaults;
   }
 
-  const locations = [file, join('.castle-cli', file), join(homedir(), '.castle-cli', file)];
+  const locations = [file, join('.castle-cli', file), join(configsDir, file)];
   const location = locations.find(location => existsSync(location));
 
   if (!location) {

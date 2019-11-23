@@ -56,7 +56,7 @@ export class AvroConsumer {
   }
 
   public pause(topics: Array<{ topic: string; partitions?: number[] }>): void {
-    return this.pause(topics);
+    return this.consumer.pause(topics);
   }
 
   public paused(): TopicPartitions[] {

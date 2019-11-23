@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { loadConfigFile } from '../config';
+import { loadConfigFile } from '../../config';
 import { Kafka, SeekEntry } from 'kafkajs';
-import { table, header, Output } from '../output';
+import { table, header, Output } from '../../output';
 
 interface Options {
   config?: string;
@@ -9,9 +9,9 @@ interface Options {
   resetOffsets?: 'earliest' | 'latest';
   setOffset?: SeekEntry[];
 }
-export const groupUpdateCommand = (command: Command, output = new Output(console)): Command =>
+export const castleGroupUpdate = (command: Command, output = new Output(console)): Command =>
   command
-    .name('castle group-update')
+    .name('castle group update')
     .arguments('<groupId> <topic>')
     .description(
       `Update consumer group offsets for a topic.

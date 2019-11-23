@@ -1,23 +1,23 @@
 import { Command } from 'commander';
-import { loadConfigFile } from '../config';
+import { loadConfigFile } from '../../config';
 import { Kafka, ResourceTypes } from 'kafkajs';
-import { devider, table, header, Output } from '../output';
+import { devider, table, header, Output } from '../../output';
 
 interface Options {
   config?: string;
   json?: boolean;
 }
 
-export const topicInfoCommand = (command: Command, output = new Output(console)): Command =>
+export const castleTopicShow = (command: Command, output = new Output(console)): Command =>
   command
-    .name('castle topic-info')
+    .name('castle topic show')
     .arguments('<topic>')
     .description(
-      `Partition, offsets and config entries of a topic.
+      `Show partition, offsets and config entries of a topic.
 
 Example:
-  castle topic-info my-topic
-  castle topic-info my-topic --json`,
+  castle topic show my-topic
+  castle topic show my-topic --json`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')

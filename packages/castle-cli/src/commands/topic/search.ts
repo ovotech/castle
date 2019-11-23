@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { loadConfigFile } from '../config';
+import { loadConfigFile } from '../../config';
 import { Kafka, ResourceTypes, DescribeConfigResponse } from 'kafkajs';
-import { highlight, table, header, Output } from '../output';
+import { highlight, table, header, Output } from '../../output';
 
 interface Options {
   config?: string;
@@ -24,17 +24,17 @@ const getConfigValue = <T>(
 const formatMs = (ms: string | undefined): string =>
   ms ? (Number(ms) === Number.NaN ? ms : `${Number(ms) / (1000 * 60 * 60)} Hours`) : '-';
 
-export const topicCommand = (command: Command, output = new Output(console)): Command =>
+export const castleTopicSearch = (command: Command, output = new Output(console)): Command =>
   command
-    .name('castle topic')
+    .name('castle topic search')
     .arguments('[name]')
     .description(
       `Get list of topics.
 
 Example:
-  castle topic
-  castle topic my-to
-  castle topic my-topic --json`,
+  castle topic search
+  castle topic search my-to
+  castle topic search my-topic --json`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')

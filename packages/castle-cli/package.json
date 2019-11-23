@@ -25,11 +25,11 @@
     "uuid": "^3.3.3"
   },
   "bin": {
-    "castle": "./bin/castle"
+    "castle": "dist/cli/castle"
   },
   "scripts": {
-    "castle": "node -r ts-node/register src/castle.ts",
-    "build": "tsc --declaration",
+    "castle": "node -r ts-node/register src/cli/castle.ts",
+    "build": "tsc --declaration && cp bin/castle dist/cli/castle",
     "test": "jest test --runInBand",
     "lint:prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint:eslint": "eslint '{src,test}/**/*.ts'",
@@ -43,7 +43,7 @@
     "@ovotech/json-schema": "^0.4.0",
     "ansi-regex": "^5.0.0",
     "chalk": "^3.0.0",
-    "commander": "^3.0.2",
+    "commander": "^4.0.1",
     "kafkajs": "^1.11.0",
     "long": "^4.0.0"
   }

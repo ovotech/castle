@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { loadConfigFile } from '../config';
+import { loadConfigFile } from '../../config';
 import { Kafka } from 'kafkajs';
-import { table, header, Output } from '../output';
+import { table, header, Output } from '../../output';
 
 interface ConfigEntry {
   name: string;
@@ -15,16 +15,16 @@ interface Options {
   configEntry: ConfigEntry[];
 }
 
-export const topicCreateCommand = (command: Command, output = new Output(console)): Command =>
+export const castleTopicCreate = (command: Command, output = new Output(console)): Command =>
   command
-    .name('castle topic-create')
+    .name('castle topic create')
     .arguments('<topic>')
     .description(
       `Create a topic. Can specify number of partitions, replaction factors and config entries.
 
 Example:
-  castle topic-create my-topic
-  castle topic-create my-topic --num-partitions 2 --config-entry file.delete.delay.ms=40000`,
+  castle topic create my-topic
+  castle topic create my-topic --num-partitions 2 --config-entry file.delete.delay.ms=40000`,
     )
     .option('-P, --num-partitions <partitions>', 'number of partitions', val => parseInt(val), 1)
     .option('-R, --replication-factor <factor>', 'replication Factor', val => parseInt(val), 1)

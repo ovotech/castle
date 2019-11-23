@@ -1,19 +1,19 @@
 import { Command } from 'commander';
-import { loadConfigFile } from '../config';
+import { loadConfigFile } from '../../config';
 import { Kafka } from 'kafkajs';
-import { table, devider, header, Output } from '../output';
-import { getPartitionProgress } from '../helpers';
+import { table, devider, header, Output } from '../../output';
+import { getPartitionProgress } from '../../helpers';
 
 interface Options {
   config?: string;
   json?: boolean;
 }
-export const groupInfoCommand = (command: Command, output = new Output(console)): Command =>
+export const castleGroupShow = (command: Command, output = new Output(console)): Command =>
   command
-    .name('castle group-info')
+    .name('castle group show')
     .arguments('<groupId> <topic>')
     .description(
-      `Consumer group offsets for a topic.
+      `Show consumer group offsets for a topic.
 Break it down by partition and calculate current lag (difference between current and latest offset)
 
 Example:

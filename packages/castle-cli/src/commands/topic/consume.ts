@@ -1,13 +1,13 @@
 import { Command } from 'commander';
 import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
 import { inspect } from 'util';
-import { loadConfigFile } from '../config';
-import { devider, table, header, Output } from '../output';
+import { loadConfigFile } from '../../config';
+import { devider, table, header, Output } from '../../output';
 import { Kafka, logLevel } from 'kafkajs';
 import * as uuid from 'uuid';
 import * as Long from 'long';
 import { AvroKafkaMessage, AvroBatch, AvroProducerRecord } from '@ovotech/avro-kafkajs/dist/types';
-import { getPartitionProgress, isPartitionProgressFinished } from '../helpers';
+import { getPartitionProgress, isPartitionProgressFinished } from '../../helpers';
 
 const toMessageOutput = (
   { partition }: AvroBatch,
@@ -28,7 +28,7 @@ interface Options {
   tail?: boolean;
   json: boolean;
 }
-export const consumeCommand = (command: Command, output = new Output(console)): Command =>
+export const castleTopicConsume = (command: Command, output = new Output(console)): Command =>
   command
     .description(
       `Consume messages of a topic. Use schema registry to decode avro messages.
@@ -37,12 +37,12 @@ By default would use a new random consumer group id to retrieve all the messages
 Using the --json option you will output the result as json, that can be then be used by "castle produce" command
 
 Example:
-  castle consume my-topic
-  castle consume my-topic --tail
-  castle consume my-topic --group-id my-group-id
-  castle consume my-topic --json`,
+  castle topic consume my-topic
+  castle topic consume my-topic --tail
+  castle topic consume my-topic --group-id my-group-id
+  castle topic consume my-topic --json`,
     )
-    .name('castle consume')
+    .name('castle topic consume')
     .arguments('<topic>')
     .option('-D, --depth <depth>', 'depth for the schemas output', val => parseInt(val), 5)
     .option(
@@ -58,7 +58,11 @@ Example:
       await output.wrap(json, async () => {
         const config = await loadConfigFile(configFile);
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
-        const kafka = new Kafka({ logLevel: logLevel.NOTHING, ...config.kafka });
+        const kafka = new Kafka({
+          logLevel: logLevel.ERROR,
+          clientId: 'castle-cli',
+          ...config.kafka,
+        });
         const avroKafka = new AvroKafka(schemaRegistry, kafka);
 
         output.log(header('Consume', topic, config));
@@ -74,7 +78,7 @@ Example:
           const partitionsProgress = await getPartitionProgress(admin, topic, groupId);
           await admin.disconnect();
 
-          output.log(devider(`Offsets for consumer ${groupId} `));
+          output.log(devider(`Offsets for groupId ${groupId} `));
           output.log(
             table([
               ['Partition', 'Offset', 'Group Offset', 'Lag'],
@@ -93,7 +97,8 @@ Example:
             await consumer.disconnect();
           } else {
             await consumer.run({
-              eachBatch: async ({ batch }) => {
+              eachBatch: async payload => {
+                const batch = payload.batch;
                 const offsetLagLow = Long.fromString(batch.offsetLagLow());
                 const nonZeroOffsetLagLow = offsetLagLow.isZero()
                   ? Long.fromValue(1)
@@ -137,7 +142,8 @@ Example:
                 if (!tail && isPartitionProgressFinished(partitionsProgress)) {
                   output.json(jsonResult);
                   output.success('Success');
-                  await consumer.disconnect();
+                  consumer.pause([{ topic }]);
+                  setTimeout(() => consumer.disconnect(), 0);
                 }
               },
             });

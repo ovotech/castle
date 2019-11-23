@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { loadConfigFile } from '../config';
+import { loadConfigFile } from '../../config';
 import { Kafka, ResourceTypes } from 'kafkajs';
-import { table, header, Output } from '../output';
+import { table, header, Output } from '../../output';
 
 interface ConfigEntry {
   name: string;
@@ -13,15 +13,15 @@ interface Options {
   configEntry: ConfigEntry[];
 }
 
-export const topicUpdateCommand = (command: Command, output = new Output(console)): Command =>
+export const castleTopicUpdate = (command: Command, output = new Output(console)): Command =>
   command
-    .name('castle topic-update')
+    .name('castle topic update')
     .arguments('<topic>')
     .description(
       `Update config entries of a topic.
 
 Example:
-  castle topic-update my-topic --config-entry file.delete.delay.ms=40000`,
+  castle topic update my-topic --config-entry file.delete.delay.ms=40000`,
     )
     .option(
       '-E, --config-entry <entry>',

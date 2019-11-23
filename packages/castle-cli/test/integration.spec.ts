@@ -4,14 +4,16 @@ import * as uuid from 'uuid';
 import { Command } from 'commander';
 import {
   Output,
-  topicCreateCommand,
-  topicInfoCommand,
-  topicUpdateCommand,
-  topicCommand,
-  produceMessageCommand,
-  produceCommand,
-  schemaCommand,
-  consumeCommand,
+  castleTopicCreate,
+  castleTopicShow,
+  castleTopicUpdate,
+  castleTopicSearch,
+  castleTopicMessage,
+  castleTopicProduce,
+  castleSchemaShow,
+  castleTopicConsume,
+  castleGroupShow,
+  castleGroupUpdate,
 } from '../src';
 import { AvroKafka, SchemaRegistry } from '@ovotech/avro-kafkajs';
 import { Kafka, logLevel, ResourceTypes } from 'kafkajs';
@@ -20,6 +22,7 @@ import { readFileSync, writeFileSync } from 'fs';
 
 const topic1 = `dev_avroKafkajs_${uuid.v4()}`;
 const topic2 = `dev_avroKafkajs_${uuid.v4()}`;
+const groupId = `dev_avroKafkajs_${uuid.v4()}`;
 
 class Logger {
   public std = '';
@@ -43,7 +46,7 @@ const logger = new Logger();
 const output = new Output(logger, false);
 const kafka = new AvroKafka(
   new SchemaRegistry({ uri: 'http://localhost:8081' }),
-  new Kafka({ brokers: ['localhost:29092'], logLevel: logLevel.NOTHING }),
+  new Kafka({ brokers: ['localhost:29092'], logLevel: logLevel.ERROR, clientId: 'testClient' }),
 );
 const admin = kafka.admin();
 const consumer = kafka.consumer({ groupId: uuid.v4() });
@@ -53,11 +56,11 @@ describe('Integration', () => {
   afterEach(() => Promise.all([admin.disconnect(), consumer.disconnect()]));
 
   it('Should process', async () => {
-    jest.setTimeout(20000);
+    jest.setTimeout(40000);
     // Create small topic
     // ================================================
-    const createTopic1 = `castle topic-create ${topic1}`;
-    topicCreateCommand(new Command(), output).parse(createTopic1.split(' '));
+    const createTopic1 = `topic create ${topic1}`;
+    castleTopicCreate(new Command(), output).parse(createTopic1.split(' '));
 
     await retry(
       async () => {
@@ -67,13 +70,13 @@ describe('Integration', () => {
         expect(logger.std).toContain(`Complete`);
         logger.clear();
       },
-      { timeout: 3000, delay: 500 },
+      { retries: 3, delay: 1000 },
     );
 
     // Create big topic
     // ================================================
-    const createTopic2 = `castle topic-create ${topic2} --num-partitions 3 --config-entry file.delete.delay.ms=40000`;
-    topicCreateCommand(new Command(), output).parse(createTopic2.split(' '));
+    const createTopic2 = `topic create ${topic2} --num-partitions 3 --config-entry file.delete.delay.ms=40000`;
+    castleTopicCreate(new Command(), output).parse(createTopic2.split(' '));
 
     await retry(
       async () => {
@@ -84,7 +87,7 @@ describe('Integration', () => {
         expect(logger.std).toContain(`Complete`);
         logger.clear();
       },
-      { timeout: 3000, delay: 500 },
+      { retries: 3, delay: 1000 },
     );
 
     // Check topics actually created
@@ -103,8 +106,8 @@ describe('Integration', () => {
 
     // Check topic-info for big topic
     // ================================================
-    const topicInfo2 = `castle topic-info ${topic2}`;
-    topicInfoCommand(new Command(), output).parse(topicInfo2.split(' '));
+    const topicInfo2 = `topic info ${topic2}`;
+    castleTopicShow(new Command(), output).parse(topicInfo2.split(' '));
 
     await retry(
       async () => {
@@ -112,13 +115,13 @@ describe('Integration', () => {
         expect(logger.std).toContain(`file.delete.delay.ms                    | 40000`);
         logger.clear();
       },
-      { timeout: 3000, delay: 500 },
+      { retries: 3, delay: 1000 },
     );
 
     // Check topic-update works for big topic
     // ================================================
-    const topicUpdate2 = `castle topic-update ${topic2} --config-entry file.delete.delay.ms=50000`;
-    topicUpdateCommand(new Command(), output).parse(topicUpdate2.split(' '));
+    const topicUpdate2 = `topic update ${topic2} --config-entry file.delete.delay.ms=50000`;
+    castleTopicUpdate(new Command(), output).parse(topicUpdate2.split(' '));
 
     await retry(
       async () => {
@@ -127,7 +130,7 @@ describe('Integration', () => {
         expect(logger.std).toContain(`Complete`);
         logger.clear();
       },
-      { timeout: 3000, delay: 500 },
+      { retries: 3, delay: 1000 },
     );
 
     // Check config was updated
@@ -146,8 +149,8 @@ describe('Integration', () => {
 
     // Check topics
     // ================================================
-    const topics = `castle topic ${topic2}`;
-    topicCommand(new Command(), output).parse(topics.split(' '));
+    const topics = `topic search ${topic2}`;
+    castleTopicSearch(new Command(), output).parse(topics.split(' '));
 
     await retry(
       async () => {
@@ -155,7 +158,7 @@ describe('Integration', () => {
         expect(logger.std).toContain(`${topic2} | 3          | 168 Hours         | delete`);
         logger.clear();
       },
-      { timeout: 3000, delay: 500 },
+      { retries: 3, delay: 1000 },
     );
 
     // Produce Ad-Hoc Messages
@@ -171,8 +174,8 @@ describe('Integration', () => {
     });
 
     const schemaFile = join(__dirname, 'schema1.json');
-    const produceMessage1 = `castle produce-message ${topic1} --schema ${schemaFile} --message {"field1":"other"}`;
-    produceMessageCommand(new Command(), output).parse(produceMessage1.split(' '));
+    const produceMessage1 = `topic message ${topic1} --schema-file ${schemaFile} --message {"field1":"other"}`;
+    castleTopicMessage(new Command(), output).parse(produceMessage1.split(' '));
 
     await retry(
       async () => {
@@ -183,7 +186,7 @@ describe('Integration', () => {
         );
         logger.clear();
       },
-      { timeout: 4000, delay: 500 },
+      { retries: 4, delay: 1000 },
     );
 
     // Produce Messages
@@ -195,8 +198,8 @@ describe('Integration', () => {
     const produceFile = join(__dirname, '__generated__', 'produce-file.json');
     writeFileSync(produceFile, JSON.stringify({ ...produceTemplate, topic: topic2 }));
 
-    const produce2 = `castle produce ${produceFile}`;
-    produceCommand(new Command(), output).parse(produce2.split(' '));
+    const produce2 = `topic produce ${produceFile}`;
+    castleTopicProduce(new Command(), output).parse(produce2.split(' '));
 
     await retry(
       async () => {
@@ -206,20 +209,21 @@ describe('Integration', () => {
 
         logger.clear();
       },
-      { timeout: 4000, delay: 500 },
+      { retries: 4, delay: 1000 },
     );
 
     await consumer.stop();
+    consumer.disconnect();
 
     // Schema
     // ================================================
 
-    const schema2 = `castle schema ${topic2}`;
-    schemaCommand(new Command(), output).parse(schema2.split(' '));
+    const schema2 = `schema show ${topic2}`;
+    castleSchemaShow(new Command(), output).parse(schema2.split(' '));
 
     await retry(
       async () => {
-        expect(logger.std).toContain(`Avro Schema "${topic2}"`);
+        expect(logger.std).toContain(`Showing schema "${topic2}"`);
         expect(logger.std).toContain('Version 01');
         expect(logger.std).toContain(`
 { type: 'record',
@@ -228,14 +232,14 @@ describe('Integration', () => {
 
         logger.clear();
       },
-      { timeout: 4000, delay: 500 },
+      { retries: 4, delay: 1000 },
     );
 
     // Consume
     // ================================================
 
-    const consume2 = `castle consume ${topic2}`;
-    consumeCommand(new Command(), output).parse(consume2.split(' '));
+    const consume2 = `topic consume ${topic2} --group-id ${groupId}`;
+    castleTopicConsume(new Command(), output).parse(consume2.split(' '));
 
     await retry(
       async () => {
@@ -257,7 +261,34 @@ describe('Integration', () => {
 
         logger.clear();
       },
-      { timeout: 8000, delay: 500 },
+      { retries: 8, delay: 1000 },
+    );
+
+    const groupShow = `group show ${groupId} ${topic2}`;
+    castleGroupShow(new Command(), output).parse(groupShow.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Consumer group "${groupId}"`);
+        expect(logger.std).toContain('Partition | Offset | Group Offset | Lag | Metadata');
+        expect(logger.std).toContain('0         | 3      | 3            | 0   |');
+        expect(logger.std).toContain('1         | 4      | 4            | 0   |');
+        expect(logger.std).toContain('2         | 3      | 3            | 0   |');
+
+        logger.clear();
+      },
+      { retries: 4, delay: 1000 },
+    );
+
+    const groupUpdate = `group update ${groupId} ${topic2} --reset-offsets latest`;
+    castleGroupUpdate(new Command(), output).parse(groupUpdate.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Success. Topic ${topic2} offsets reset to latest`);
+        logger.clear();
+      },
+      { retries: 20, delay: 1000 },
     );
   });
 });
