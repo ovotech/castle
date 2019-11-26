@@ -1,11 +1,15 @@
 import { SchemaRegistry } from './SchemaRegistry';
 import { Producer, Logger, RecordMetadata, ProducerEvents, ValueOf } from 'kafkajs';
-import { AvroProducerRecord, AvroProducerBatch } from './types';
+import { AvroProducerRecord, AvroProducerBatch, TopicsAlias } from './types';
 import { AvroTransaction } from './AvroTransaction';
-import { toProducerRecord, toProducerBatch } from './avro';
+import { toProducerRecord, toProducerBatch, resolveTopic } from './avro';
 
 export class AvroProducer {
-  constructor(public schemaRegistry: SchemaRegistry, public producer: Producer) {}
+  constructor(
+    public schemaRegistry: SchemaRegistry,
+    public producer: Producer,
+    public topicsAlias: TopicsAlias = {},
+  ) {}
 
   public connect(): Promise<void> {
     return this.producer.connect();
@@ -28,11 +32,18 @@ export class AvroProducer {
   }
 
   public async send<T = unknown>(record: AvroProducerRecord<T>): Promise<RecordMetadata[]> {
-    return this.producer.send(await toProducerRecord(this.schemaRegistry, record));
+    return this.producer.send(
+      await toProducerRecord(this.schemaRegistry, resolveTopic(record, this.topicsAlias)),
+    );
   }
 
   public async sendBatch(batch: AvroProducerBatch): Promise<RecordMetadata[]> {
-    return this.producer.sendBatch(await toProducerBatch(this.schemaRegistry, batch));
+    return this.producer.sendBatch(
+      await toProducerBatch(this.schemaRegistry, {
+        ...batch,
+        topicMessages: batch.topicMessages.map(record => resolveTopic(record, this.topicsAlias)),
+      }),
+    );
   }
 
   public on(eventName: ValueOf<ProducerEvents>, listener: (...args: any[]) => void): void {

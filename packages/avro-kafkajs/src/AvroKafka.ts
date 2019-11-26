@@ -2,6 +2,7 @@ import { Kafka, ProducerConfig, ConsumerConfig, AdminConfig, Admin, Logger } fro
 import { SchemaRegistry } from './SchemaRegistry';
 import { AvroProducer } from './AvroProducer';
 import { AvroConsumer } from './AvroConsumer';
+import { TopicsAlias } from './types';
 
 export interface Config {
   schemaRegistry: { uri: 'asdads' };
@@ -9,14 +10,18 @@ export interface Config {
 }
 
 export class AvroKafka {
-  constructor(public schemaRegistry: SchemaRegistry, public kafka: Kafka) {}
+  constructor(
+    public schemaRegistry: SchemaRegistry,
+    public kafka: Kafka,
+    public topicsAlias: TopicsAlias = {},
+  ) {}
 
   public producer(config?: ProducerConfig): AvroProducer {
-    return new AvroProducer(this.schemaRegistry, this.kafka.producer(config));
+    return new AvroProducer(this.schemaRegistry, this.kafka.producer(config), this.topicsAlias);
   }
 
   public consumer(config?: ConsumerConfig): AvroConsumer {
-    return new AvroConsumer(this.schemaRegistry, this.kafka.consumer(config));
+    return new AvroConsumer(this.schemaRegistry, this.kafka.consumer(config), this.topicsAlias);
   }
 
   public admin(config?: AdminConfig): Admin {

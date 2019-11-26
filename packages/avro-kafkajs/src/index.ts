@@ -26,4 +26,5 @@ export {
   AvroTopicMessages,
   AvroProducerBatch,
   AvroConsumerRun,
+  TopicsAlias,
 } from './types';

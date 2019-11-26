@@ -57,3 +57,5 @@ export interface AvroConsumerRun<T = unknown> {
   eachBatch?: (payload: AvroEachBatchPayload<T>) => Promise<void>;
   eachMessage?: (payload: AvroEachMessagePayload<T>) => Promise<void>;
 }
+
+export type TopicsAlias = { [key: string]: string };

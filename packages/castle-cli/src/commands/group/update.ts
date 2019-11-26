@@ -48,10 +48,10 @@ Example:
 
           if (resetOffsets) {
             await admin.resetOffsets({ groupId, topic, earliest: resetOffsets === 'earliest' });
-            output.success(`Success. Topic ${topic} offsets reset to ${resetOffsets}.`);
+            output.success(`Success. Topic ${topic} offsets reset to ${resetOffsets}`);
           } else if (setOffset) {
             await admin.setOffsets({ groupId, topic, partitions: setOffset });
-            output.success(`Success. Topic ${topic} offsets set.`);
+            output.success(`Success. Topic ${topic} offsets set`);
             output.success(
               table([
                 ['Partition', 'Offset'],

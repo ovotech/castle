@@ -6,6 +6,7 @@ import {
   AvroConsumer,
   AvroMessage,
   AvroKafka,
+  TopicsAlias,
 } from '@ovotech/avro-kafkajs';
 import { ConsumerConfig, KafkaConfig, ProducerConfig, RecordMetadata, AdminConfig } from 'kafkajs';
 
@@ -20,7 +21,7 @@ export interface CastleEachBatchPayload<T = unknown> extends AvroEachBatchPayloa
 export type Resolver<TContext extends object = {}> = (ctx: TContext) => Promise<void>;
 
 export type Middleware<TProvide extends object = {}, TRequire extends object = {}> = <
-  TInherit extends CastleEachMessagePayload = CastleEachMessagePayload
+  TInherit extends object = {}
 >(
   next: Resolver<TProvide & TRequire & TInherit>,
 ) => Resolver<TRequire & TInherit>;
@@ -40,6 +41,7 @@ export interface CastleConsumer<T = any> {
 
 export interface CastleConfig {
   kafka: KafkaConfig;
+  topicsAlias?: TopicsAlias;
   producer?: ProducerConfig;
   admin?: AdminConfig;
   schemaRegistry: SchemaRegistryConfig;

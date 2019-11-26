@@ -7,11 +7,15 @@ import {
   ConsumerEvents,
   ValueOf,
 } from 'kafkajs';
-import { AvroConsumerRun } from './types';
-import { toAvroEachMessage, toAvroEachBatch } from './avro';
+import { AvroConsumerRun, TopicsAlias } from './types';
+import { toAvroEachMessage, toAvroEachBatch, resolveTopic } from './avro';
 
 export class AvroConsumer {
-  constructor(public schemaRegistry: SchemaRegistry, public consumer: Consumer) {}
+  constructor(
+    public schemaRegistry: SchemaRegistry,
+    public consumer: Consumer,
+    public topicsAlias: TopicsAlias = {},
+  ) {}
 
   public connect(): Promise<void> {
     return this.consumer.connect();
@@ -22,7 +26,7 @@ export class AvroConsumer {
   }
 
   public subscribe(topic: { topic: string | RegExp; fromBeginning?: boolean }): Promise<void> {
-    return this.consumer.subscribe(topic);
+    return this.consumer.subscribe(resolveTopic(topic, this.topicsAlias));
   }
 
   public stop(): Promise<void> {

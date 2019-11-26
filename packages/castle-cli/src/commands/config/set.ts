@@ -80,5 +80,6 @@ Example:
         if (output.type !== OutputType.JSON) {
           writeFileSync(file, JSON.stringify(config), 'utf8');
         }
+        output.success('Success');
       });
     });

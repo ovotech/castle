@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { configsDir } from '../../config';
-import { Output, table, highlight, connection } from '../../output';
+import { Output, table, highlight, connection, header } from '../../output';
 import { join } from 'path';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
@@ -31,6 +31,8 @@ Example:
 
         const all = readdirSync(configsDir);
         const configs = name ? all.filter(config => config.includes(name)) : all;
+
+        output.log(header('Searching for config', name));
 
         output.log(
           table([

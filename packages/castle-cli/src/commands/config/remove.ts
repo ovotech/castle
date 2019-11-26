@@ -29,5 +29,6 @@ Example:
 
         output.log(header('Removing config', name));
         unlinkSync(file);
+        output.success('Success');
       });
     });

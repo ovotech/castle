@@ -14,15 +14,20 @@ import {
   castleTopicConsume,
   castleGroupShow,
   castleGroupUpdate,
+  castleSchemaSearch,
+  castleConfigSet,
+  castleConfigSearch,
+  castleConfigRemove,
 } from '../src';
 import { AvroKafka, SchemaRegistry } from '@ovotech/avro-kafkajs';
 import { Kafka, logLevel, ResourceTypes } from 'kafkajs';
 import { join } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 
-const topic1 = `dev_avroKafkajs_${uuid.v4()}`;
-const topic2 = `dev_avroKafkajs_${uuid.v4()}`;
-const groupId = `dev_avroKafkajs_${uuid.v4()}`;
+const topic1 = `test_topic1_${uuid.v4()}`;
+const topic2 = `test_topic2_${uuid.v4()}`;
+const config = `test_config_${uuid.v4()}`;
+const groupId = `test_groupId_${uuid.v4()}`;
 
 class Logger {
   public std = '';
@@ -57,6 +62,51 @@ describe('Integration', () => {
 
   it('Should process', async () => {
     jest.setTimeout(40000);
+
+    // Config set
+    // ================================================
+    const configSet1 = `config set ${config} --schema-registry http://localhost:8081 --kafka-broker localhost:29092`;
+    castleConfigSet(new Command(), output).parse(configSet1.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Setting config "${config}"`);
+        expect(logger.std).toContain(`Success`);
+        logger.clear();
+      },
+      { retries: 3, delay: 1000 },
+    );
+
+    // Config search
+    // ================================================
+    const configSearch1 = `config search ${config}`;
+    castleConfigSearch(new Command(), output).parse(configSearch1.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Searching for config "${config}"`);
+        expect(logger.std).toContain(
+          `${config} | Kafka: localhost:29092  SchemaRegistry: http://localhost:8081`,
+        );
+        logger.clear();
+      },
+      { retries: 3, delay: 1000 },
+    );
+
+    // Config remove
+    // ================================================
+    const configRemove1 = `config remove ${config}`;
+    castleConfigRemove(new Command(), output).parse(configRemove1.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Removing config "${config}"`);
+        expect(logger.std).toContain('Success');
+        logger.clear();
+      },
+      { retries: 3, delay: 1000 },
+    );
+
     // Create small topic
     // ================================================
     const createTopic1 = `topic create ${topic1}`;
@@ -215,10 +265,25 @@ describe('Integration', () => {
     await consumer.stop();
     consumer.disconnect();
 
+    // Schema Search
+    // ================================================
+
+    const schemaSearch2 = `schema search ${topic2}`;
+    castleSchemaSearch(new Command(), output).parse(schemaSearch2.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Searching for schemas "${topic2}"`);
+
+        logger.clear();
+      },
+      { retries: 4, delay: 1000 },
+    );
+
     // Schema
     // ================================================
 
-    const schema2 = `schema show ${topic2}`;
+    const schema2 = `schema show ${topic2} --depth 8`;
     castleSchemaShow(new Command(), output).parse(schema2.split(' '));
 
     await retry(
@@ -264,6 +329,9 @@ describe('Integration', () => {
       { retries: 8, delay: 1000 },
     );
 
+    // Group Show
+    // ================================================
+
     const groupShow = `group show ${groupId} ${topic2}`;
     castleGroupShow(new Command(), output).parse(groupShow.split(' '));
 
@@ -280,12 +348,32 @@ describe('Integration', () => {
       { retries: 4, delay: 1000 },
     );
 
-    const groupUpdate = `group update ${groupId} ${topic2} --reset-offsets latest`;
-    castleGroupUpdate(new Command(), output).parse(groupUpdate.split(' '));
+    // Group Update Reset Offsets
+    // ================================================
+
+    const groupUpdate1 = `group update ${groupId} ${topic2} --reset-offsets latest`;
+    castleGroupUpdate(new Command(), output).parse(groupUpdate1.split(' '));
 
     await retry(
       async () => {
         expect(logger.std).toContain(`Success. Topic ${topic2} offsets reset to latest`);
+        logger.clear();
+      },
+      { retries: 20, delay: 1000 },
+    );
+
+    // Group Update Set Offsets
+    // ================================================
+
+    const groupUpdate2 = `group update ${groupId} ${topic2} --set-offset 0=2 --set-offset 1=2`;
+    castleGroupUpdate(new Command(), output).parse(groupUpdate2.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Success. Topic ${topic2} offsets set`);
+        expect(logger.std).toContain(`Partition | Offset`);
+        expect(logger.std).toContain(`0         | 2`);
+        expect(logger.std).toContain(`1         | 2`);
         logger.clear();
       },
       { retries: 20, delay: 1000 },

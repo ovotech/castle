@@ -8,6 +8,7 @@ import {
   AvroEachBatch,
   AvroKafkaMessage,
   AvroEachBatchPayload,
+  TopicsAlias,
 } from './types';
 import {
   Message,
@@ -84,3 +85,14 @@ export const toAvroEachBatch = <T = unknown>(
     eachBatch(avroPayload);
   };
 };
+
+export const resolveTopic = <T extends { topic: unknown }>(
+  record: T,
+  topicsAlias: TopicsAlias,
+): T => ({
+  ...record,
+  topic:
+    typeof record.topic === 'string' && topicsAlias[record.topic]
+      ? topicsAlias[record.topic]
+      : record.topic,
+});

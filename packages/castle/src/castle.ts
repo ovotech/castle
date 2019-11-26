@@ -40,7 +40,7 @@ export const eachBatch = <T, TContext extends object = {}>(
 
 export const createCastle = (config: CastleConfig): Castle => {
   const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
-  const kafka = new AvroKafka(schemaRegistry, new Kafka(config.kafka));
+  const kafka = new AvroKafka(schemaRegistry, new Kafka(config.kafka), config.topicsAlias);
   const producer = kafka.producer(config.producer);
   const consumers: CastleConsumer[] = config.consumers.map(config => ({
     instance: kafka.consumer(config),

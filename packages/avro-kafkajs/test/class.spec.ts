@@ -27,13 +27,14 @@ describe('Class', () => {
   let producer: AvroProducer;
   let consumer: AvroConsumer;
   let admin: Admin;
+  let groupId: string;
 
   beforeEach(async () => {
     const schemaRegistry = new SchemaRegistry({ uri: 'http://localhost:8081' });
     const kafka = new Kafka({ brokers: ['localhost:29092'], logLevel: logLevel.NOTHING });
 
-    const avroKafka = new AvroKafka(schemaRegistry, kafka);
-    const groupId = uuid.v4();
+    const avroKafka = new AvroKafka(schemaRegistry, kafka, { myTopic: topic });
+    groupId = uuid.v4();
 
     admin = avroKafka.admin();
     consumer = avroKafka.consumer({ groupId });
@@ -57,13 +58,25 @@ describe('Class', () => {
     });
 
     await producer.send<MessageType>({
-      topic,
+      topic: 'myTopic',
       schema,
       messages: [
         { value: { intField: 10, stringField: 'test1' }, partition: 0, key: 'test-1' },
         { value: { intField: null, stringField: 'test2' }, partition: 1, key: 'test-2' },
       ],
     });
+
+    const description = await consumer.describeGroup();
+    expect(description).toMatchObject({ errorCode: 0, groupId });
+    expect(consumer.paused()).toHaveLength(0);
+
+    consumer.pause([{ topic }]);
+
+    expect(consumer.paused()).toHaveLength(1);
+
+    consumer.resume([{ topic }]);
+
+    expect(consumer.paused()).toHaveLength(0);
 
     await retry(
       async () => {
@@ -91,6 +104,12 @@ describe('Class', () => {
       },
       { delay: 1000, timeout: 4000 },
     );
+
+    let stopped = false;
+    consumer.on('consumer.stop', () => (stopped = true));
+    await consumer.stop();
+
+    await retry(async () => expect(stopped).toBe(true), { delay: 1000, timeout: 2000 });
   });
 
   it('Should process avro messages in batches', async () => {
