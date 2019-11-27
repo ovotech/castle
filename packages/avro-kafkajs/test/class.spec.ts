@@ -11,7 +11,6 @@ import { retry } from 'ts-retry-promise';
 import * as uuid from 'uuid';
 import { Schema } from 'avsc';
 
-const topic = `dev_avroKafkajs_${uuid.v4()}`;
 interface MessageType {
   stringField: string;
   intField?: number | null;
@@ -23,6 +22,9 @@ const schema = {
   fields: [{ type: 'string', name: 'stringField' }, { type: ['null', 'int'], name: 'intField' }],
 } as Schema;
 
+const TOPIC_ALIAS = 'topic-alias';
+const realTopicName = `dev_avroKafkajs_${uuid.v4()}`;
+
 describe('Class', () => {
   let producer: AvroProducer;
   let consumer: AvroConsumer;
@@ -33,7 +35,7 @@ describe('Class', () => {
     const schemaRegistry = new SchemaRegistry({ uri: 'http://localhost:8081' });
     const kafka = new Kafka({ brokers: ['localhost:29092'], logLevel: logLevel.NOTHING });
 
-    const avroKafka = new AvroKafka(schemaRegistry, kafka, { myTopic: topic });
+    const avroKafka = new AvroKafka(schemaRegistry, kafka, { [TOPIC_ALIAS]: realTopicName });
     groupId = uuid.v4();
 
     admin = avroKafka.admin();
@@ -48,8 +50,8 @@ describe('Class', () => {
     jest.setTimeout(10000);
     const consumed: AvroEachMessagePayload<MessageType>[] = [];
 
-    await admin.createTopics({ topics: [{ topic, numPartitions: 2 }] });
-    await consumer.subscribe({ topic });
+    await admin.createTopics({ topics: [{ topic: realTopicName, numPartitions: 2 }] });
+    await consumer.subscribe({ topic: TOPIC_ALIAS });
     await consumer.run<MessageType>({
       partitionsConsumedConcurrently: 2,
       eachMessage: async payload => {
@@ -58,7 +60,7 @@ describe('Class', () => {
     });
 
     await producer.send<MessageType>({
-      topic: 'myTopic',
+      topic: TOPIC_ALIAS,
       schema,
       messages: [
         { value: { intField: 10, stringField: 'test1' }, partition: 0, key: 'test-1' },
@@ -70,11 +72,11 @@ describe('Class', () => {
     expect(description).toMatchObject({ errorCode: 0, groupId });
     expect(consumer.paused()).toHaveLength(0);
 
-    consumer.pause([{ topic }]);
+    consumer.pause([{ topic: TOPIC_ALIAS }]);
 
     expect(consumer.paused()).toHaveLength(1);
 
-    consumer.resume([{ topic }]);
+    consumer.resume([{ topic: TOPIC_ALIAS }]);
 
     expect(consumer.paused()).toHaveLength(0);
 
@@ -102,7 +104,7 @@ describe('Class', () => {
           }),
         );
       },
-      { delay: 1000, timeout: 4000 },
+      { delay: 1000, retries: 4 },
     );
 
     let stopped = false;
@@ -116,8 +118,8 @@ describe('Class', () => {
     jest.setTimeout(10000);
     const consumed: AvroBatch<MessageType>[] = [];
 
-    await admin.createTopics({ topics: [{ topic, numPartitions: 2 }] });
-    await consumer.subscribe({ topic });
+    await admin.createTopics({ topics: [{ topic: realTopicName, numPartitions: 2 }] });
+    await consumer.subscribe({ topic: TOPIC_ALIAS });
     await consumer.run<MessageType>({
       eachBatch: async payload => {
         consumed.push(payload.batch);
@@ -130,7 +132,7 @@ describe('Class', () => {
       compression: CompressionTypes.None,
       topicMessages: [
         {
-          topic,
+          topic: TOPIC_ALIAS,
           schema,
           messages: [
             { value: { intField: 1, stringField: 'test1' }, partition: 0, key: 'test-1' },
@@ -149,7 +151,7 @@ describe('Class', () => {
         expect(consumed).toContainEqual(
           expect.objectContaining({
             partition: 0,
-            topic,
+            topic: realTopicName,
             messages: [
               expect.objectContaining({
                 key: Buffer.from('test-1'),
@@ -173,7 +175,7 @@ describe('Class', () => {
         expect(consumed).toContainEqual(
           expect.objectContaining({
             partition: 1,
-            topic,
+            topic: realTopicName,
             messages: [
               expect.objectContaining({
                 key: Buffer.from('test-4'),
@@ -183,7 +185,7 @@ describe('Class', () => {
           }),
         );
       },
-      { delay: 1000, timeout: 4000 },
+      { delay: 1000, retries: 4 },
     );
   });
 });

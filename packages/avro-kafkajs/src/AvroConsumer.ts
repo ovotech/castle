@@ -52,7 +52,7 @@ export class AvroConsumer {
   }
 
   public seek(topicPartition: { topic: string; partition: number; offset: string }): void {
-    return this.consumer.seek(topicPartition);
+    return this.consumer.seek(resolveTopic(topicPartition, this.topicsAlias));
   }
 
   public describeGroup(): Promise<GroupDescription> {
@@ -60,7 +60,7 @@ export class AvroConsumer {
   }
 
   public pause(topics: Array<{ topic: string; partitions?: number[] }>): void {
-    return this.consumer.pause(topics);
+    return this.consumer.pause(topics.map(topic => resolveTopic(topic, this.topicsAlias)));
   }
 
   public paused(): TopicPartitions[] {
@@ -68,7 +68,7 @@ export class AvroConsumer {
   }
 
   public resume(topics: Array<{ topic: string; partitions?: number[] }>): void {
-    return this.consumer.resume(topics);
+    return this.consumer.resume(topics.map(topic => resolveTopic(topic, this.topicsAlias)));
   }
 
   public on(eventName: ValueOf<ConsumerEvents>, listener: (...args: any[]) => void): void {

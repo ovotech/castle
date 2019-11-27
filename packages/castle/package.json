@@ -28,6 +28,7 @@
   },
   "scripts": {
     "build": "tsc --declaration",
+    "build:docs": "build-docs README.md",
     "test": "jest test --runInBand",
     "lint:prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint:eslint": "eslint '{src,test}/**/*.ts'",

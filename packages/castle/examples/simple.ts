@@ -2,11 +2,11 @@ import { createCastle, produce, eachMessage } from '@ovotech/castle';
 import { Event, EventSchema } from './avro';
 
 // Define producers as pure functions
-// With statically defining the typescript types and avro schemas
+// With statically setting the typescript types and avro schemas
 const mySender = produce<Event>({ topic: 'my-topic-1', schema: EventSchema });
 
 // Define consumers as pure functions
-// With statically defining which schemas it will accept
+// With statically setting which types it will accept
 const eachEvent = eachMessage<Event>(async ({ message }) => {
   console.log(message.value);
 });
