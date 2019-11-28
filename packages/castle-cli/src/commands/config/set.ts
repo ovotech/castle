@@ -69,7 +69,7 @@ Example:
         output.log(header('Setting config', name, config));
         output.json(config);
         if (output.type !== OutputType.JSON) {
-          writeFileSync(file, JSON.stringify(config), 'utf8');
+          writeFileSync(file, JSON.stringify(config, null, 2), 'utf8');
         }
         output.success('Success');
       });
