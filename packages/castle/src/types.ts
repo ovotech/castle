@@ -26,6 +26,7 @@ export type Middleware<TProvide extends object = {}, TRequire extends object = {
   next: Resolver<TProvide & TRequire & TInherit>,
 ) => Resolver<TRequire & TInherit>;
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export interface CastleConsumerConfig<T = any> extends ConsumerConfig {
   topic: string | RegExp;
   fromBeginning?: boolean;
@@ -34,6 +35,7 @@ export interface CastleConsumerConfig<T = any> extends ConsumerConfig {
   eachMessage?: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export interface CastleConsumer<T = any> {
   instance: AvroConsumer;
   config: CastleConsumerConfig<T>;

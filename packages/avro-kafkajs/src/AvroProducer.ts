@@ -46,7 +46,7 @@ export class AvroProducer {
     );
   }
 
-  public on(eventName: ValueOf<ProducerEvents>, listener: (...args: any[]) => void): void {
+  public on(eventName: ValueOf<ProducerEvents>, listener: (...args: unknown[]) => void): void {
     return this.producer.on(eventName, listener);
   }
 }

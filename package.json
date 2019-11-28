@@ -10,7 +10,8 @@
     "test": "lerna run test",
     "lint": "lerna run lint",
     "build": "lerna run build",
-    "publish": "lerna run publish"
+    "publish": "lerna run publish",
+    "build:docs": "build-docs README.md"
   },
   "workspaces": [
     "packages/*"
@@ -19,6 +20,6 @@
     "preset": "./jest.json"
   },
   "devDependencies": {
-    "lerna": "^3.16.4"
+    "lerna": "^3.19.0"
   }
 }

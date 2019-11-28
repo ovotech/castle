@@ -50,8 +50,8 @@ export const table = (rows: string[][]): string => {
 };
 
 export interface Logger {
-  log: (...args: any[]) => void;
-  error: (...args: any[]) => void;
+  log: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
 }
 
 export class Output {

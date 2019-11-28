@@ -71,7 +71,7 @@ export class AvroConsumer {
     return this.consumer.resume(topics.map(topic => resolveTopic(topic, this.topicsAlias)));
   }
 
-  public on(eventName: ValueOf<ConsumerEvents>, listener: (...args: any[]) => void): void {
+  public on(eventName: ValueOf<ConsumerEvents>, listener: (...args: unknown[]) => void): void {
     return this.consumer.on(eventName, listener);
   }
 }

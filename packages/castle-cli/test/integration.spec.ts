@@ -214,7 +214,7 @@ describe('Integration', () => {
     // Produce Ad-Hoc Messages
     // ================================================
 
-    const topicMessages: any[] = [];
+    const topicMessages: unknown[] = [];
     await consumer.subscribe({ topic: topic1 });
     await consumer.subscribe({ topic: topic2 });
     await consumer.run({

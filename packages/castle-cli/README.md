@@ -10,9 +10,9 @@ yarn global add @ovotech/castle-cli
 
 ```shell
 castle --help
-castle topic my-topic
-castle consume my-topic
-castle produce-message my-topic --shema my-schema.json --message '{"field1":"value"}'
+castle topic search my-topic
+castle topic message my-topic --shema-file my-schema.json --message '{"field1":"value"}'
+castle topic consume my-topic
 ```
 
 ## Running the tests

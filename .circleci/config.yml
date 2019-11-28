@@ -1,0 +1,83 @@
+version: 2.1
+
+commands:
+  yarn-install:
+    description: Install cached yarn packages
+    steps:
+      - restore_cache:
+          keys: ['v2-{{ checksum "yarn.lock" }}']
+      - run: yarn config set yarn-offline-mirror ~/.cache/yarn
+      - run: yarn install --frozen-lockfile
+
+  npm-login:
+    description: Set npm login
+    steps:
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+
+  yarn-save-cache:
+    description: Save yarn packages cache
+    steps:
+      - save_cache:
+          key: v2-{{ checksum "yarn.lock" }}
+          paths: ['~/.cache']
+
+jobs:
+  test:
+    docker:
+      - image: circleci/node:10
+      - image: confluentinc/cp-zookeeper:5.0.1
+        environment:
+          ZOOKEEPER_CLIENT_PORT: 2181
+          ZOOKEEPER_TICK_TIME: 2000
+      - image: postgres:11
+        environment:
+          POSTGRES_DB: boost-statements-api
+          POSTGRES_USER: boost-statements-api
+          POSTGRES_PASSWORD: dev-pass
+      - image: confluentinc/cp-kafka:5.0.1
+        environment:
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_ZOOKEEPER_CONNECT: 'localhost:2181'
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_HOST://localhost:29092
+      - image: confluentinc/cp-schema-registry:5.0.1
+        environment:
+          SCHEMA_REGISTRY_HOST_NAME: localhost
+          SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'localhost:2181'
+    steps:
+      - checkout
+      - yarn-install
+      - yarn-save-cache
+      - run: .circleci/wait-for-server.sh
+      - run: yarn build --concurrency 1
+      - run: yarn test
+
+  publish:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - yarn-install
+      - run: yarn build --concurrency 1
+      - npm-login
+      - run: git config user.email "ovotech-ci@ovoenergy.com"
+      - run: git config user.name "Ovotech CI"
+      - run: yarn lerna publish from-package --yes
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore: master
+  deploy:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: master
+      - publish:
+          requires:
+            - test
