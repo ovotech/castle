@@ -4,3 +4,4 @@ src/
 examples/
 coverage/
 tsconfig.json
+yarn-error.log

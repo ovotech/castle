@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/castle-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka avro cli",
@@ -29,7 +29,7 @@
   },
   "scripts": {
     "castle": "node -r ts-node/register src/cli/castle.ts",
-    "build": "tsc --declaration && cp bin/castle dist/cli/castle",
+    "build": "tsc --declaration",
     "test": "jest test --runInBand",
     "lint:prettier": "prettier --list-different {src,test}/**/*.ts",
     "lint:eslint": "eslint '{src,test}/**/*.ts'",
