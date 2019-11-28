@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/castle-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka avro cli",
@@ -21,8 +21,7 @@
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
     "ts-retry-promise": "^0.2.0",
-    "typescript": "^3.6.4",
-    "uuid": "^3.3.3"
+    "typescript": "^3.6.4"
   },
   "bin": {
     "castle": "dist/cli/castle"
@@ -45,6 +44,7 @@
     "chalk": "^3.0.0",
     "commander": "^4.0.1",
     "kafkajs": "^1.11.0",
-    "long": "^4.0.0"
+    "long": "^4.0.0",
+    "uuid": "^3.3.3"
   }
 }

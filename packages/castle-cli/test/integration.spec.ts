@@ -290,10 +290,9 @@ describe('Integration', () => {
       async () => {
         expect(logger.std).toContain(`Showing schema "${topic2}"`);
         expect(logger.std).toContain('Version 01');
-        expect(logger.std).toContain(`
-{ type: 'record',
-  name: 'Event',
-  fields: [ { name: 'field1', type: 'string' } ] }`);
+        expect(logger.std).toContain("type: 'record'");
+        expect(logger.std).toContain("name: 'Event'");
+        expect(logger.std).toContain("fields: [ { name: 'field1', type: 'string' } ]");
 
         logger.clear();
       },

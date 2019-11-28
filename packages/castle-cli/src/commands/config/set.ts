@@ -55,24 +55,15 @@ Example:
         }
 
         if (key) {
-          config.kafka.ssl = {
-            ...(config.kafka.ssl || {}),
-            key: JSON.stringify(readFileSync(key, 'utf8')),
-          };
+          config.kafka.ssl = { ...(config.kafka.ssl || {}), key: readFileSync(key, 'utf8') };
         }
 
         if (ca) {
-          config.kafka.ssl = {
-            ...(config.kafka.ssl || {}),
-            ca: JSON.stringify(readFileSync(ca, 'utf8')),
-          };
+          config.kafka.ssl = { ...(config.kafka.ssl || {}), ca: readFileSync(ca, 'utf8') };
         }
 
         if (cert) {
-          config.kafka.ssl = {
-            ...(config.kafka.ssl || {}),
-            cert: JSON.stringify(readFileSync(cert, 'utf8')),
-          };
+          config.kafka.ssl = { ...(config.kafka.ssl || {}), cert: readFileSync(cert, 'utf8') };
         }
 
         output.log(header('Setting config', name, config));

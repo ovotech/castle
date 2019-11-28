@@ -50,8 +50,10 @@ export const table = (rows: string[][]): string => {
 };
 
 export interface Logger {
-  log: (...args: unknown[]) => void;
-  error: (...args: unknown[]) => void;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  log: (...args: any[]) => void;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  error: (...args: any[]) => void;
 }
 
 export class Output {
