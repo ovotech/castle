@@ -1096,21 +1096,6 @@
     once "^1.4.0"
     universal-user-agent "^4.0.0"
 
-"@ovotech/json-refs@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@ovotech/json-refs/-/json-refs-0.3.0.tgz#3c6acc4ee43219571dfe4ca2a577b2039153fa8b"
-  integrity sha512-Y/4O5EUAKgY/+GMca3gk2H0ZH1RLCWamO0fYBcKX5zxNBpIGIxyi8se0qGiFo7hXWv/ybMFL4RAJj74lF+RvcA==
-  dependencies:
-    js-yaml "^3.13.1"
-    node-fetch "^2.6.0"
-
-"@ovotech/json-schema@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@ovotech/json-schema/-/json-schema-0.4.0.tgz#ce3af617dce32b94b80eedcd245b655f4f7cbf5d"
-  integrity sha512-u/id0/nUKXDXrAr+qoKxKmgok2WQQ7aYgXwZ1xYX1kBLl1zgI5v5o9U2azEg3KWWD1uQEUaT7sAhDYiEw8OC8Q==
-  dependencies:
-    "@ovotech/json-refs" "^0.3.0"
-
 "@ovotech/schema-registry-api@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@ovotech/schema-registry-api/-/schema-registry-api-1.0.5.tgz#95914deba765ee9e8ec7523b34de744028f0c934"
@@ -5969,6 +5954,11 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=
   dependencies:
     aproba "^1.1.1"
+
+runtypes@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/runtypes/-/runtypes-4.0.3.tgz#dd32206633c1166a45c22d64abcabeb5c5c790b7"
+  integrity sha512-ss4Smt9GVqz7TP1hPNZ5Kdz0poUVO04IMzSpk4iaKOvFPOpcDleQUb8yGpzdsA2rzwZXy2ztU2PA10qhcNMwZw==
 
 rxjs@^6.4.0:
   version "6.5.3"

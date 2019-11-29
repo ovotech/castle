@@ -1,59 +1,60 @@
 import { existsSync, readFileSync } from 'fs';
-import { Schema as JSONSchema, ensureValid } from '@ovotech/json-schema';
-import { SchemaRegistryConfig } from '@ovotech/avro-kafkajs';
-import { KafkaConfig, logLevel } from 'kafkajs';
+import { logLevel } from 'kafkajs';
 import { join } from 'path';
 import { homedir } from 'os';
+import { Record, Partial, String, Array, Number, Static, Union, Literal, Boolean } from 'runtypes';
 
-const configSchema: JSONSchema = {
-  type: 'object',
-  properties: {
-    schemaRegistry: {
-      type: 'object',
-      required: ['uri'],
-      properties: {
-        uri: { type: 'string', format: 'uri' },
-      },
-    },
-    kafka: {
-      type: 'object',
-      required: ['brokers'],
-      properties: {
-        brokers: { items: { type: 'string' } },
-        ssl: {
-          properties: {
-            key: { type: 'string' },
-            passphrase: { type: 'string' },
-            cert: { type: 'string' },
-            ca: { type: 'string' },
-          },
-        },
-        clientId: { type: 'string' },
-        connectionTimeout: { type: 'number' },
-        authenticationTimeout: { type: 'number' },
-        reauthenticationThreshold: { type: 'number' },
-        requestTimeout: { type: 'number' },
-        enforceRequestTimeout: { type: 'boolean' },
-        retry: {
-          properties: {
-            maxRetryTime: { type: 'number' },
-            initialRetryTime: { type: 'number' },
-            factor: { type: 'number' },
-            multiplier: { type: 'number' },
-            retries: { type: 'number' },
-          },
-        },
-      },
-    },
-  },
-};
+export type SASLMechanism = 'plain' | 'scram-sha-256' | 'scram-sha-512' | 'aws';
 
-export interface Config {
-  schemaRegistry: SchemaRegistryConfig;
-  kafka: KafkaConfig;
+export interface SASLOptions {
+  mechanism: SASLMechanism;
+  username: string;
+  password: string;
 }
 
-export const defaults: Config = {
+export const ConfigType = Record({
+  schemaRegistry: Record({
+    uri: String,
+  }),
+  kafka: Record({ brokers: Array(String) }).And(
+    Partial({
+      logLevel: Union(Literal(0), Literal(1), Literal(2), Literal(4), Literal(5)),
+      ssl: Partial({
+        key: String,
+        cert: String,
+        ca: String,
+        passphrase: String,
+      }),
+      sasl: Record({
+        mechanism: Union(
+          Literal('plain'),
+          Literal('scram-sha-256'),
+          Literal('scram-sha-512'),
+          Literal('aws'),
+        ),
+        username: String,
+        password: String,
+      }),
+      clientId: String,
+      connectionTimeout: Number,
+      authenticationTimeout: Number,
+      reauthenticationThreshold: Number,
+      requestTimeout: Number,
+      enforceRequestTimeout: Boolean,
+      retry: Partial({
+        maxRetryTime: Number,
+        initialRetryTime: Number,
+        factor: Number,
+        multiplier: Number,
+        retries: Number,
+      }),
+    }),
+  ),
+});
+
+export type Config = Static<typeof ConfigType>;
+
+export const defaults = {
   schemaRegistry: { uri: 'http://localhost:8081' },
   kafka: { brokers: ['localhost:29092'], logLevel: logLevel.ERROR },
 };
@@ -74,7 +75,9 @@ export const loadConfigFile = async (file?: string): Promise<Config> => {
     );
   }
 
-  return await ensureValid<Config>(configSchema, JSON.parse(readFileSync(location, 'utf8')), {
-    name: 'ConfigFile',
-  });
+  const result = ConfigType.validate(JSON.parse(readFileSync(location, 'utf8')));
+  if (result.success !== true) {
+    throw new Error(`Invalid config file (${location}). ${result.key}: ${result.message}`);
+  }
+  return result.value;
 };

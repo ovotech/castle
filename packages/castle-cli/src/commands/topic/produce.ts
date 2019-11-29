@@ -4,35 +4,56 @@ import { loadConfigFile } from '../../config';
 import { Output } from '../../output';
 import { Kafka } from 'kafkajs';
 import { AvroProducerRecord } from '@ovotech/avro-kafkajs/dist/types';
-import { Schema as JSONSchema, ensureValid } from '@ovotech/json-schema';
+import {
+  Record,
+  String,
+  Unknown,
+  Array,
+  Number,
+  Literal,
+  Union,
+  Dictionary,
+  Partial,
+} from 'runtypes';
 import { readFileSync } from 'fs';
+import { Type, Schema } from 'avsc';
 
-const fileSchema: JSONSchema = {
-  type: 'object',
-  required: ['topic', 'schema', 'messages'],
-  properties: {
-    topic: { type: 'string' },
-    schema: { type: 'object' },
-    messages: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: ['value'],
-        properties: {
-          key: { type: 'string' },
-          partition: { type: 'number' },
-          value: { type: 'object' },
-        },
-      },
-    },
-    timeout: { type: 'number' },
-    compression: { enum: [0, 1, 2, 3, 4] },
-  },
-};
+const TypeBuffer = Unknown.withGuard(Buffer.isBuffer);
+const TypeSchema = Unknown.withConstraint<Schema>((item: any) => {
+  try {
+    Type.forSchema(item);
+    return true;
+  } catch (error) {
+    return `Invalid Schema: ${error}`;
+  }
+});
 
-const loadAvroProducerRecordFile = async (file: string): Promise<AvroProducerRecord> => {
-  const record = JSON.parse(readFileSync(file, 'utf8'));
-  return ensureValid<AvroProducerRecord>(fileSchema, record, { name: 'ProduceFile' });
+const ProduceFileType = Record({
+  topic: String,
+  schema: TypeSchema,
+  messages: Array(
+    Record({ value: Unknown }).And(
+      Partial({
+        key: String,
+        partition: Number,
+        headers: Dictionary(TypeBuffer),
+        timestamp: String,
+      }),
+    ),
+  ),
+}).And(
+  Partial({
+    timeout: Number,
+    compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)),
+  }),
+);
+
+const loadAvroProducerRecordFile = (file: string): AvroProducerRecord => {
+  const result = ProduceFileType.validate(JSON.parse(readFileSync(file, 'utf8')));
+  if (result.success !== true) {
+    throw new Error(`Invalid produce file. ${result.key}: ${result.message}`);
+  }
+  return result.value;
 };
 
 interface Options {
