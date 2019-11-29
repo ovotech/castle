@@ -1,4 +1,4 @@
-import { createCastle, produce, eachMessage, eachBatch } from '@ovotech/castle';
+import { createCastle, produce, consumeEachMessage, consumeEachBatch } from '@ovotech/castle';
 import {
   StartEvent,
   StartEventSchema,
@@ -14,19 +14,19 @@ const sendComplete = produce<CompleteEvent>({ topic: 'complete-1', schema: Compl
 const sendFeedback = produce<FeedbackEvent>({ topic: 'feedback-1', schema: FeedbackEventSchema });
 
 // Define a consumer as a pure function
-const eachStartEvent = eachMessage<StartEvent>(async ({ message }) => {
+const eachStartEvent = consumeEachMessage<StartEvent>(async ({ message }) => {
   console.log(`Started Processing ${message.value.id}`);
 });
 
 // Define a batch consumer as a pure function
-const eachBatchFeedbackEvent = eachBatch<FeedbackEvent>(async ({ batch, producer }) => {
+const eachBatchFeedbackEvent = consumeEachBatch<FeedbackEvent>(async ({ batch, producer }) => {
   console.log(`Feedback ${batch.messages.map(msg => `${msg.value.id}:${msg.value.status}`)}`);
   console.log('Sending complete events');
   sendComplete(producer, batch.messages.map(msg => ({ value: { id: msg.value.id } })));
 });
 
 // Define a parallel consumer as a pure function
-const eachCompleteEvent = eachMessage<CompleteEvent>(async ({ message }) => {
+const eachCompleteEvent = consumeEachMessage<CompleteEvent>(async ({ message }) => {
   console.log(`Completed ${message.value.id}`);
 });
 

@@ -11,7 +11,7 @@ yarn add @ovotech/castle
 > [examples/simple.ts](examples/simple.ts)
 
 ```typescript
-import { createCastle, produce, eachMessage } from '@ovotech/castle';
+import { createCastle, produce, consumeEachMessage } from '@ovotech/castle';
 import { Event, EventSchema } from './avro';
 
 // Define producers as pure functions
@@ -20,7 +20,7 @@ const mySender = produce<Event>({ topic: 'my-topic-1', schema: EventSchema });
 
 // Define consumers as pure functions
 // With statically setting which types it will accept
-const eachEvent = eachMessage<Event>(async ({ message }) => {
+const eachEvent = consumeEachMessage<Event>(async ({ message }) => {
   console.log(message.value);
 });
 
@@ -47,7 +47,7 @@ You can also use schema registry directly to encode and decode messages.
 > [examples/multiple-topics.ts](examples/multiple-topics.ts)
 
 ```typescript
-import { createCastle, produce, eachMessage, eachBatch } from '@ovotech/castle';
+import { createCastle, produce, consumeEachMessage, consumeEachBatch } from '@ovotech/castle';
 import {
   StartEvent,
   StartEventSchema,
@@ -63,19 +63,19 @@ const sendComplete = produce<CompleteEvent>({ topic: 'complete-1', schema: Compl
 const sendFeedback = produce<FeedbackEvent>({ topic: 'feedback-1', schema: FeedbackEventSchema });
 
 // Define a consumer as a pure function
-const eachStartEvent = eachMessage<StartEvent>(async ({ message }) => {
+const eachStartEvent = consumeEachMessage<StartEvent>(async ({ message }) => {
   console.log(`Started Processing ${message.value.id}`);
 });
 
 // Define a batch consumer as a pure function
-const eachBatchFeedbackEvent = eachBatch<FeedbackEvent>(async ({ batch, producer }) => {
+const eachBatchFeedbackEvent = consumeEachBatch<FeedbackEvent>(async ({ batch, producer }) => {
   console.log(`Feedback ${batch.messages.map(msg => `${msg.value.id}:${msg.value.status}`)}`);
   console.log('Sending complete events');
   sendComplete(producer, batch.messages.map(msg => ({ value: { id: msg.value.id } })));
 });
 
 // Define a parallel consumer as a pure function
-const eachCompleteEvent = eachMessage<CompleteEvent>(async ({ message }) => {
+const eachCompleteEvent = consumeEachMessage<CompleteEvent>(async ({ message }) => {
   console.log(`Completed ${message.value.id}`);
 });
 
@@ -129,7 +129,7 @@ Castle is designed to help building complex applications, where you want to shar
 > [examples/with-middlewares.ts](examples/with-middlewares.ts)
 
 ```typescript
-import { createCastle, produce, eachMessage } from '@ovotech/castle';
+import { createCastle, produce, consumeEachMessage } from '@ovotech/castle';
 import { StartEvent, StartEventSchema, CompleteEvent, CompleteEventSchema } from './avro';
 import {
   createDb,
@@ -142,7 +142,7 @@ import {
 const start = produce<StartEvent>({ topic: 'my-start-3', schema: StartEventSchema });
 const complete = produce<CompleteEvent>({ topic: 'my-complete-3', schema: CompleteEventSchema });
 
-const eachStart = eachMessage<StartEvent, DbContext & LoggingContext>(
+const eachStart = consumeEachMessage<StartEvent, DbContext & LoggingContext>(
   async ({ message, db, logger, producer }) => {
     logger.log('Started', message.value.id);
     const { rows } = await db.query('SELECT avatar FROM users WHERE id = $1', [message.value.id]);
@@ -151,9 +151,11 @@ const eachStart = eachMessage<StartEvent, DbContext & LoggingContext>(
   },
 );
 
-const eachComplete = eachMessage<CompleteEvent, LoggingContext>(async ({ message, logger }) => {
-  logger.log('Complete recieved for', message.value.id);
-});
+const eachComplete = consumeEachMessage<CompleteEvent, LoggingContext>(
+  async ({ message, logger }) => {
+    logger.log('Complete recieved for', message.value.id);
+  },
+);
 
 const main = async () => {
   const db = createDb({

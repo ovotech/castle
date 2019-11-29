@@ -30,11 +30,11 @@ export const produce = <T>(config: Omit<AvroProducerRecord<T>, 'messages'>): Cas
   return (producer, messages) => producer.send<T>({ ...config, messages });
 };
 
-export const eachMessage = <T, TContext extends object = {}>(
+export const consumeEachMessage = <T, TContext extends object = {}>(
   config: (payload: CastleEachMessagePayload<T> & TContext) => Promise<void>,
 ): ((payload: CastleEachMessagePayload<T> & TContext) => Promise<void>) => config;
 
-export const eachBatch = <T, TContext extends object = {}>(
+export const consumeEachBatch = <T, TContext extends object = {}>(
   config: (payload: CastleEachBatchPayload<T> & TContext) => Promise<void>,
 ): ((payload: CastleEachBatchPayload<T> & TContext) => Promise<void>) => config;
 

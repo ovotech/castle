@@ -1,4 +1,4 @@
-import { createCastle, produce, eachMessage } from '@ovotech/castle';
+import { createCastle, produce, consumeEachMessage } from '@ovotech/castle';
 import { StartEvent, StartEventSchema, CompleteEvent, CompleteEventSchema } from './avro';
 import {
   createDb,
@@ -11,7 +11,7 @@ import {
 const start = produce<StartEvent>({ topic: 'my-start-3', schema: StartEventSchema });
 const complete = produce<CompleteEvent>({ topic: 'my-complete-3', schema: CompleteEventSchema });
 
-const eachStart = eachMessage<StartEvent, DbContext & LoggingContext>(
+const eachStart = consumeEachMessage<StartEvent, DbContext & LoggingContext>(
   async ({ message, db, logger, producer }) => {
     logger.log('Started', message.value.id);
     const { rows } = await db.query('SELECT avatar FROM users WHERE id = $1', [message.value.id]);
@@ -20,9 +20,11 @@ const eachStart = eachMessage<StartEvent, DbContext & LoggingContext>(
   },
 );
 
-const eachComplete = eachMessage<CompleteEvent, LoggingContext>(async ({ message, logger }) => {
-  logger.log('Complete recieved for', message.value.id);
-});
+const eachComplete = consumeEachMessage<CompleteEvent, LoggingContext>(
+  async ({ message, logger }) => {
+    logger.log('Complete recieved for', message.value.id);
+  },
+);
 
 const main = async () => {
   const db = createDb({

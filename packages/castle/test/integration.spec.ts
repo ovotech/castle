@@ -1,4 +1,4 @@
-import { createCastle, eachMessage, produce } from '../src';
+import { createCastle, consumeEachMessage, produce } from '../src';
 import * as uuid from 'uuid';
 import { Schema } from 'avsc';
 import { logLevel, Admin } from 'kafkajs';
@@ -19,7 +19,7 @@ const groupId = `test-group-${uuid.v4()}`;
 const data: { [key: number]: string[] } = { 0: [], 1: [], 2: [] };
 
 const sendEvent = produce<Event>({ topic, schema: EventSchema });
-const eachEvent = eachMessage<Event>(async ({ message, partition }) => {
+const eachEvent = consumeEachMessage<Event>(async ({ message, partition }) => {
   data[partition].push(message.value.field1);
 });
 
