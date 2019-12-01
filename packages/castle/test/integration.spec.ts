@@ -55,7 +55,7 @@ describe('Integration', () => {
       async () => {
         expect(data).toEqual({ 0: ['test1', 'test4'], 1: ['test2'], 2: ['test3'] });
       },
-      { delay: 1000, timeout: 4000 },
+      { delay: 1000, retries: 5 },
     );
   });
 });
