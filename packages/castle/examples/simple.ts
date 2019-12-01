@@ -1,4 +1,4 @@
-import { createCastle, produce, consumeEachMessage } from '@ovotech/castle';
+import { createCastle, produce, consumeEachMessage, describeCastle } from '@ovotech/castle';
 import { Event, EventSchema } from './avro';
 
 // Define producers as pure functions
@@ -20,6 +20,8 @@ const main = async () => {
 
   // Start all consumers and producers
   await castle.start();
+
+  console.log(describeCastle(castle));
 
   await mySender(castle.producer, [{ value: { field1: 'my-string' } }]);
 };

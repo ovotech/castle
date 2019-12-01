@@ -59,6 +59,7 @@ export interface Castle {
   kafka: AvroKafka;
   consumers: CastleConsumer[];
   producer: AvroProducer;
+  isRunning: () => boolean;
   start: () => Promise<void>;
   stop: () => Promise<void>;
 }

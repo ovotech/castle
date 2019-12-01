@@ -16,6 +16,7 @@ export {
   toProducerBatch,
   toAvroEachMessage,
   toAvroEachBatch,
+  resolveTopic,
 } from './avro';
 export {
   AvroEachMessagePayload,

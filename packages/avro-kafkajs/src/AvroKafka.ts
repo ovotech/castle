@@ -28,7 +28,11 @@ export class AvroKafka {
     return this.kafka.admin(config);
   }
 
-  logger(): Logger {
+  public logger(): Logger {
     return this.kafka.logger();
+  }
+
+  public resolveTopic(alias: string): string | undefined {
+    return this.topicsAlias[alias];
   }
 }

@@ -48,6 +48,7 @@ export const createCastle = (config: CastleConfig): Castle => {
   }));
 
   const services = [producer, ...consumers.map(consumer => consumer.instance)];
+  let running = false;
 
   const run = async (): Promise<void> => {
     await Promise.all(
@@ -62,12 +63,15 @@ export const createCastle = (config: CastleConfig): Castle => {
     kafka,
     consumers,
     producer,
+    isRunning: () => running,
     start: async () => {
       await Promise.all(services.map(service => service.connect()));
       await run();
+      running = true;
     },
     stop: async () => {
       await Promise.all(services.map(service => service.disconnect()));
+      running = false;
     },
   };
 };

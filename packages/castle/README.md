@@ -11,7 +11,7 @@ yarn add @ovotech/castle
 > [examples/simple.ts](examples/simple.ts)
 
 ```typescript
-import { createCastle, produce, consumeEachMessage } from '@ovotech/castle';
+import { createCastle, produce, consumeEachMessage, describeCastle } from '@ovotech/castle';
 import { Event, EventSchema } from './avro';
 
 // Define producers as pure functions
@@ -34,6 +34,8 @@ const main = async () => {
   // Start all consumers and producers
   await castle.start();
 
+  console.log(describeCastle(castle));
+
   await mySender(castle.producer, [{ value: { field1: 'my-string' } }]);
 };
 
@@ -47,7 +49,13 @@ You can also use schema registry directly to encode and decode messages.
 > [examples/multiple-topics.ts](examples/multiple-topics.ts)
 
 ```typescript
-import { createCastle, produce, consumeEachMessage, consumeEachBatch } from '@ovotech/castle';
+import {
+  createCastle,
+  produce,
+  consumeEachMessage,
+  consumeEachBatch,
+  describeCastle,
+} from '@ovotech/castle';
 import {
   StartEvent,
   StartEventSchema,
@@ -57,10 +65,16 @@ import {
   CompleteEventSchema,
 } from './avro';
 
+enum Topic {
+  Start = 'start',
+  Complete = 'complete',
+  Feedback = 'feedback',
+}
+
 // Define multiple producers as pure functions
-const sendStart = produce<StartEvent>({ topic: 'start-1', schema: StartEventSchema });
-const sendComplete = produce<CompleteEvent>({ topic: 'complete-1', schema: CompleteEventSchema });
-const sendFeedback = produce<FeedbackEvent>({ topic: 'feedback-1', schema: FeedbackEventSchema });
+const sendStart = produce<StartEvent>({ topic: Topic.Start, schema: StartEventSchema });
+const sendComplete = produce<CompleteEvent>({ topic: Topic.Complete, schema: CompleteEventSchema });
+const sendFeedback = produce<FeedbackEvent>({ topic: Topic.Feedback, schema: FeedbackEventSchema });
 
 // Define a consumer as a pure function
 const eachStartEvent = consumeEachMessage<StartEvent>(async ({ message }) => {
@@ -81,21 +95,29 @@ const eachCompleteEvent = consumeEachMessage<CompleteEvent>(async ({ message }) 
 
 const main = async () => {
   const castle = createCastle({
+    // Setup topic aliases
+    // You can use short statically checked names in the code,
+    // but configure long environment specific kafka topic names
+    topicsAlias: {
+      [Topic.Start]: 'start-topic-name-1',
+      [Topic.Feedback]: 'feedback-topic-name-1',
+      [Topic.Complete]: 'complete-topic-name-1',
+    },
     schemaRegistry: { uri: 'http://localhost:8081' },
     kafka: { brokers: ['localhost:29092'] },
     consumers: [
       {
-        topic: 'start-1',
+        topic: Topic.Start,
         groupId: 'start-group-1',
         eachMessage: eachStartEvent,
       },
       {
-        topic: 'feedback-1',
+        topic: Topic.Feedback,
         groupId: 'feedback-group-1',
         eachBatch: eachBatchFeedbackEvent,
       },
       {
-        topic: 'complete-1',
+        topic: Topic.Complete,
         groupId: 'complete-group-1',
         partitionsConsumedConcurrently: 2,
         eachMessage: eachCompleteEvent,
@@ -104,6 +126,8 @@ const main = async () => {
   });
 
   await castle.start();
+
+  console.log(describeCastle(castle));
 
   // Perform a siqeunce of events
   // - send start events, wait a bit
@@ -129,7 +153,7 @@ Castle is designed to help building complex applications, where you want to shar
 > [examples/with-middlewares.ts](examples/with-middlewares.ts)
 
 ```typescript
-import { createCastle, produce, consumeEachMessage } from '@ovotech/castle';
+import { createCastle, describeCastle, produce, consumeEachMessage } from '@ovotech/castle';
 import { StartEvent, StartEventSchema, CompleteEvent, CompleteEventSchema } from './avro';
 import {
   createDb,
@@ -185,6 +209,8 @@ const main = async () => {
   });
 
   await castle.start();
+
+  console.log(describeCastle(castle));
 
   await start(castle.producer, [{ value: { id: 1 } }]);
 };

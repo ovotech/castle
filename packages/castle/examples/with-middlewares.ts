@@ -1,4 +1,4 @@
-import { createCastle, produce, consumeEachMessage } from '@ovotech/castle';
+import { createCastle, describeCastle, produce, consumeEachMessage } from '@ovotech/castle';
 import { StartEvent, StartEventSchema, CompleteEvent, CompleteEventSchema } from './avro';
 import {
   createDb,
@@ -54,6 +54,8 @@ const main = async () => {
   });
 
   await castle.start();
+
+  console.log(describeCastle(castle));
 
   await start(castle.producer, [{ value: { id: 1 } }]);
 };

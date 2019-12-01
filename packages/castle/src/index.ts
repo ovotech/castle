@@ -9,3 +9,4 @@ export {
   CastleConfig,
   Castle,
 } from './types';
+export { describeCastle } from './describe';
