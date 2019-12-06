@@ -1,4 +1,4 @@
-# Laminar Open API
+# Castle
 
 A framework around [kafka.js](https://github.com/tulios/kafkajs) to transparently use [Schema Registry](https://www.confluent.io/confluent-schema-registry/) and create an application that consumes, produces, and reacts to different kafka topics. Supports consumption in batches or in parallel. Statically define and verify the schemas / message types in TypeScript
 
@@ -9,7 +9,6 @@ Packages:
 - [@ovotech/castle-cli](packages/castle-cli) - cli for interacting with kafka and [Schema Registry](https://www.confluent.io/confluent-schema-registry/)
 
 ## Usage
-
 
 ```shell
 yarn add @ovotech/castle
@@ -79,3 +78,7 @@ Want to make a change? Submit a PR, explain why it's useful, and make sure you'v
 ## License
 
 This project is licensed under Apache 2 - see the [LICENSE](LICENSE) file for details
+
+## Why Castle?
+
+It's Kafka's greatest work :)
