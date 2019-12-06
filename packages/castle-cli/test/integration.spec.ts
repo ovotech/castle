@@ -61,7 +61,7 @@ describe('Integration', () => {
   afterEach(() => Promise.all([admin.disconnect(), consumer.disconnect()]));
 
   it('Should process', async () => {
-    jest.setTimeout(40000);
+    jest.setTimeout(100000);
 
     // Config set
     // ================================================

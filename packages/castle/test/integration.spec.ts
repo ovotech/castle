@@ -44,6 +44,7 @@ describe('Integration', () => {
   });
 
   it('Should process response', async () => {
+    jest.setTimeout(10000);
     sendEvent(castle.producer, [{ value: { field1: 'test1' }, partition: 0 }]);
     sendEvent(castle.producer, [
       { value: { field1: 'test2' }, partition: 1 },
