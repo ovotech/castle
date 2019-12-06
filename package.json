@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "author": "Ivan Kerin <ikerin@gmail.com>",
-  "repository": "git@github.com:ovotech/laminar.git",
+  "repository": "git@github.com:ovotech/castle.git",
   "private": true,
   "scripts": {
     "test": "lerna run test",
