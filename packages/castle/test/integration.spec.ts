@@ -54,7 +54,11 @@ describe('Integration', () => {
 
     await retry(
       async () => {
-        expect(data).toEqual({ 0: ['test1', 'test4'], 1: ['test2'], 2: ['test3'] });
+        expect(data).toEqual({
+          0: expect.arrayContaining(['test1', 'test4']),
+          1: ['test2'],
+          2: ['test3'],
+        });
       },
       { delay: 1000, retries: 5 },
     );
