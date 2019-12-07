@@ -10,3 +10,10 @@ export {
   Castle,
 } from './types';
 export { describeCastle } from './describe';
+export {
+  createLogging,
+  toLogCreator,
+  LoggingContext,
+  LoggerOptions,
+  Logger,
+} from './middlewares/logging';

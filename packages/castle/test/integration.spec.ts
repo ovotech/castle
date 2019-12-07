@@ -1,8 +1,16 @@
-import { createCastle, consumeEachMessage, produce } from '../src';
+import {
+  createCastle,
+  consumeEachMessage,
+  produce,
+  createLogging,
+  LoggingContext,
+  Logger,
+  toLogCreator,
+} from '../src';
 import * as uuid from 'uuid';
 import { Schema } from 'avsc';
-import { logLevel, Admin } from 'kafkajs';
 import { retry } from 'ts-retry-promise';
+import { Admin } from 'kafkajs';
 
 export interface Event {
   field1: string;
@@ -19,14 +27,24 @@ const groupId = `test-group-${uuid.v4()}`;
 const data: { [key: number]: string[] } = { 0: [], 1: [], 2: [] };
 
 const sendEvent = produce<Event>({ topic, schema: EventSchema });
-const eachEvent = consumeEachMessage<Event>(async ({ message, partition }) => {
-  data[partition].push(message.value.field1);
-});
+const eachEvent = consumeEachMessage<Event, LoggingContext>(
+  async ({ message, partition, logger }) => {
+    data[partition].push(message.value.field1);
+    logger.log('info', message.value.field1);
+  },
+);
+
+const log: Array<[string, string, any]> = [];
+const myLogger: Logger = {
+  log: (level, message, metadata) => log.push([level, message, metadata]),
+};
+const logging = createLogging(myLogger);
+const logCreator = toLogCreator(myLogger);
 
 const castle = createCastle({
   schemaRegistry: { uri: 'http://localhost:8081' },
-  kafka: { brokers: ['localhost:29092'], logLevel: logLevel.ERROR },
-  consumers: [{ topic, groupId, eachMessage: eachEvent }],
+  kafka: { brokers: ['localhost:29092'], logCreator },
+  consumers: [{ topic, groupId, eachMessage: logging(eachEvent) }],
 });
 let admin: Admin;
 
@@ -59,6 +77,11 @@ describe('Integration', () => {
           1: ['test2'],
           2: ['test3'],
         });
+
+        expect(log).toContainEqual(['info', 'test1', undefined]);
+        expect(log).toContainEqual(['info', 'test2', undefined]);
+        expect(log).toContainEqual(['info', 'test3', undefined]);
+        expect(log).toContainEqual(['info', 'test4', undefined]);
       },
       { delay: 1000, retries: 5 },
     );
