@@ -6,33 +6,54 @@ import {
   LoggingContext,
   Logger,
   toLogCreator,
+  consumeEachBatch,
 } from '../src';
 import * as uuid from 'uuid';
 import { Schema } from 'avsc';
 import { retry } from 'ts-retry-promise';
 import { Admin } from 'kafkajs';
 
-export interface Event {
+export interface Event1 {
   field1: string;
 }
+export interface Event2 {
+  field2: string;
+}
 
-export const EventSchema: Schema = {
+export const Event1Schema: Schema = {
   type: 'record',
   name: 'Event',
   fields: [{ name: 'field1', type: 'string' }],
 };
 
-const topic = `test-${uuid.v4()}`;
-const groupId = `test-group-${uuid.v4()}`;
+export const Event2Schema: Schema = {
+  type: 'record',
+  name: 'Event',
+  fields: [{ name: 'field2', type: 'string' }],
+};
+
+const topic1 = `test-single-${uuid.v4()}`;
+const topic2 = `test-batch-${uuid.v4()}`;
+
+const groupId1 = `test-group-1-${uuid.v4()}`;
+const groupId2 = `test-group-2-${uuid.v4()}`;
 const data: { [key: number]: string[] } = { 0: [], 1: [], 2: [] };
 
-const sendEvent = produce<Event>({ topic, schema: EventSchema });
-const eachEvent = consumeEachMessage<Event, LoggingContext>(
+const sendEvent1 = produce<Event1>({ topic: topic1, schema: Event1Schema });
+const sendEvent2 = produce<Event2>({ topic: topic2, schema: Event2Schema });
+const eachEvent1 = consumeEachMessage<Event1, LoggingContext>(
   async ({ message, partition, logger }) => {
     data[partition].push(message.value.field1);
     logger.log('info', message.value.field1);
   },
 );
+
+const eachEvent2 = consumeEachBatch<Event2, LoggingContext>(async ({ batch, logger }) => {
+  for (const msg of batch.messages) {
+    data[batch.partition].push(msg.value.field2);
+    logger.log('info', msg.value.field2);
+  }
+});
 
 const log: Array<[string, string, any]> = [];
 const myLogger: Logger = {
@@ -44,7 +65,10 @@ const logCreator = toLogCreator(myLogger);
 const castle = createCastle({
   schemaRegistry: { uri: 'http://localhost:8081' },
   kafka: { brokers: ['localhost:29092'], logCreator },
-  consumers: [{ topic, groupId, eachMessage: logging(eachEvent) }],
+  consumers: [
+    { topic: topic1, fromBeginning: true, groupId: groupId1, eachMessage: logging(eachEvent1) },
+    { topic: topic2, fromBeginning: true, groupId: groupId2, eachBatch: logging(eachEvent2) },
+  ],
 });
 let admin: Admin;
 
@@ -52,7 +76,12 @@ describe('Integration', () => {
   beforeEach(async () => {
     admin = castle.kafka.admin();
     await admin.connect();
-    await admin.createTopics({ topics: [{ topic, numPartitions: 3 }] });
+    await admin.createTopics({
+      topics: [
+        { topic: topic1, numPartitions: 3 },
+        { topic: topic2, numPartitions: 2 },
+      ],
+    });
     await castle.start();
   });
 
@@ -63,18 +92,24 @@ describe('Integration', () => {
 
   it('Should process response', async () => {
     jest.setTimeout(10000);
-    sendEvent(castle.producer, [{ value: { field1: 'test1' }, partition: 0 }]);
-    sendEvent(castle.producer, [
+    sendEvent1(castle.producer, [{ value: { field1: 'test1' }, partition: 0 }]);
+    sendEvent1(castle.producer, [
       { value: { field1: 'test2' }, partition: 1 },
       { value: { field1: 'test3' }, partition: 2 },
       { value: { field1: 'test4' }, partition: 0 },
     ]);
 
+    sendEvent2(castle.producer, [
+      { value: { field2: 'test5' }, partition: 1 },
+      { value: { field2: 'test6' }, partition: 1 },
+      { value: { field2: 'test7' }, partition: 0 },
+    ]);
+
     await retry(
       async () => {
         expect(data).toEqual({
-          0: expect.arrayContaining(['test1', 'test4']),
-          1: ['test2'],
+          0: expect.arrayContaining(['test1', 'test4', 'test7']),
+          1: expect.arrayContaining(['test2', 'test5', 'test6']),
           2: ['test3'],
         });
 
@@ -82,8 +117,11 @@ describe('Integration', () => {
         expect(log).toContainEqual(['info', 'test2', undefined]);
         expect(log).toContainEqual(['info', 'test3', undefined]);
         expect(log).toContainEqual(['info', 'test4', undefined]);
+        expect(log).toContainEqual(['info', 'test5', undefined]);
+        expect(log).toContainEqual(['info', 'test6', undefined]);
+        expect(log).toContainEqual(['info', 'test7', undefined]);
       },
-      { delay: 1000, retries: 5 },
+      { delay: 1000, retries: 10 },
     );
   });
 });

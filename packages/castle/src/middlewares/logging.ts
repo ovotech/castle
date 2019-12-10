@@ -25,27 +25,26 @@ export const isMessage = (paylaod: object): paylaod is CastleEachMessagePayload 
 export const defaultOptions: LoggerOptions = {
   consume: ctx => {
     if (isBatch(ctx)) {
+      const offsetFirst = ctx.batch.firstOffset();
+      const offsetLast = ctx.batch.lastOffset();
+      const offsetLag = ctx.batch.offsetLag();
+      const messages = ctx.batch.messages.length;
+      const partition = ctx.batch.partition;
+      const topic = ctx.batch.topic;
+
       return [
-        `Consume ${ctx.batch.topic}`,
-        {
-          topic: ctx.batch.topic,
-          messages: ctx.batch.messages.length,
-          partition: ctx.batch.partition,
-          lag: ctx.batch.offsetLag(),
-          offsetFirst: ctx.batch.firstOffset(),
-          offsetLast: ctx.batch.lastOffset(),
-          offsetLag: ctx.batch.offsetLag(),
-        },
+        `Batch ${topic}[${partition}] msgs: ${messages}, offsets: ${offsetFirst}...${offsetLast}, lag: ${offsetLag}`,
+        { topic, messages, partition, offsetFirst, offsetLast, offsetLag },
       ];
     } else if (isMessage(ctx)) {
+      const offset = ctx.message.offset;
+      const key = ctx.message.key;
+      const partition = ctx.partition;
+      const topic = ctx.topic;
+
       return [
-        `Consume ${ctx.topic}`,
-        {
-          topic: ctx.topic,
-          offset: ctx.message.offset,
-          key: ctx.message.key,
-          partition: ctx.partition,
-        },
+        `Message ${topic}[${partition}] offset: ${offset}, key: ${key}`,
+        { topic, offset, key, partition },
       ];
     } else {
       return ['Unknown payload', {}];
