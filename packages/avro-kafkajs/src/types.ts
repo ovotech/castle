@@ -1,4 +1,5 @@
 import {
+  Consumer,
   EachMessagePayload,
   Batch,
   EachBatchPayload,
@@ -9,6 +10,8 @@ import {
   KafkaMessage,
 } from 'kafkajs';
 import { Schema } from 'avsc';
+
+type Arg1<T> = T extends (arg1: infer U) => any ? U : never;
 
 export interface AvroEachMessagePayload<T = unknown> extends Omit<EachMessagePayload, 'message'> {
   message: AvroKafkaMessage<T>;
@@ -48,14 +51,12 @@ export interface AvroProducerBatch extends Omit<ProducerBatch, 'topicMessages'> 
   topicMessages: AvroTopicMessages[];
 }
 
-export interface AvroConsumerRun<T = unknown> {
-  autoCommit?: boolean;
-  autoCommitInterval?: number | null;
-  autoCommitThreshold?: number | null;
-  eachBatchAutoResolve?: boolean;
-  partitionsConsumedConcurrently?: number;
+export type AvroConsumerRun<T = unknown> = Omit<
+  Arg1<Consumer['run']>,
+  'eachBatch' | 'eachMessage'
+> & {
   eachBatch?: (payload: AvroEachBatchPayload<T>) => Promise<void>;
   eachMessage?: (payload: AvroEachMessagePayload<T>) => Promise<void>;
-}
+};
 
 export type TopicsAlias = { [key: string]: string };
