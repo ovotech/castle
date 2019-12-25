@@ -1,4 +1,3 @@
-import { Consumer } from 'kafkajs';
 import {
   AvroProducer,
   AvroEachMessagePayload,
@@ -11,8 +10,6 @@ import {
   TopicsAlias,
 } from '@ovotech/avro-kafkajs';
 import { ConsumerConfig, KafkaConfig, ProducerConfig, RecordMetadata, AdminConfig } from 'kafkajs';
-
-type Arg1<T> = T extends (arg1: infer U) => any ? U : never;
 
 export interface CastleEachMessagePayload<T = unknown> extends AvroEachMessagePayload<T> {
   producer: AvroProducer;
@@ -31,12 +28,12 @@ export type Middleware<TProvide extends object = {}, TRequire extends object = {
 ) => Resolver<TRequire & TInherit>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type CastleConsumerConfig<T = any> = ConsumerConfig &
-  Omit<AvroConsumerRun, 'eachBatch' | 'eachMessage'> &
-  Arg1<Consumer['subscribe']> & {
-    eachBatch?: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
-    eachMessage?: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
-  };
+export type CastleConsumerConfig<T = any> = ConsumerConfig & Omit<AvroConsumerRun, 'eachBatch'|'eachMessage'> & {
+  topic: string | RegExp;
+  fromBeginning?: boolean;
+  eachBatch?: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
+  eachMessage?: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
+}
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export interface CastleConsumer<T = any> {
