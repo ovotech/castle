@@ -4,6 +4,7 @@ import {
   AvroEachBatchPayload,
   SchemaRegistryConfig,
   AvroConsumer,
+  AvroConsumerRun,
   AvroMessage,
   AvroKafka,
   TopicsAlias,
@@ -27,10 +28,9 @@ export type Middleware<TProvide extends object = {}, TRequire extends object = {
 ) => Resolver<TRequire & TInherit>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export interface CastleConsumerConfig<T = any> extends ConsumerConfig {
+export type CastleConsumerConfig<T = any> = ConsumerConfig & Omit<AvroConsumerRun, 'eachBatch'|'eachMessage'> & {
   topic: string | RegExp;
   fromBeginning?: boolean;
-  partitionsConsumedConcurrently?: number;
   eachBatch?: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
   eachMessage?: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
 }
