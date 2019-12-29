@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/castle-cli",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka avro cli",
@@ -24,7 +24,7 @@
     "typescript": "^3.7.4"
   },
   "bin": {
-    "castle": "dist/cli/castle"
+    "castle": "./dist/cli/castle.js"
   },
   "scripts": {
     "castle": "node -r ts-node/register src/cli/castle.ts",
