@@ -1,8 +1,7 @@
 import * as program from 'commander';
-import * as packageFile from '../../package.json';
 
 program
-  .version(packageFile.version)
+  .version('0.2.1')
   .description(
     `Castle CLI - a tool for inspecting kafka topics with schema registry.
 
