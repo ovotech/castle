@@ -25,7 +25,7 @@ Examples:
     .option('-C, --config <configFile>', 'config file with connection deails')
     .action(async (name, { json, config: configFile }: Options) => {
       await output.wrap(json, async () => {
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile });
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
 
         output.log(header('Searching for schemas', name, config));

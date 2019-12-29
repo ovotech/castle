@@ -7,6 +7,7 @@ import { getPartitionProgress } from '../../helpers';
 interface Options {
   config?: string;
   json?: boolean;
+  verbose?: 1 | 2 | 3 | 4;
 }
 export const castleGroupShow = (command: Command, output = new Output(console)): Command =>
   command
@@ -18,13 +19,20 @@ Break it down by partition and calculate current lag (difference between current
 
 Example:
   castle group-info my-group-id my-topic
+  castle group-info my-group-id my-topic -vv
   castle group-info my-group-id my-topic --json`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
-    .action(async (groupId, topic, { json, config: configFile }: Options) => {
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
+    .action(async (groupId, topic, { verbose, json, config: configFile }: Options) => {
       await output.wrap(json, async () => {
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile, verbose, output });
         const kafka = new Kafka(config.kafka);
 
         const admin = kafka.admin();

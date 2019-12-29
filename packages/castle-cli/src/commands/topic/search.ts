@@ -6,20 +6,14 @@ import { highlight, table, header, Output } from '../../output';
 interface Options {
   config?: string;
   json?: boolean;
+  verbose?: 1 | 2 | 3 | 4;
 }
 
 const getConfigValue = <T>(
   resouce: DescribeConfigResponse['resources'][0] | undefined,
   configName: string,
-): string | undefined => {
-  if (!resouce) {
-    return undefined;
-  }
-  const configEntry = resouce
-    ? resouce.configEntries.find(item => item.configName === configName)
-    : undefined;
-  return configEntry ? configEntry.configValue : undefined;
-};
+): string | undefined =>
+  resouce?.configEntries.find(item => item.configName === configName)?.configValue;
 
 const formatMs = (ms: string | undefined): string =>
   ms ? (Number(ms) === Number.NaN ? ms : `${Number(ms) / (1000 * 60 * 60)} Hours`) : '-';
@@ -34,13 +28,20 @@ export const castleTopicSearch = (command: Command, output = new Output(console)
 Example:
   castle topic search
   castle topic search my-to
+  castle topic search my-to -vv
   castle topic search my-topic --json`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
-    .action(async (name, { json, config: configFile }: Options) => {
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
+    .action(async (name, { verbose, json, config: configFile }: Options) => {
       await output.wrap(json, async () => {
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile, verbose, output });
         const kafka = new Kafka(config.kafka);
 
         const admin = kafka.admin();

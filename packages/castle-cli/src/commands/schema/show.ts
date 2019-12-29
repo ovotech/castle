@@ -28,7 +28,7 @@ Examples:
     .action(async (name, { depth, json, config: configFile }: Options) => {
       await output.wrap(json, async () => {
         const subject = `${name}-value`;
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile });
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
 
         output.log(header('Showing schema', name, config));

@@ -11,6 +11,7 @@ interface Options {
   key?: string;
   partition?: number;
   schemaFile: string;
+  verbose?: 1 | 2 | 3 | 4;
 }
 export const castleTopicMessage = (command: Command, output = new Output(console)): Command =>
   command
@@ -21,20 +22,27 @@ export const castleTopicMessage = (command: Command, output = new Output(console
 You need to specify schema file (with --schema) and message content as json (--message).
 
 Example:
-  castle topic message my-topic --schema my-schema.json --message '{"text":"other"}'`,
+  castle topic message my-topic --schema my-schema.json --message '{"text":"other"}'
+  castle topic message my-topic --schema my-schema.json --message '{"text":"other"}' -vvvv`,
     )
     .option('-P, --partition <partition>', 'the partion to send this on', val => parseInt(val))
     .option('-K, --key <key>', 'message key')
     .requiredOption('-M, --message <message>', 'the JSON message to be sent')
     .requiredOption('-S, --schema-file <schema>', 'path to the schema file')
     .option('-C, --config <config>', 'config file with connection deails')
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
     .action(
       async (
         topic,
-        { config: configFile, message: messageJson, schemaFile, key, partition }: Options,
+        { config: configFile, message: messageJson, verbose, schemaFile, key, partition }: Options,
       ) => {
         await output.wrap(false, async () => {
-          const config = await loadConfigFile(configFile);
+          const config = await loadConfigFile({ file: configFile, verbose, output });
           const schema = JSON.parse(readFileSync(schemaFile, 'utf8'));
           const messages = [{ value: JSON.parse(messageJson), key, partition }];
 
