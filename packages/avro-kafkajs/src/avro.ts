@@ -66,7 +66,7 @@ export const toAvroEachMessage = <T = unknown>(
 ): ((payload: EachMessagePayload) => Promise<void>) => {
   return async payload => {
     const { type, value } = await schemaRegistry.decodeWithType<T>(payload.message.value);
-    eachMessage({ ...payload, message: { ...payload.message, value, schema: type.schema() } });
+    return eachMessage({ ...payload, message: { ...payload.message, value, schema: type.schema() } });
   };
 };
 
@@ -82,7 +82,7 @@ export const toAvroEachBatch = <T = unknown>(
       messages.push({ ...message, value, schema: type.schema() });
     }
     avroPayload.batch.messages = messages;
-    eachBatch(avroPayload);
+    return eachBatch(avroPayload);
   };
 };
 
