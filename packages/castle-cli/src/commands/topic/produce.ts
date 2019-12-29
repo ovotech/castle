@@ -19,9 +19,9 @@ import { readFileSync } from 'fs';
 import { Type, Schema } from 'avsc';
 
 const TypeBuffer = Unknown.withGuard(Buffer.isBuffer);
-const TypeSchema = Unknown.withConstraint<Schema>((item: any) => {
+const TypeSchema = Unknown.withConstraint<Schema>((item: unknown) => {
   try {
-    Type.forSchema(item);
+    Type.forSchema(item as Schema);
     return true;
   } catch (error) {
     return `Invalid Schema: ${error}`;
@@ -58,7 +58,9 @@ const loadAvroProducerRecordFile = (file: string): AvroProducerRecord => {
 
 interface Options {
   config?: string;
+  verbose?: 1 | 2 | 3 | 4;
 }
+
 export const castleTopicProduce = (command: Command, output = new Output(console)): Command =>
   command
     .name('castle topic produce')
@@ -69,6 +71,7 @@ Using a file that contains schema, topic and messages to be produced.
 
 Example:
   castle topic produce my-produce-file.json
+  castle topic produce my-produce-file.json -vv
 
 Example produce file:
 {
@@ -82,11 +85,17 @@ Example produce file:
 }`,
     )
     .option('-C, --config <configFile>', 'config file with connection deails')
-    .action(async (file, { config: configFile }: Options) => {
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
+    .action(async (file, { verbose, config: configFile }: Options) => {
       await output.wrap(false, async () => {
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile, verbose, output });
 
-        const { messages, schema, topic } = await loadAvroProducerRecordFile(file);
+        const { messages, schema, topic } = loadAvroProducerRecordFile(file);
 
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
         const kafka = new Kafka(config.kafka);

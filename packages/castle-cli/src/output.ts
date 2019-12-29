@@ -2,6 +2,7 @@ import * as chalk from 'chalk';
 import * as ansiRegex from 'ansi-regex';
 import { Config } from './config';
 import { parse, format } from 'url';
+import { logLevel } from 'kafkajs';
 
 export enum OutputType {
   JSON,
@@ -29,6 +30,21 @@ export const header = (prefix: string, title: string, config?: Config): string =
   return (
     `${prefix} "${chalk.yellow(title)}"\n` + (config ? chalk.gray(connection(config)) + '\n' : '')
   );
+};
+
+export const logLine = (level: logLevel, log: { message: string; broker?: string }): string => {
+  switch (level) {
+    case logLevel.ERROR:
+      return `ERR: ${log.message}`;
+    case logLevel.WARN:
+      return `${chalk.yellow('WRN')}: ${log.message} `;
+    case logLevel.INFO:
+      return `${chalk.blueBright('INF')}: ${log.message} `;
+    case logLevel.DEBUG:
+      return `DBG: ${log.broker} ${log.message} `;
+    default:
+      return '';
+  }
 };
 
 export const highlight = (text: string, highlight: string): string =>

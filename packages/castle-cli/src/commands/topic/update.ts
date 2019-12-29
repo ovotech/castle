@@ -11,6 +11,7 @@ interface ConfigEntry {
 interface Options {
   config?: string;
   configEntry: ConfigEntry[];
+  verbose?: 1 | 2 | 3 | 4;
 }
 
 export const castleTopicUpdate = (command: Command, output = new Output(console)): Command =>
@@ -21,9 +22,10 @@ export const castleTopicUpdate = (command: Command, output = new Output(console)
       `Update config entries of a topic.
 
 Example:
-  castle topic update my-topic --config-entry file.delete.delay.ms=40000`,
+  castle topic update my-topic --config-entry file.delete.delay.ms=40000
+  castle topic update my-topic --config-entry file.delete.delay.ms=40000 -vv`,
     )
-    .option(
+    .requiredOption(
       '-E, --config-entry <entry>',
       'set a config entry, title=value, can use multiple times',
       (entry: string, configEntries: ConfigEntry[]) => {
@@ -33,9 +35,15 @@ Example:
       [],
     )
     .option('-C, --config <config>', 'config file with connection deails')
-    .action(async (topic, { configEntry: configEntries, config: configFile }: Options) => {
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
+    .action(async (topic, { verbose, configEntry: configEntries, config: configFile }: Options) => {
       await output.wrap(false, async () => {
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile, verbose, output });
         const kafka = new Kafka(config.kafka);
 
         const admin = kafka.admin();

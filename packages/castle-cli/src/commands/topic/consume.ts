@@ -3,7 +3,7 @@ import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
 import { inspect } from 'util';
 import { loadConfigFile } from '../../config';
 import { devider, table, header, Output } from '../../output';
-import { Kafka, logLevel } from 'kafkajs';
+import { Kafka } from 'kafkajs';
 import * as uuid from 'uuid';
 import * as Long from 'long';
 import { AvroKafkaMessage, AvroBatch, AvroProducerRecord } from '@ovotech/avro-kafkajs/dist/types';
@@ -27,7 +27,9 @@ interface Options {
   depth: number;
   tail?: boolean;
   json: boolean;
+  verbose?: 1 | 2 | 3 | 4;
 }
+
 export const castleTopicConsume = (command: Command, output = new Output(console)): Command =>
   command
     .description(
@@ -38,6 +40,7 @@ Using the --json option you will output the result as json, that can be then be 
 
 Example:
   castle topic consume my-topic
+  castle topic consume my-topic -vvvv
   castle topic consume my-topic --tail
   castle topic consume my-topic --group-id my-group-id
   castle topic consume my-topic --json`,
@@ -53,13 +56,18 @@ Example:
     )
     .option('-T, --tail', 'start listening for new events')
     .option('-J, --json', 'output as json')
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
     .option('-C, --config <configFile>', 'config file with connection deails')
-    .action(async (topic, { groupId, depth, json, tail, config: configFile }: Options) => {
+    .action(async (topic, { verbose, groupId, depth, json, tail, config: configFile }: Options) => {
       await output.wrap(json, async () => {
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile, verbose, output });
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
         const kafka = new Kafka({
-          logLevel: logLevel.ERROR,
           clientId: 'castle-cli',
           ...config.kafka,
         });

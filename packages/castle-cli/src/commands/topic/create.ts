@@ -10,9 +10,10 @@ interface ConfigEntry {
 
 interface Options {
   config?: string;
-  numPartitions: number;
-  replicationFactor: number;
-  configEntry: ConfigEntry[];
+  numPartitions?: number;
+  replicationFactor?: number;
+  configEntry?: ConfigEntry[];
+  verbose?: 1 | 2 | 3 | 4;
 }
 
 export const castleTopicCreate = (command: Command, output = new Output(console)): Command =>
@@ -24,6 +25,7 @@ export const castleTopicCreate = (command: Command, output = new Output(console)
 
 Example:
   castle topic create my-topic
+  castle topic create my-topic -vvvv
   castle topic create my-topic --num-partitions 2 --config-entry file.delete.delay.ms=40000`,
     )
     .option('-P, --num-partitions <partitions>', 'number of partitions', val => parseInt(val), 1)
@@ -38,10 +40,17 @@ Example:
       [],
     )
     .option('-C, --config <config>', 'config file with connection deails')
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
     .action(
       async (
         topic,
         {
+          verbose,
           numPartitions,
           replicationFactor,
           configEntry: configEntries,
@@ -49,7 +58,7 @@ Example:
         }: Options,
       ) => {
         await output.wrap(false, async () => {
-          const config = await loadConfigFile(configFile);
+          const config = await loadConfigFile({ file: configFile, verbose, output });
           const kafka = new Kafka(config.kafka);
 
           const admin = kafka.admin();
@@ -61,7 +70,7 @@ Example:
                 ['Title', 'Value'],
                 ['Number of partitions', String(numPartitions)],
                 ['Replication factor', String(replicationFactor)],
-                ...configEntries.map(item => [item.name, item.value]),
+                ...(configEntries ? configEntries.map(item => [item.name, item.value]) : []),
               ]),
             );
 

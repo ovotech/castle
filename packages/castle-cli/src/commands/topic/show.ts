@@ -6,6 +6,7 @@ import { devider, table, header, Output } from '../../output';
 interface Options {
   config?: string;
   json?: boolean;
+  verbose?: 1 | 2 | 3 | 4;
 }
 
 export const castleTopicShow = (command: Command, output = new Output(console)): Command =>
@@ -17,13 +18,20 @@ export const castleTopicShow = (command: Command, output = new Output(console)):
 
 Example:
   castle topic show my-topic
+  castle topic show my-topic -vv
   castle topic show my-topic --json`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
-    .action(async (topic, { json, config: configFile }: Options) => {
+    .option(
+      '-v, --verbose',
+      'Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level',
+      (_, prev) => Math.min(prev + 1, 4),
+      0,
+    )
+    .action(async (topic, { verbose, json, config: configFile }: Options) => {
       await output.wrap(json, async () => {
-        const config = await loadConfigFile(configFile);
+        const config = await loadConfigFile({ file: configFile, verbose, output });
         const kafka = new Kafka(config.kafka);
 
         const admin = kafka.admin();
@@ -39,8 +47,9 @@ Example:
             }),
           ]);
 
-          const resource = resources.resources.find(resource => resource.resourceName === topic);
-          const configEntries = resource ? resource.configEntries : [];
+          const configEntries =
+            resources.resources.find(resource => resource.resourceName === topic)?.configEntries ??
+            [];
 
           output.json({ offsets, configEntries });
 
