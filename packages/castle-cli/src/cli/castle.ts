@@ -15,15 +15,15 @@ castle topic
   search, consume, produce, message, create, show, update
 
 castle schema
-  Subcommands for getting schema versions of kafka topics
+  Subcommands for getting schema versions of kafka topics.
   search, show
 
 castle config
-  create / edit connection configs to kafka brokers and schema registers, that can be used by other commands
+  Subcommands to create / edit connection configs to kafka brokers and schema registers, that can be used by other commands.
   create, search, remove
 
 castle group
-  manipulate consumer group offsets
+  Subcommands to manipulate consumer group offsets.
   search, update
 
 Example:

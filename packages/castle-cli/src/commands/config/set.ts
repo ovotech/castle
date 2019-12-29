@@ -18,7 +18,6 @@ export const castleConfigSet = (command: Command, output = new Output(console)):
   command
     .name('castle config set')
     .arguments('<name>')
-
     .description(
       `Create a new configuration file or update an existing one in the default config directory (${configsDir}).
 

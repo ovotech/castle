@@ -49,6 +49,42 @@ main();
 You can connect to multiple topics, each of which is will have its own independent consumer group.
 More about castle package in [packages/castle/README.md](packages/castle/README.md)
 
+## Command line usage
+
+```bash
+yarn global add @ovotech/castle-cli
+```
+
+You can read about the various commands available with
+
+```bash
+castle --help
+```
+
+There are 4 main subcommand groups:
+
+- **castle topic**: Subcommands for searching and manipulating kafka topics, as well as producing and consuming events from them.
+- **castle schema**: Subcommands for getting schema versions of kafka topics.
+- **castle config**: Subcommands to create / edit connection configs to kafka brokers and schema registers, that can be used by other commands.
+- **castle group**: Subcommands to manipulate consumer group offsets.
+
+You can configure access to the kafka to your server named `uat`, if you have the tls key, cert and certificate authority as text files. The schema registry is set as a url, any username and password can be set with a url provided auth like: `http://user:pass@localhost:8081`. The config file is saved to `$HOME/.castle-cli/` folder.
+
+```bash
+castle config set uat --kafka-broker localhost:3203 --key private.pem --ca ca.pem --cert cert.pem --schema-registry http://localhost:8081
+```
+
+After that is set you can use it in any command by stating `--config uat` (or `-C uat`):
+
+```
+castle --config uat schema search my-topic
+castle --config uat schema show my-topic-full-name
+castle --config uat topic search my-topic
+castle --config uat topic consume my-topic-full-name
+```
+
+Using it without a specified config would connect to the default local kafka server.
+
 ## Running the tests
 
 You can run the tests with:
