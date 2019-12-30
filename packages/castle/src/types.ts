@@ -27,13 +27,20 @@ export type Middleware<TProvide extends object = {}, TRequire extends object = {
   next: Resolver<TProvide & TRequire & TInherit>,
 ) => Resolver<TRequire & TInherit>;
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type CastleConsumerConfig<T = any> = ConsumerConfig & Omit<AvroConsumerRun, 'eachBatch'|'eachMessage'> & {
+export type CastleTopicSubscribe<T = unknown> = {
   topic: string | RegExp;
   fromBeginning?: boolean;
   eachBatch?: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
   eachMessage?: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
-}
+};
+
+export type CastleConsumerRun<T = unknown> = Omit<AvroConsumerRun<T>, 'eachBatch' | 'eachMessage'>;
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export interface CastleConsumerConfig<T = any>
+  extends ConsumerConfig,
+    CastleConsumerRun<T>,
+    CastleTopicSubscribe<T> {}
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export interface CastleConsumer<T = any> {
