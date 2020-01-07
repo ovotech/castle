@@ -90,9 +90,9 @@ const logCreatorOption = (output: Output = new Output(console)): logCreator => {
 };
 
 const toLoggerConfig = (config: Config, verbose?: 1 | 2 | 3 | 4, output?: Output): Config => ({
-  ...defaults,
+  ...config,
   kafka: {
-    ...defaults.kafka,
+    ...config.kafka,
     logLevel: logLevelOption(verbose),
     logCreator: logCreatorOption(output),
   },
