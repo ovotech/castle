@@ -6,11 +6,12 @@ import {
 } from '@ovotech/castle';
 import merge = require('lodash.merge');
 import { DeepPartial } from 'ts-essentials';
-import { BlaiseDefaults, IBlaise } from './types';
+import { BlaiseDefaults, Blaise } from './types';
 
-// tslint:disable-next-line
+// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/explicit-function-return-type
 const noop = () => {};
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const defaultPayload: BlaiseDefaults = {
   eachMessage: {
     topic: 'blaise-default-topic',
@@ -49,10 +50,12 @@ export const defaultPayload: BlaiseDefaults = {
     schema: 'boolean',
   },
 };
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
-const buildBlaise = <T = unknown>(defaults = defaultPayload): IBlaise<T> => {
-  const blaise = <T1 = T>(newDefaults?: DeepPartial<BlaiseDefaults>) =>
-    buildBlaise<T1>(merge({}, defaults, newDefaults));
+const buildBlaise = <T = unknown>(defaults = defaultPayload): Blaise<T> => {
+  const blaise = <T1 = T>(
+    newDefaults?: DeepPartial<BlaiseDefaults>,
+  ): Blaise<T1> => buildBlaise<T1>(merge({}, defaults, newDefaults));
 
   blaise.default = blaise;
   blaise.pickUnion = <T1 = T>(pickUnion: Array<string>) =>

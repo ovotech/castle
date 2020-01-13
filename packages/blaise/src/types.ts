@@ -7,10 +7,10 @@ import {
 import { schema } from 'avsc';
 import { DeepOmit, DeepPartial } from 'ts-essentials';
 
-export interface IBlaise<T = unknown> {
-  <T1 = T>(newDefaults?: DeepPartial<BlaiseDefaults<T>>): IBlaise<T1>;
-  default<T1 = T>(newDefaults: DeepPartial<BlaiseDefaults<T>>): IBlaise<T1>;
-  pickUnion<T1 = T>(unions: Array<string>): IBlaise<T1>;
+export interface Blaise<T = unknown> {
+  <T1 = T>(newDefaults?: DeepPartial<BlaiseDefaults<T>>): Blaise<T1>;
+  default<T1 = T>(newDefaults: DeepPartial<BlaiseDefaults<T>>): Blaise<T1>;
+  pickUnion<T1 = T>(unions: Array<string>): Blaise<T1>;
 
   getDefault(): BlaiseDefaults<T>;
 
