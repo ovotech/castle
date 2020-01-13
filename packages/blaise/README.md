@@ -10,7 +10,11 @@ An API to generate mock payloads for [@ovotech/castle](https://npmjs.com/@ovotec
 
 Calling `blaise()` returns a new version of blaise, preloaded with the provided defaults, without mutating the parent.
 
+> [examples/chain.ts](examples/chain.ts)
+
 ```typescript
+import blaise from '@ovotech/blaise'
+
 const withAvro = blaise({ avro: { schema } });
 const coffee = withAvro({ avro: { pickUnion: ['coffee'] } });
 const tea = withAvro({ avro: { pickUnion: ['tea'] } });
@@ -21,8 +25,10 @@ tea.getDefault(); // { avro: { schema, pickUnion: ['tea']}}
 
 ### Generate an Avro Message
 
+> [examples/avro-message.ts](examples/avro-message.ts)
+
 ```typescript
-const blaise = require('blaise');
+import blaise from '@ovotech/blaise'
 
 const schema: avsc.RecordType = {
   type: 'record',
@@ -31,12 +37,15 @@ const schema: avsc.RecordType = {
 };
 type MyType = { anInt: number };
 blaise<MyType>({ avro: { schema } }).message(); // {topic: '', {anInt: 32}, [...]}
+
 ```
 
 You can also override the message, either as part of the default or when calling the function
 
+> [examples/avro-message-override.ts](examples/avro-message-override.ts)
+
 ```typescript
-const blaise = require('blaise');
+import blaise from '@ovotech/blaise'
 
 const schema: avsc.RecordType = {
   // [...]
@@ -46,29 +55,36 @@ const brewCoffee = blaise({
   message: { value: { type: 'coffee' } },
 });
 brewCoffee.message({ value: { with: 'milk' } }); // {offset: 13, value {type: 'coffee', with: 'milk'}, [...]}
+
 ```
 
 ### Generate a `CastleEachMessagePayload`
 
+> [examples/each-message.ts](examples/each-message.ts)
+
 ```typescript
-const blaise = require('blaise');
+import blaise from '@ovotech/blaise'
 
 const schema: avsc.RecordType = {
   // [...]
 };
 blaise({ avro: { schema }).eachMessage(); // { topic: 'aTopic', value: {} [...]}
+
 ```
 
 ### Generate a `CastleEachBatchPayload`
 
+> [examples/each-batch.ts](examples/each-batch.ts)
+
 ```typescript
-const blaise = require('blaise');
+import blaise from '@ovotech/blaise'
 
 const schema: avsc.RecordType = {
   // [...]
 };
 const makeMessage = blaise({ avro: { schema })
 blaise.eachBatch([makeMessage()]); // {batch: { topic: 'aTopic', value: {} }[...]}
+
 ```
 
 ### API
