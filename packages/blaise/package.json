@@ -1,0 +1,59 @@
+{
+  "name": "@ovotech/blaise",
+  "version": "0.1.0",
+  "description": "An API to generate mock payloads for @ovotech/castle using @ovotech/avro-mock-generator",
+  "keywords": [
+    "castle",
+    "avro",
+    "kafkajs",
+    "mock",
+    "kafka"
+  ],
+  "author": "Nicolas Lagoutte <nicolas.lagoutte@ovoenergy.com>",
+  "homepage": "https://github.com/ovotech/castle#readme",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "directories": {
+    "dist": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovotech/castle.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint -p .",
+    "test": "jest --verbose src/* --passWithNoTests"
+  },
+  "bugs": {
+    "url": "https://github.com/ovotech/castle/issues"
+  },
+  "jest": {
+    "preset": "../../jest.json"
+  },
+  "devDependencies": {
+    "@ovotech/avro-kafkajs": "^0.1.3",
+    "@ovotech/castle": "^0.3.0",
+    "@types/lodash.merge": "^4.6.6",
+    "avsc": "^5.4.18",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "ts-essentials": "^4.0.0",
+    "ts-jest": "^24.3.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.1.0",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@ovotech/avro-mock-generator": "^1.1.3",
+    "lodash.merge": "^4.6.2"
+  },
+  "peerDependencies": {
+    "@ovotech/castle": ">=0.3"
+  }
+}
