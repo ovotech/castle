@@ -1,4 +1,4 @@
-import blaise, { defaultPayload } from './index';
+import blaise, { defaultPayload } from '../src';
 import { schema as avsc } from 'avsc/types';
 
 describe('Blaise', () => {
