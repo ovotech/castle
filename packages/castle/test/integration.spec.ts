@@ -92,17 +92,19 @@ describe('Integration', () => {
 
   it('Should process response', async () => {
     jest.setTimeout(10000);
-    sendEvent1(castle.producer, [{ value: { field1: 'test1' }, partition: 0 }]);
-    sendEvent1(castle.producer, [
-      { value: { field1: 'test2' }, partition: 1 },
-      { value: { field1: 'test3' }, partition: 2 },
-      { value: { field1: 'test4' }, partition: 0 },
-    ]);
+    await Promise.all([
+      sendEvent1(castle.producer, [{ value: { field1: 'test1' }, partition: 0 }]),
+      sendEvent1(castle.producer, [
+        { value: { field1: 'test2' }, partition: 1 },
+        { value: { field1: 'test3' }, partition: 2 },
+        { value: { field1: 'test4' }, partition: 0 },
+      ]),
 
-    sendEvent2(castle.producer, [
-      { value: { field2: 'test5' }, partition: 1 },
-      { value: { field2: 'test6' }, partition: 1 },
-      { value: { field2: 'test7' }, partition: 0 },
+      sendEvent2(castle.producer, [
+        { value: { field2: 'test5' }, partition: 1 },
+        { value: { field2: 'test6' }, partition: 1 },
+        { value: { field2: 'test7' }, partition: 0 },
+      ]),
     ]);
 
     await retry(
