@@ -31,6 +31,7 @@ export type CastleTopicSubscribe<T = unknown> = {
   topic: string | RegExp;
   fromBeginning?: boolean;
   eachBatch?: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
+  batchSize?: number;
   eachMessage?: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
 };
 

@@ -34,13 +34,16 @@ export const Event2Schema: Schema = {
 
 const topic1 = `test-single-${uuid.v4()}`;
 const topic2 = `test-batch-${uuid.v4()}`;
+const topic3 = `test-sized-batch-${uuid.v4()}`;
 
 const groupId1 = `test-group-1-${uuid.v4()}`;
 const groupId2 = `test-group-2-${uuid.v4()}`;
+const groupId3 = `test-group-3-${uuid.v4()}`;
 const data: { [key: number]: string[] } = { 0: [], 1: [], 2: [] };
 
 const sendEvent1 = produce<Event1>({ topic: topic1, schema: Event1Schema });
 const sendEvent2 = produce<Event2>({ topic: topic2, schema: Event2Schema });
+const sendEvent3 = produce<Event2>({ topic: topic3, schema: Event2Schema });
 const eachEvent1 = consumeEachMessage<Event1, LoggingContext>(
   async ({ message, partition, logger }) => {
     data[partition].push(message.value.field1);
@@ -62,12 +65,21 @@ const myLogger: Logger = {
 const logging = createLogging(myLogger);
 const logCreator = toLogCreator(myLogger);
 
+const batchSizer = jest.fn();
 const castle = createCastle({
   schemaRegistry: { uri: 'http://localhost:8081' },
   kafka: { brokers: ['localhost:29092'], logCreator },
   consumers: [
     { topic: topic1, fromBeginning: true, groupId: groupId1, eachMessage: logging(eachEvent1) },
     { topic: topic2, fromBeginning: true, groupId: groupId2, eachBatch: logging(eachEvent2) },
+    {
+      topic: topic3,
+      fromBeginning: true,
+      groupId: groupId3,
+      eachBatch: ({ batch: { messages, partition } }) =>
+        batchSizer({ partition, messages: messages.map(({ value: { field2 } }) => field2) }),
+      batchSize: 2,
+    },
   ],
 });
 let admin: Admin;
@@ -80,6 +92,7 @@ describe('Integration', () => {
       topics: [
         { topic: topic1, numPartitions: 3 },
         { topic: topic2, numPartitions: 2 },
+        { topic: topic3, numPartitions: 2 },
       ],
     });
     await castle.start();
@@ -105,6 +118,12 @@ describe('Integration', () => {
         { value: { field2: 'test6' }, partition: 1 },
         { value: { field2: 'test7' }, partition: 0 },
       ]),
+      sendEvent3(castle.producer, [
+        { value: { field2: 'p1m1' }, partition: 1 },
+        { value: { field2: 'p1m2' }, partition: 1 },
+        { value: { field2: 'p1m3' }, partition: 1 },
+        // { value: { field2: 'p0m1' }, partition: 0 },
+      ]),
     ]);
 
     await retry(
@@ -122,6 +141,10 @@ describe('Integration', () => {
         expect(log).toContainEqual(['info', 'test5', undefined]);
         expect(log).toContainEqual(['info', 'test6', undefined]);
         expect(log).toContainEqual(['info', 'test7', undefined]);
+
+        expect(batchSizer).toHaveBeenNthCalledWith(1, { partition: 1, messages: ['p1m1', 'p1m2'] });
+        expect(batchSizer).toHaveBeenNthCalledWith(2, { partition: 1, messages: ['p1m3'] });
+        expect(batchSizer).toHaveBeenNthCalledWith(3, { partition: 0, messages: ['p0m1'] });
       },
       { delay: 1000, retries: 10 },
     );

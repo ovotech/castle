@@ -15,6 +15,7 @@ import {
   CastleEachMessagePayload,
   CastleEachBatchPayload,
 } from './types';
+import sizedBatch from './each-sized-batch';
 
 const withProducer = (producer: AvroProducer) => ({
   eachBatch,
@@ -42,10 +43,14 @@ export const createCastle = (config: CastleConfig): Castle => {
   const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
   const kafka = new AvroKafka(schemaRegistry, new Kafka(config.kafka), config.topicsAlias);
   const producer = kafka.producer(config.producer);
-  const consumers: CastleConsumer[] = config.consumers.map(config => ({
-    instance: kafka.consumer(config),
-    config,
-  }));
+  const consumers: CastleConsumer[] = config.consumers.map(config => {
+    const isSizedBatch = config.hasOwnProperty('batchSize');
+    const consumerConfig = isSizedBatch ? sizedBatch(config) : config;
+    return {
+      instance: kafka.consumer(consumerConfig),
+      config: consumerConfig,
+    };
+  });
 
   const services = [producer, ...consumers.map(consumer => consumer.instance)];
   let running = false;
