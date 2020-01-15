@@ -175,18 +175,6 @@ describe('Integration', () => {
           messages: ['p0m1'],
           commitedOffset: expect.arrayContaining([{ partition: 0, offset: -1 }]),
         });
-        // expect(batchSizer).toHaveBeenCalledWith({
-        //   commitedOffset: expect.arrayContaining([{ partition: 1, offset: -1 }]),
-        // });
-        // expect(batchSizer).toHaveBeenCalledWith({
-        //   commitedOffset: expect.arrayContaining([{ partition: 1, offset: 2 }]),
-        // });
-        // expect(batchSizer).toHaveBeenCalledWith({
-        //   commitedOffset: expect.arrayContaining([{ partition: 1, offset: 4 }]),
-        // });
-        // expect(batchSizer).toHaveBeenCalledWith({
-        //   commitedOffset: expect.arrayContaining([{ partition: 0, offset: -1 }]),
-        // });
       },
       { delay: 1000, retries: 10 },
     );
