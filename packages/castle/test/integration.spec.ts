@@ -76,8 +76,19 @@ const castle = createCastle({
       topic: topic3,
       fromBeginning: true,
       groupId: groupId3,
-      eachBatch: ({ batch: { messages, partition } }) =>
-        batchSizer({ partition, messages: messages.map(({ value: { field2 } }) => field2) }),
+      autoCommitInterval: 20000,
+      autoCommitThreshold: 2,
+      eachBatch: async ({ batch: { messages, partition } }) => {
+        const commitedOffset = await admin.fetchOffsets({ groupId: groupId3, topic: topic3 });
+        batchSizer({
+          partition,
+          commitedOffset: commitedOffset.map(({ offset, partition }) => ({
+            offset: +offset,
+            partition,
+          })),
+          messages: messages.map(({ value: { field2 } }) => field2),
+        });
+      },
       batchSize: 2,
     },
   ],
@@ -122,7 +133,9 @@ describe('Integration', () => {
         { value: { field2: 'p1m1' }, partition: 1 },
         { value: { field2: 'p1m2' }, partition: 1 },
         { value: { field2: 'p1m3' }, partition: 1 },
-        // { value: { field2: 'p0m1' }, partition: 0 },
+        { value: { field2: 'p1m4' }, partition: 1 },
+        { value: { field2: 'p1m5' }, partition: 1 },
+        { value: { field2: 'p0m1' }, partition: 0 },
       ]),
     ]);
 
@@ -142,9 +155,38 @@ describe('Integration', () => {
         expect(log).toContainEqual(['info', 'test6', undefined]);
         expect(log).toContainEqual(['info', 'test7', undefined]);
 
-        expect(batchSizer).toHaveBeenNthCalledWith(1, { partition: 1, messages: ['p1m1', 'p1m2'] });
-        expect(batchSizer).toHaveBeenNthCalledWith(2, { partition: 1, messages: ['p1m3'] });
-        expect(batchSizer).toHaveBeenNthCalledWith(3, { partition: 0, messages: ['p0m1'] });
+        expect(batchSizer).toHaveBeenCalledWith({
+          partition: 1,
+          messages: ['p1m1', 'p1m2'],
+          commitedOffset: expect.arrayContaining([{ partition: 1, offset: -1 }]),
+        });
+        expect(batchSizer).toHaveBeenCalledWith({
+          partition: 1,
+          messages: ['p1m3', 'p1m4'],
+          commitedOffset: expect.arrayContaining([{ partition: 1, offset: 2 }]),
+        });
+        expect(batchSizer).toHaveBeenCalledWith({
+          partition: 1,
+          messages: ['p1m5'],
+          commitedOffset: expect.arrayContaining([{ partition: 1, offset: 4 }]),
+        });
+        expect(batchSizer).toHaveBeenCalledWith({
+          partition: 0,
+          messages: ['p0m1'],
+          commitedOffset: expect.arrayContaining([{ partition: 0, offset: -1 }]),
+        });
+        // expect(batchSizer).toHaveBeenCalledWith({
+        //   commitedOffset: expect.arrayContaining([{ partition: 1, offset: -1 }]),
+        // });
+        // expect(batchSizer).toHaveBeenCalledWith({
+        //   commitedOffset: expect.arrayContaining([{ partition: 1, offset: 2 }]),
+        // });
+        // expect(batchSizer).toHaveBeenCalledWith({
+        //   commitedOffset: expect.arrayContaining([{ partition: 1, offset: 4 }]),
+        // });
+        // expect(batchSizer).toHaveBeenCalledWith({
+        //   commitedOffset: expect.arrayContaining([{ partition: 0, offset: -1 }]),
+        // });
       },
       { delay: 1000, retries: 10 },
     );
