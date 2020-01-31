@@ -177,7 +177,7 @@ const eachStart = consumeEachMessage<StartEvent, DbContext & LoggingContext>(
 
 const eachComplete = consumeEachMessage<CompleteEvent, LoggingContext>(
   async ({ message, logger }) => {
-    logger.log('Complete recieved for', message.value.id);
+    logger.log('Complete received for', message.value.id);
   },
 );
 
