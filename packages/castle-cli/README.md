@@ -15,6 +15,17 @@ castle topic message my-topic --shema-file my-schema.json --message '{"field1":"
 castle topic consume my-topic
 ```
 
+You can use the schema command to retrieve schemas for topics.
+```shell
+castle schema --help
+castle schema show <NAME-TOPIC>
+```
+
+For topics with nested schema, you can alter the depth of the schema produced.
+```shell
+castle schema show <NAME-TOPIC> --depth 20
+```
+
 ## Running the tests
 
 You can run the tests with:
