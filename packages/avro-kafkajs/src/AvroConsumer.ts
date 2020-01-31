@@ -6,6 +6,7 @@ import {
   TopicPartitions,
   ConsumerEvents,
   ValueOf,
+  RemoveInstrumentationEventListener,
 } from 'kafkajs';
 import { AvroConsumerRun, TopicsAlias } from './types';
 import { toAvroEachMessage, toAvroEachBatch, resolveTopic } from './avro';
@@ -71,7 +72,10 @@ export class AvroConsumer {
     return this.consumer.resume(topics.map(topic => resolveTopic(topic, this.topicsAlias)));
   }
 
-  public on(eventName: ValueOf<ConsumerEvents>, listener: (...args: unknown[]) => void): void {
+  public on(
+    eventName: ValueOf<ConsumerEvents>,
+    listener: (...args: unknown[]) => void,
+  ): RemoveInstrumentationEventListener<typeof eventName> {
     return this.consumer.on(eventName, listener);
   }
 }
