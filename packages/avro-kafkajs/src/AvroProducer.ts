@@ -1,5 +1,12 @@
 import { SchemaRegistry } from './SchemaRegistry';
-import { Producer, Logger, RecordMetadata, ProducerEvents, ValueOf } from 'kafkajs';
+import {
+  Producer,
+  Logger,
+  RecordMetadata,
+  ProducerEvents,
+  ValueOf,
+  RemoveInstrumentationEventListener,
+} from 'kafkajs';
 import { AvroProducerRecord, AvroProducerBatch, TopicsAlias } from './types';
 import { AvroTransaction } from './AvroTransaction';
 import { toProducerRecord, toProducerBatch, resolveTopic } from './avro';
@@ -46,7 +53,10 @@ export class AvroProducer {
     );
   }
 
-  public on(eventName: ValueOf<ProducerEvents>, listener: (...args: unknown[]) => void): void {
+  public on(
+    eventName: ValueOf<ProducerEvents>,
+    listener: (...args: unknown[]) => void,
+  ): RemoveInstrumentationEventListener<typeof eventName> {
     return this.producer.on(eventName, listener);
   }
 }
