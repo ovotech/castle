@@ -7,6 +7,7 @@ import {
   TopicMessages,
   ProducerBatch,
   KafkaMessage,
+  ConsumerRunConfig,
 } from 'kafkajs';
 import { Schema } from 'avsc';
 
@@ -48,12 +49,8 @@ export interface AvroProducerBatch extends Omit<ProducerBatch, 'topicMessages'> 
   topicMessages: AvroTopicMessages[];
 }
 
-export interface AvroConsumerRun<T = unknown> {
-  autoCommit?: boolean;
-  autoCommitInterval?: number | null;
-  autoCommitThreshold?: number | null;
-  eachBatchAutoResolve?: boolean;
-  partitionsConsumedConcurrently?: number;
+export interface AvroConsumerRun<T = unknown>
+  extends Omit<ConsumerRunConfig, 'eachBatch' | 'eachMessage'> {
   eachBatch?: (payload: AvroEachBatchPayload<T>) => Promise<void>;
   eachMessage?: (payload: AvroEachMessagePayload<T>) => Promise<void>;
 }
