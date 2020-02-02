@@ -2,7 +2,7 @@
 
 A command line wrapper around [Kafka.js](https://github.com/tulios/kafkajs) to transparently use [Schema Registry](https://www.confluent.io/confluent-schema-registry/) for producing and consuming messages with [Avro schema](https://en.wikipedia.org/wiki/Apache_Avro).
 
-### Usage
+## Usage
 
 ```shell
 yarn global add @ovotech/castle-cli
@@ -15,7 +15,7 @@ castle topic message my-topic --shema-file my-schema.json --message '{"field1":"
 castle topic consume my-topic
 ```
 
-### Configuration
+## Configuration
 
 If you want to connect to external kafka (and schema registry) servers you'll want to define some configuration files.
 
@@ -46,7 +46,7 @@ The "schemaRegistry" config object is the configuration you'll send to `SchemaRe
 
 The "kafka" config object is the config for [kafkajs](https://kafka.js.org) itself which you can read about in their excelent documentation https://kafka.js.org/docs/configuration
 
-#### Configuration File
+### Configuration File
 
 When you have a file like that saved somewhere you can use it with the `--config` option
 
@@ -54,7 +54,7 @@ When you have a file like that saved somewhere you can use it with the `--config
 castle --config ~/path/to/config.json topic search my-topic
 ```
 
-#### Configuration Folder
+### Configuration Folder
 
 You can store the config inside `~/.castle-cli` folder which is also searched when you use the `--config` option
 
@@ -75,7 +75,7 @@ castle config set my-env \
 castle --config my-env topic search my-topic
 ```
 
-### Topics
+## Topics
 
 To consume and produce messages in kafka topics as well as inspect and modify the topics themselves, you can use the `topic` group of commands.
 
@@ -83,7 +83,7 @@ To consume and produce messages in kafka topics as well as inspect and modify th
 
 You can see all of the available commands with `help`.
 
-#### castle topic show
+### castle topic show
 
 Show partition, offsets and config entries of a topic.
 
@@ -100,7 +100,7 @@ Options:
 - `-v, --verbose` - Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level
 - `-h, --help` - output usage information
 
-#### castle topic update
+### castle topic update
 
 Update config entries of a topic.
 All the available topic configurations can be found in the confluent documentation https://docs.confluent.io/current/installation/configuration/topic-configs.html
@@ -110,7 +110,7 @@ castle topic update my-topic --config-entry file.delete.delay.ms=40000
 castle topic update my-topic --config-entry file.delete.delay.ms=40000 -vv
 ```
 
-#### castle topic search
+### castle topic search
 
 Get list of topics. If you don't specify a search string returns all of them.
 
@@ -128,7 +128,7 @@ castle topic search my-to -vv
 castle topic search my-topic --json
 ```
 
-#### castle topic create
+### castle topic create
 
 Create a topic. Can specify number of partitions, replaction factors and config entries.
 
@@ -147,7 +147,7 @@ castle topic create my-topic -vvvv
 castle topic create my-topic --num-partitions 2 --replication-factor 2 --config-entry file.delete.delay.ms=40000
 ```
 
-#### castle topic consume
+### castle topic consume
 
 Consume messages of a topic. Use schema registry to decode avro messages.
 By default would use a new random consumer group id to retrieve all the messages and exit.
@@ -172,7 +172,7 @@ castle topic consume my-topic --group-id my-group-id
 castle topic consume my-topic --json
 ```
 
-#### castle topic produce
+### castle topic produce
 
 Produce messages for a topic.
 Using a file that contains schema, topic and messages to be produced.
@@ -202,7 +202,7 @@ Example produce file:
 }
 ```
 
-#### castle topic message
+### castle topic message
 
 Produce an ad-hoc message for a topic.
 You need to specify schema file (with `--schema`) and message content as json (`--message`).
@@ -222,7 +222,7 @@ castle topic message my-topic --schema my-schema.json --message '{"text":"other"
 castle topic message my-topic --schema my-schema.json --message '{"text":"other"}' -vvvv
 ```
 
-### Schemas
+## Schemas
 
 To search for schemas in the schema registry you can use the `schema` group of commands.
 
@@ -246,7 +246,7 @@ castle schema search my-to
 castle schema search my-topic --json
 ```
 
-#### castle schema show
+### castle schema show
 
 Show all the versions of a schema in the schema registry.
 
@@ -262,11 +262,11 @@ castle schema show my-topic --depth 7
 castle schema show my-topic --json
 ```
 
-### Groups
+## Groups
 
 If you want to modify consumer groups and their offsets you can do that with the `group` commands
 
-#### castle group show
+### castle group show
 
 Show consumer group offsets for a topic.
 Break it down by partition and calculate current lag (difference between current and latest offset)
