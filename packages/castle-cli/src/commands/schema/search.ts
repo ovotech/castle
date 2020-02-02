@@ -13,13 +13,12 @@ export const castleSchemaSearch = (command: Command, output = new Output(console
     .name('castle schema search')
     .arguments('[name]')
     .description(
-      `Search for schemas with the given name in the schema registry
+      `Search for schemas with the given name in the schema registry. If you don't specify a search string returns all of them.
 
 Examples:
   castle schema search
   castle schema search my-to
-  castle schema search my-topic --json
-`,
+  castle schema search my-topic --json`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
@@ -28,11 +27,11 @@ Examples:
         const config = await loadConfigFile({ file: configFile });
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
 
-        output.log(header('Searching for schemas', name, config));
+        output.log(header('Searching for schemas', name ? name : '<all>', config));
 
         const subjects = await schemaRegistry.getSubjects();
         const filtered = subjects
-          .filter(subject => subject.includes(name))
+          .filter(subject => (name ? subject.includes(name) : true))
           .map(subject => subject.replace(/-value$/, ''));
         output.json(filtered);
 

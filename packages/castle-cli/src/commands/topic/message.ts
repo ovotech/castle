@@ -22,8 +22,8 @@ export const castleTopicMessage = (command: Command, output = new Output(console
 You need to specify schema file (with --schema) and message content as json (--message).
 
 Example:
-  castle topic message my-topic --schema my-schema.json --message '{"text":"other"}'
-  castle topic message my-topic --schema my-schema.json --message '{"text":"other"}' -vvvv`,
+  castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}'
+  castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}' -vvvv`,
     )
     .option('-P, --partition <partition>', 'the partion to send this on', val => parseInt(val))
     .option('-K, --key <key>', 'message key')

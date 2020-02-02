@@ -26,7 +26,7 @@ export const castleTopicCreate = (command: Command, output = new Output(console)
 Example:
   castle topic create my-topic
   castle topic create my-topic -vvvv
-  castle topic create my-topic --num-partitions 2 --config-entry file.delete.delay.ms=40000`,
+  castle topic create my-topic --num-partitions 2 --replication-factor 2 --config-entry file.delete.delay.ms=40000`,
     )
     .option('-P, --num-partitions <partitions>', 'number of partitions', val => parseInt(val), 1)
     .option('-R, --replication-factor <factor>', 'replication Factor', val => parseInt(val), 1)

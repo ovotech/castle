@@ -23,7 +23,7 @@ export const castleTopicSearch = (command: Command, output = new Output(console)
     .name('castle topic search')
     .arguments('[name]')
     .description(
-      `Get list of topics.
+      `Get list of topics. If you don't specify a search string returns all of them.
 
 Example:
   castle topic search

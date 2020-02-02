@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "Statement",
+  "namespace": "com.example.statements",
+  "doc": "Statement event",
+  "fields": [
+    {
+      "name": "metadata",
+      "type": {
+        "type": "record",
+        "name": "EventMetadata",
+        "namespace": "com.example.kafka.common.event",
+        "fields": [
+          {
+            "name": "createdAt",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            },
+            "doc": "The createdAt is the timestamp of the event according to the producer service domain."
+          }
+        ]
+      }
+    },
+    {
+      "name": "mpxn",
+      "type": ["null", "string"],
+      "doc": "The identifier for the gas supply point"
+    },
+    {
+      "name": "accountId",
+      "type": "string",
+      "doc": "The identifier for the account"
+    }
+  ]
+}
