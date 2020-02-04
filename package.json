@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-ts-cli",
   "description": "A cli to convert avro schemas into typescript interfaces",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@ovotech/avro-ts": "^3.1.0",
-    "yargs": "^13.2.4"
+    "yargs": "^13.2.4",
+    "chalk": "^2.4.2"
   },
   "devDependencies": {
     "@types/capture-console": "^1.0.0",
