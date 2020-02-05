@@ -6,7 +6,7 @@ const DEFAULT_MAX_BATCH_SIZE = 500;
 export const eachSizedBatch = <T extends any>(
   consumerConf: CastleConsumerConfig<T>,
 ): CastleConsumerConfig<T> => {
-  const { maxBatchSize, eachBatch, ...consumer } = consumerConf;
+  const { maxBatchSize, eachSizedBatch, ...consumer } = consumerConf;
   const size = maxBatchSize || DEFAULT_MAX_BATCH_SIZE;
   return {
     ...consumer,
@@ -28,7 +28,7 @@ export const eachSizedBatch = <T extends any>(
           break;
         }
 
-        await eachBatch!({
+        await eachSizedBatch!({
           ...payload,
           batch: {
             ...payload.batch,

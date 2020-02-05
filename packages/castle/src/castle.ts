@@ -46,9 +46,6 @@ export const createCastle = (config: CastleConfig): Castle => {
   const consumers: CastleConsumer[] = config.consumers.map(config => {
     let consumerConfig: CastleConsumerConfig;
     if (config.eachSizedBatch) {
-      if (config.eachBatch) {
-        throw new Error('Invalid configuration, please choose one of eachSizedBatch and eachBatch');
-      }
       consumerConfig = eachSizedBatch(config);
     } else {
       consumerConfig = config;

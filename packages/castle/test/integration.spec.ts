@@ -103,7 +103,7 @@ describe('Integration', () => {
       topics: [
         { topic: topic1, numPartitions: 3 },
         { topic: topic2, numPartitions: 2 },
-        { topic: topic3, numPartitions: 2 },
+        { topic: topic3, numPartitions: 1 },
       ],
     });
     await castle.start();
@@ -130,12 +130,11 @@ describe('Integration', () => {
         { value: { field2: 'test7' }, partition: 0 },
       ]),
       sendEvent3(castle.producer, [
-        { value: { field2: 'p1m1' }, partition: 1 },
-        { value: { field2: 'p1m2' }, partition: 1 },
-        { value: { field2: 'p1m3' }, partition: 1 },
-        { value: { field2: 'p1m4' }, partition: 1 },
-        { value: { field2: 'p1m5' }, partition: 1 },
         { value: { field2: 'p0m1' }, partition: 0 },
+        { value: { field2: 'p0m2' }, partition: 0 },
+        { value: { field2: 'p0m3' }, partition: 0 },
+        { value: { field2: 'p0m4' }, partition: 0 },
+        { value: { field2: 'p0m5' }, partition: 0 },
       ]),
     ]);
 
@@ -156,24 +155,19 @@ describe('Integration', () => {
         expect(log).toContainEqual(['info', 'test7', undefined]);
 
         expect(batchSizer).toHaveBeenCalledWith({
-          partition: 1,
-          messages: ['p1m1', 'p1m2'],
-          commitedOffset: expect.arrayContaining([{ partition: 1, offset: -1 }]),
-        });
-        expect(batchSizer).toHaveBeenCalledWith({
-          partition: 1,
-          messages: ['p1m3', 'p1m4'],
-          commitedOffset: expect.arrayContaining([{ partition: 1, offset: 2 }]),
-        });
-        expect(batchSizer).toHaveBeenCalledWith({
-          partition: 1,
-          messages: ['p1m5'],
-          commitedOffset: expect.arrayContaining([{ partition: 1, offset: 4 }]),
+          partition: 0,
+          messages: ['p0m1', 'p0m2'],
+          commitedOffset: expect.arrayContaining([{ partition: 0, offset: -1 }]),
         });
         expect(batchSizer).toHaveBeenCalledWith({
           partition: 0,
-          messages: ['p0m1'],
-          commitedOffset: expect.arrayContaining([{ partition: 0, offset: -1 }]),
+          messages: ['p0m3', 'p0m4'],
+          commitedOffset: expect.arrayContaining([{ partition: 0, offset: 2 }]),
+        });
+        expect(batchSizer).toHaveBeenCalledWith({
+          partition: 0,
+          messages: ['p0m5'],
+          commitedOffset: expect.arrayContaining([{ partition: 0, offset: 4 }]),
         });
       },
       { delay: 1000, retries: 10 },
