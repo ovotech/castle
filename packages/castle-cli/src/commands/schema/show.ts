@@ -19,8 +19,7 @@ export const castleSchemaShow = (command: Command, output = new Output(console))
 
 Examples:
   castle schema show my-topic --depth 7
-  castle schema show my-topic --json
-`,
+  castle schema show my-topic --json`,
     )
     .option('-D, --depth <depth>', 'depth for the schemas output', val => parseInt(val), 5)
     .option('-J, --json', 'output as json')

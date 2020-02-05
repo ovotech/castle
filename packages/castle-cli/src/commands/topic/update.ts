@@ -20,6 +20,7 @@ export const castleTopicUpdate = (command: Command, output = new Output(console)
     .arguments('<topic>')
     .description(
       `Update config entries of a topic.
+All the available topic configurations can be found in the confluent documentation https://docs.confluent.io/current/installation/configuration/topic-configs.html
 
 Example:
   castle topic update my-topic --config-entry file.delete.delay.ms=40000
