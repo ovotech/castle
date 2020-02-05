@@ -78,7 +78,7 @@ const castle = createCastle({
       groupId: groupId3,
       autoCommitInterval: 20000,
       autoCommitThreshold: 2,
-      eachBatch: async ({ batch: { messages, partition } }) => {
+      eachSizedBatch: async ({ batch: { messages, partition } }) => {
         const commitedOffset = await admin.fetchOffsets({ groupId: groupId3, topic: topic3 });
         batchSizer({
           partition,
@@ -89,7 +89,7 @@ const castle = createCastle({
           messages: messages.map(({ value: { field2 } }) => field2),
         });
       },
-      batchSize: 2,
+      maxBatchSize: 2,
     },
   ],
 });

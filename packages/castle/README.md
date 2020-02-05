@@ -133,9 +133,8 @@ const main = async () => {
       {
         topic: Topic.Batched,
         groupId: 'batched-group-1',
-        eachBatch: eachSizedBatch,
-        /* Providing batchSize will instruct castle to break down
-         * Kafkajs batches into chunks of size up to batchSize.
+        /* Use eachSizedBatch to instruct castle to break down
+         * Kafkajs batches into chunks of size up to maxBatchSize.
          *
          * Castle will handle heartbeats and nudging kafka to commitIfNecessary
          * after each chunk is processed.
@@ -143,7 +142,8 @@ const main = async () => {
          * The consumer will be called sequentially for each chunk within
          * a given partition.
          */
-        batchSize: 50,
+        eachSizedBatch,
+        maxBatchSize: 50,
       },
     ],
   });

@@ -15,7 +15,7 @@ import {
   CastleEachMessagePayload,
   CastleEachBatchPayload,
 } from './types';
-import sizedBatch from './each-sized-batch';
+import { eachSizedBatch } from './each-sized-batch';
 
 const withProducer = (producer: AvroProducer) => ({
   eachBatch,
@@ -44,8 +44,15 @@ export const createCastle = (config: CastleConfig): Castle => {
   const kafka = new AvroKafka(schemaRegistry, new Kafka(config.kafka), config.topicsAlias);
   const producer = kafka.producer(config.producer);
   const consumers: CastleConsumer[] = config.consumers.map(config => {
-    const isSizedBatch = config.hasOwnProperty('batchSize');
-    const consumerConfig = isSizedBatch ? sizedBatch(config) : config;
+    let consumerConfig: CastleConsumerConfig;
+    if (config.eachSizedBatch) {
+      if (config.eachBatch) {
+        throw new Error('Invalid configuration, please choose one of eachSizedBatch and eachBatch');
+      }
+      consumerConfig = eachSizedBatch(config);
+    } else {
+      consumerConfig = config;
+    }
     return {
       instance: kafka.consumer(consumerConfig),
       config: consumerConfig,
