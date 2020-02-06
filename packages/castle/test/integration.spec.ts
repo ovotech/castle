@@ -58,7 +58,7 @@ const eachEvent2 = consumeEachBatch<Event2, LoggingContext>(async ({ batch, logg
   }
 });
 
-const log: Array<[string, string, any]> = [];
+const log: Array<[string, string, unknown]> = [];
 const myLogger: Logger = {
   log: (level, message, metadata) => log.push([level, message, metadata]),
 };
@@ -66,6 +66,7 @@ const logging = createLogging(myLogger);
 const logCreator = toLogCreator(myLogger);
 
 const batchSizer = jest.fn();
+let admin: Admin;
 const castle = createCastle({
   schemaRegistry: { uri: 'http://localhost:8081' },
   kafka: { brokers: ['localhost:29092'], logCreator },
@@ -93,7 +94,6 @@ const castle = createCastle({
     },
   ],
 });
-let admin: Admin;
 
 describe('Integration', () => {
   beforeEach(async () => {
