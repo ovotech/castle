@@ -1,13 +1,17 @@
 import { CastleConsumerConfig, CastleEachBatchPayload } from './types';
 import chunk = require('lodash.chunk');
 
-const DEFAULT_MAX_BATCH_SIZE = 500;
-
 export const eachSizedBatch = <T extends any>(
   consumerConf: CastleConsumerConfig<T>,
 ): CastleConsumerConfig<T> => {
   const { maxBatchSize, eachSizedBatch, ...consumer } = consumerConf;
-  const size = maxBatchSize || DEFAULT_MAX_BATCH_SIZE;
+  if (!maxBatchSize) {
+    return {
+      ...consumer,
+      eachBatch: eachSizedBatch,
+    };
+  }
+
   return {
     ...consumer,
     eachBatch: async (payload: CastleEachBatchPayload<T>) => {
@@ -20,7 +24,7 @@ export const eachSizedBatch = <T extends any>(
         resolveOffset,
       } = payload;
 
-      for (const msgBatch of chunk(messages, size)) {
+      for (const msgBatch of chunk(messages, maxBatchSize)) {
         /* avoid processing if the whole batch has been invalidated
          * (can happen with rebalances for example)
          */
