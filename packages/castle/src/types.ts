@@ -27,27 +27,48 @@ export type Middleware<TProvide extends object = {}, TRequire extends object = {
   next: Resolver<TProvide & TRequire & TInherit>,
 ) => Resolver<TRequire & TInherit>;
 
-export type CastleTopicSubscribe<T = unknown> = {
+export interface CastleTopicSubscribeBase {
   topic: string | RegExp;
   fromBeginning?: boolean;
-  eachBatch?: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
-  eachSizedBatch?: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
-  maxBatchSize?: number;
-  eachMessage?: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
-};
+}
 
-export type CastleConsumerRun<T = unknown> = Omit<AvroConsumerRun<T>, 'eachBatch' | 'eachMessage'>;
+export interface CastleTopicSubscribeEachMessage<T> extends CastleTopicSubscribeBase {
+  eachMessage: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
+}
+
+export interface CastleTopicSubscribeEachBatch<T> extends CastleTopicSubscribeBase {
+  eachBatch: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
+}
+
+export interface CastleTopicSubscribeEachSizedBatch<T> extends CastleTopicSubscribeBase {
+  eachSizedBatch: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
+  maxBatchSize: number;
+}
+
+export type FinalCastleTopicSubscribe<T> =
+  | CastleTopicSubscribeEachMessage<T>
+  | CastleTopicSubscribeEachBatch<T>;
+
+export type CastleConsumerRun = Omit<AvroConsumerRun, 'eachBatch' | 'eachMessage'>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export interface CastleConsumerConfig<T = any>
-  extends ConsumerConfig,
-    CastleConsumerRun<T>,
-    CastleTopicSubscribe<T> {}
+export type CastleConsumerConfig<T = any> = ConsumerConfig &
+  CastleConsumerRun &
+  (
+    | CastleTopicSubscribeEachMessage<T>
+    | CastleTopicSubscribeEachBatch<T>
+    | CastleTopicSubscribeEachSizedBatch<T>
+  );
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export type FinalCastleConsumerConfig<T = any> = ConsumerConfig &
+  CastleConsumerRun &
+  FinalCastleTopicSubscribe<T>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export interface CastleConsumer<T = any> {
   instance: AvroConsumer;
-  config: CastleConsumerConfig<T>;
+  config: FinalCastleConsumerConfig<T>;
 }
 
 export interface CastleConfig {

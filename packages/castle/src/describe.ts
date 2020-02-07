@@ -23,19 +23,13 @@ export const describeTopicAliases = (topicAlias: TopicsAlias): string | undefine
 export const describeCastleConsumers = (castleConfigs: CastleConsumer[]): string | undefined => {
   const titles = ['Topic', 'Original Topic', 'Type', 'Group', 'Concurrency', 'From Beginning'];
   const descriptions = castleConfigs.map(({ config, instance }) => {
-    const {
-      topic,
-      partitionsConsumedConcurrently,
-      eachBatch,
-      eachMessage,
-      groupId,
-      fromBeginning,
-    } = config;
+    const { topic, partitionsConsumedConcurrently, groupId, fromBeginning } = config;
+    const message = 'eachBatch' in config ? 'Batch' : 'Message';
 
     return [
       String(topic),
       typeof topic === 'string' && instance.topicsAlias[topic] ? instance.topicsAlias[topic] : '-',
-      eachBatch ? 'Batch' : eachMessage ? 'Message' : '-',
+      message,
       groupId,
       partitionsConsumedConcurrently === undefined ? '-' : String(partitionsConsumedConcurrently),
       fromBeginning ? 'Yes' : '-',
