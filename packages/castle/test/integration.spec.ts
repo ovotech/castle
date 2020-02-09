@@ -79,10 +79,12 @@ const castle = createCastle({
       groupId: groupId3,
       autoCommitInterval: 20000,
       autoCommitThreshold: 2,
-      eachSizedBatch: async ({ batch: { messages, partition } }) => {
+      eachSizedBatch: async ({ batch: { messages, partition, firstOffset, lastOffset } }) => {
         const commitedOffset = await admin.fetchOffsets({ groupId: groupId3, topic: topic3 });
         batchSizer({
           partition,
+          firstOffset: firstOffset(),
+          lastOffset: lastOffset(),
           commitedOffset: commitedOffset.map(({ offset, partition }) => ({
             offset: +offset,
             partition,
@@ -157,16 +159,22 @@ describe('Integration', () => {
         expect(batchSizer).toHaveBeenCalledWith({
           partition: 0,
           messages: ['p0m1', 'p0m2'],
+          firstOffset: '0',
+          lastOffset: '1',
           commitedOffset: expect.arrayContaining([{ partition: 0, offset: -1 }]),
         });
         expect(batchSizer).toHaveBeenCalledWith({
           partition: 0,
           messages: ['p0m3', 'p0m4'],
+          firstOffset: '2',
+          lastOffset: '3',
           commitedOffset: expect.arrayContaining([{ partition: 0, offset: 2 }]),
         });
         expect(batchSizer).toHaveBeenCalledWith({
           partition: 0,
           messages: ['p0m5'],
+          firstOffset: '4',
+          lastOffset: '4',
           commitedOffset: expect.arrayContaining([{ partition: 0, offset: 4 }]),
         });
       },

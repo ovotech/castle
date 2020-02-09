@@ -16,17 +16,30 @@ export const withEachSizedBatch = <T extends unknown>(
     resolveOffset,
   } = payload;
 
-  for (const msgBatch of chunk(messages, maxBatchSize)) {
+  const chunks = chunk(messages, maxBatchSize);
+  for (const msgBatch of chunks) {
     /* avoid processing if the whole batch has been invalidated
      * (can happen with rebalances for example)
      */
     if (!isRunning() || isStale()) {
       break;
     }
+
+    const offsets = msgBatch.map(({ offset }) => +offset).sort((a, b) => a - b);
+
+    const highestOffset = offsets[offsets.length - 1];
+    const lowestOffset = offsets[0];
+
     await eachSizedBatch({
       ...payload,
       batch: {
         ...payload.batch,
+        firstOffset() {
+          return lowestOffset.toString();
+        },
+        lastOffset() {
+          return highestOffset.toString();
+        },
         messages: msgBatch,
       },
     });
@@ -34,13 +47,9 @@ export const withEachSizedBatch = <T extends unknown>(
      * the batch takes a long time
      */
     await heartbeat();
-    const higherOffset = msgBatch
-      .map(({ offset }) => +offset)
-      .sort((a, b) => a - b)
-      .pop() as number;
     /* Mark offset up to the last one as resolved
      */
-    resolveOffset(higherOffset.toString());
+    resolveOffset(highestOffset.toString());
     /* Commit offset of any resolved messages
      * if autoCommitThreshold or autoCommitInterval has been reached
      */
