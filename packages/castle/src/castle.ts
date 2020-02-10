@@ -14,20 +14,33 @@ import {
   CastleSender,
   CastleEachMessagePayload,
   CastleEachBatchPayload,
+  FinalCastleConsumerConfig,
 } from './types';
+import { withEachSizedBatch } from './each-sized-batch';
 
-const withProducer = (producer: AvroProducer) => ({
-  eachBatch,
-  eachMessage,
-  ...rest
-}: CastleConsumerConfig): AvroConsumerRun => ({
-  ...rest,
-  eachBatch: eachBatch ? payload => eachBatch({ ...payload, producer }) : undefined,
-  eachMessage: eachMessage ? payload => eachMessage({ ...payload, producer }) : undefined,
-});
+const withProducer = <T = unknown>(producer: AvroProducer) => (
+  config: FinalCastleConsumerConfig<T>,
+): AvroConsumerRun<T> => {
+  if ('eachBatch' in config) {
+    return { ...config, eachBatch: payload => config.eachBatch({ ...payload, producer }) };
+  } else {
+    return { ...config, eachMessage: payload => config.eachMessage({ ...payload, producer }) };
+  }
+};
 
 export const produce = <T>(config: Omit<AvroProducerRecord<T>, 'messages'>): CastleSender<T> => {
   return (producer, messages) => producer.send<T>({ ...config, messages });
+};
+
+export const toFinalCastleConsumerConfig = (
+  config: CastleConsumerConfig,
+): FinalCastleConsumerConfig => {
+  if ('eachSizedBatch' in config) {
+    const { eachSizedBatch, maxBatchSize, ...rest } = config;
+    return { ...rest, eachBatch: withEachSizedBatch(eachSizedBatch, maxBatchSize) };
+  } else {
+    return config;
+  }
 };
 
 export const consumeEachMessage = <T, TContext extends object = {}>(
@@ -42,10 +55,10 @@ export const createCastle = (config: CastleConfig): Castle => {
   const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
   const kafka = new AvroKafka(schemaRegistry, new Kafka(config.kafka), config.topicsAlias);
   const producer = kafka.producer(config.producer);
-  const consumers: CastleConsumer[] = config.consumers.map(config => ({
-    instance: kafka.consumer(config),
-    config,
-  }));
+  const consumers: CastleConsumer[] = config.consumers.map(config => {
+    const finalConfig = toFinalCastleConsumerConfig(config);
+    return { instance: kafka.consumer(finalConfig), config: finalConfig };
+  });
 
   const services = [producer, ...consumers.map(consumer => consumer.instance)];
   let running = false;
