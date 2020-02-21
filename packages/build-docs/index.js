@@ -2,7 +2,7 @@ const { readFileSync, writeFileSync } = require('fs');
 
 const docFilename = process.argv[2];
 const text = readFileSync(docFilename, 'utf8');
-const matchExample = /> \[([a-z\-\/\.]+)\]\(([a-z\-\/\.]+)\)\n\n\`\`\`([a-z\-]+)\n(((?!\`\`\`).|\n)*\`\`\`)/gm;
+const matchExample = /> \[([0-9a-z\-\/\.]+)\]\(([0-9a-z\-\/\.]+)\)\n\n\`\`\`([0-9a-z\-]+)\n(((?!\`\`\`).|\n)*\`\`\`)/gm;
 
 const replaced = text.replace(matchExample, (_, name, filename, language) => {
   const link = `[${name}](${filename})`;
