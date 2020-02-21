@@ -1,1 +1,1 @@
-export { convertCommand } from './convertCommand';
+export { convert } from './convert';

@@ -1,6 +1,6 @@
 import { User as ComplexRecord } from './__generated__/ComplexRecord.avsc';
 import {
-  Names as AccountNames,
+  UkCoBoostpowerSupportKafkaMessages as AccountNames,
   AccountMigrationEvent as ComplexUnionLogicalTypes,
 } from './__generated__/ComplexUnionLogicalTypes.avsc';
 import { User as RecordWithEnum } from './__generated__/RecordWithEnum.avsc';
@@ -11,6 +11,7 @@ import { User as RecordWithUnion } from './__generated__/RecordWithUnion.avsc';
 import { User as SimpleRecord } from './__generated__/SimpleRecord.avsc';
 import { TradeCollection } from './__generated__/TradeCollection.avsc';
 import { User } from './__generated__/User.avsc';
+import * as moment from 'moment';
 
 const complexRecord: ComplexRecord = {
   id: 123,
@@ -28,17 +29,17 @@ const complexRecord: ComplexRecord = {
 
 const complexUnionLogicalTypes: ComplexUnionLogicalTypes = {
   event: {
-    [AccountNames.AccountMigrationCancelledEvent]: {
+    [AccountNames.AccountMigrationCancelledEventName]: {
       metadata: {
         eventId: '123',
         traceToken: '123',
-        createdAt: '2005-02-02',
+        createdAt: moment('2005-02-02'),
       },
       enrollmentId: '123',
       accountId: '123',
       mpan: '123',
       effectiveEnrollmentDate: '123',
-      cancelledAt: '123',
+      cancelledAt: moment(),
     },
   },
 };
@@ -61,7 +62,7 @@ const recordWithInterface: RecordWithInterface = {
 
 const recordWithLogicalTypes: RecordWithLogicalTypes = {
   id: 123,
-  createdAt: '2009-02-02',
+  createdAt: moment('2009-02-02'),
 };
 
 const recordwithMap: RecordWithMap = {
@@ -81,6 +82,7 @@ const recordWithUnion1: RecordWithUnion = {
   username: 'test',
   passwordHash: 'hkjas',
   signupDate: 112233,
+  unionType: null,
 };
 
 const recordWithUnion2: RecordWithUnion = {
@@ -127,6 +129,7 @@ const tradeCollection: TradeCollection = {
       datetime: '123',
       timestamp: 123,
       type: 'Limit',
+      side: null,
     },
   ],
 };
@@ -136,7 +139,9 @@ const user: User = {
   username: '123',
   passwordHash: '123',
   signupDate: 123,
-  emailAddresses: [{ address: 'test@example.com', verified: true, dateAdded: 1233 }],
+  emailAddresses: [
+    { address: 'test@example.com', verified: true, dateAdded: 1233, dateBounced: null },
+  ],
   twitterAccounts: [
     {
       status: 'ACTIVE',
@@ -144,18 +149,28 @@ const user: User = {
       screenName: '123',
       oauthToken: 'adsasd',
       dateAuthorized: 123,
+      oauthTokenSecret: null,
     },
   ],
   toDoItems: [
     {
       status: 'ACTIONABLE',
       title: '123',
-      subItems: ['test'],
+      subItems: [
+        {
+          status: 'DELETED',
+          title: '222',
+          description: null,
+          snoozeDate: null,
+          subItems: [],
+        },
+      ],
+      description: null,
+      snoozeDate: null,
     },
   ],
 };
 
-// tslint:disable-next-line:no-console
 console.log(
   complexRecord,
   complexUnionLogicalTypes,
@@ -169,5 +184,5 @@ console.log(
   simpleRecord,
   tradeCollection,
   user,
-  complexUnionLogicalTypes.event[AccountNames.AccountMigrationCancelledEvent],
+  complexUnionLogicalTypes.event[AccountNames.AccountMigrationCancelledEventName],
 );

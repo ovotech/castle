@@ -2,7 +2,7 @@
 
 Generate typescript from avro types.
 
-It consists of a very quick sequential, functional parser. Uses typescript's compiler api to convert avro to typescript AST, and pretty prints the results. No dependencies apart from typescript.
+Uses typescript's compiler api to convert avro to typescript AST, and pretty prints the results.
 
 ### Using
 
@@ -12,54 +12,219 @@ yarn add @ovotech/avro-ts
 
 And then you can use the function to get typescript types:
 
-```typescript
-import { schema } from 'avsc';
-import { avroTs } from '@ovotech/avro-ts';
+> [examples/simple.ts](examples/simple.ts)
 
-const avro: schema.RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
-const ts = avroTs(avro, {
+```typescript
+import { toTypeScript } from '@ovotech/avro-ts';
+import { Schema } from 'avsc';
+
+const avro: Schema = {
+  type: 'record',
+  name: 'User',
+  fields: [
+    { name: 'id', type: 'int' },
+    { name: 'username', type: 'string' },
+  ],
+};
+
+const ts = toTypeScript(avro);
+
+console.log(ts);
+```
+
+Resulting TypeScript:
+
+```typescript
+export type AvroType = User;
+
+export interface User {
+  id: number;
+  username: string;
+}
+```
+
+### Logical Types
+
+Avro has [logical types](https://github.com/mtth/avsc/wiki/Advanced-usage#logical-types). In their docs:
+
+> The built-in types provided by Avro are sufficient for many use-cases, but it can often be much more convenient to work with native JavaScript objects.
+
+To support them we need to modify the typescript generation to use the typescript type instead of the logical type. If we don't avro-ts will fall back on the original underlying type.
+
+> [examples/logical-types.ts](examples/logical-types.ts)
+
+```typescript
+import { toTypeScript } from '@ovotech/avro-ts';
+import { Schema } from 'avsc';
+
+const avro: Schema = {
+  type: 'record',
+  name: 'Event',
+  fields: [
+    { name: 'id', type: 'int' },
+    { name: 'createdAt', type: { type: 'long', logicalType: 'timestamp-millis' } },
+  ],
+};
+
+const ts = toTypeScript(avro, {
   logicalTypes: {
     'timestamp-millis': 'string',
-    date: 'string',
-    decimal: {
-      type: 'Decimal',
-      import: "import { Decimal } from 'decimal.js'",
-    },
   },
-  recordAlias: 'Record',
-  namesAlias: 'Names',
-  namespacedPrefix: 'Namespaced',
 });
 
 console.log(ts);
 ```
 
-## Support
-
-This converter currently supports
-
-- Record
-- Union
-- Map
-- Logical Types
-- Enum
-- Map
-- Array
-- Root-level union types
-
-## Union types helpers.
-
-When complex union types are defined, the output will include a namespace (named `Names` by default), containing the namespaced address of properties.
-
-This allows usecases as such:
+Resulting TypeScript:
 
 ```typescript
-import { Names, WeatherEvent } from './my-type';
-const event: WeatherEvent = {};
-event[Names.RainEvent];
+export type AvroType = Event;
+
+export interface Event {
+  id: number;
+  createdAt: string;
+}
 ```
 
-The union members uses [`never`](https://www.typescriptlang.org/docs/handbook/basic-types.html#never) to prevent erroneously creating/accessing a union member with mutiple keys.
+We can also use custom classes for our logical types. It will also add the code to import the module.
+
+> [examples/custom-logical-types.ts](examples/custom-logical-types.ts)
+
+```typescript
+import { toTypeScript } from '@ovotech/avro-ts';
+import { Schema } from 'avsc';
+
+const avro: Schema = {
+  type: 'record',
+  name: 'Event',
+  fields: [
+    { name: 'id', type: 'int' },
+    { name: 'decimalValue', type: { type: 'long', logicalType: 'decimal' } },
+    { name: 'anotherDecimal', type: { type: 'long', logicalType: 'decimal' } },
+  ],
+};
+
+const ts = toTypeScript(avro, {
+  logicalTypes: {
+    decimal: { module: 'decimal.js', named: 'Decimal' },
+  },
+});
+
+console.log(ts);
+```
+
+Resulting TypeScript:
+
+```typescript
+import { Decimal } from 'decimal.js';
+
+export type AvroType = Event;
+
+export interface Event {
+  id: number;
+  decimalValue: Decimal;
+  anotherDecimal: Decimal;
+}
+```
+
+## Wrapped Unions
+
+Avro Ts attempts to generate the types of the "auto" setting for wrapped unions. https://github.com/mtth/avsc/wiki/API#typeforschemaschema-opts This would mean that unions of records would be wrapped in an object with namespaced keys.
+
+The typescript interfaces are also namespaced appropriately. Avro namespaces like 'com.example.avro' are converted into `ComExampleAvro` namespaces in TS.
+
+> [examples/wrapped-union.ts](examples/wrapped-union.ts)
+
+```typescript
+import { toTypeScript } from '@ovotech/avro-ts';
+import { Schema } from 'avsc';
+
+const avro: Schema = {
+  type: 'record',
+  name: 'Event',
+  namespace: 'com.example.avro',
+  fields: [
+    { name: 'id', type: 'int' },
+    {
+      name: 'event',
+      type: [
+        {
+          type: 'record',
+          name: 'ElectricityEvent',
+          fields: [
+            { name: 'accountId', type: 'string' },
+            { name: 'MPAN', type: 'string' },
+          ],
+        },
+        {
+          type: 'record',
+          name: 'GasEvent',
+          fields: [
+            { name: 'accountId', type: 'string' },
+            { name: 'MPRN', type: 'string' },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+const ts = toTypeScript(avro);
+
+console.log(ts);
+```
+
+Which would result in this typescript:
+
+```typescript
+/* eslint-disable @typescript-eslint/no-namespace */
+
+export type Event = ComExampleAvro.Event;
+
+export namespace ComExampleAvro {
+  export const ElectricityEventName = 'com.example.avro.ElectricityEvent';
+  export interface ElectricityEvent {
+    accountId: string;
+    MPAN: string;
+  }
+  export const GasEventName = 'com.example.avro.GasEvent';
+  export interface GasEvent {
+    accountId: string;
+    MPRN: string;
+  }
+  export const EventName = 'com.example.avro.Event';
+  export interface Event {
+    id: number;
+    event:
+      | {
+          'com.example.avro.ElectricityEvent': ComExampleAvro.ElectricityEvent;
+          'com.example.avro.GasEvent'?: never;
+        }
+      | {
+          'com.example.avro.ElectricityEvent'?: never;
+          'com.example.avro.GasEvent': ComExampleAvro.GasEvent;
+        };
+  }
+}
+```
+
+Notice that not only the interfaces themselves are exported, but their fully qualified names as well. This should help to improve readability.
+
+We also breakout the root type from its namespace for ease of use.
+
+```typescript
+import { ComExampleAvro as NS, Event } from '...';
+
+const elecEvent: Event = {
+  id: 10,
+  event: { [NS.ElectricityEventName]: { MPAN: '111', accountId: '123' } },
+};
+
+const gasEvent: Event = {
+  id: 10,
+  event: { [NS.GasEventName]: { MPRN: '222', accountId: '123' } },
+};
+```
 
 ## Running the tests
 

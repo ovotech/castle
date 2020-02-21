@@ -1,0 +1,147 @@
+{
+    "fields": [
+      { "name": "groupName", "type": "string" },
+      {
+        "name": "items",
+        "type": {
+          "fields": [
+            { "name": "SHIPPER_REFERENCE", "type": "string" },
+            { "name": "SEND_REASON_CODE", "type": "string" },
+            { "name": "ACTUAL_READ_DATE", "type": "string" },
+            { "name": "METER_SERIAL_NUMBER", "type": "string" },
+            { "name": "METER_POINT_REFERENCE", "type": "string" },
+            { "name": "PRIME_METER_POINT_REFERENCE", "type": "string" },
+            { "name": "BILLING_INDICATOR", "type": "string" },
+            { "name": "READ_SEQUENCE", "type": "string" },
+            { "name": "READ_REASON_CODE", "type": "string" },
+            { "name": "READ_TYPE", "type": "string" },
+            { "name": "METER_READING", "type": "string" },
+            { "name": "NUMBER_OF_DIALS_OR_DIGITS", "type": "string" },
+            { "name": "CORRECTOR_UNCORRECTED_READING", "type": "string" },
+            { "name": "NUMBER_OF_DIALS_UNCORRECTED", "type": "string" },
+            { "name": "CORRECTOR_CORRECTED_READING", "type": "string" },
+            { "name": "NUMBER_OF_DIALS_CORRECTED", "type": "string" },
+            { "name": "OVERRIDE_VOLUME", "type": "string" },
+            { "name": "OVERRIDE_VOLUME_UNITS", "type": "string" },
+            { "name": "OVERRIDE_REASON", "type": "string" },
+            { "name": "BYPASS_STATUS", "type": "string" },
+            { "name": "COLLAR_STATUS", "type": "string" },
+            { "name": "CAPPED_STATUS", "type": "string" },
+            { "name": "CORRECTOR_STATUS", "type": "string" },
+            { "name": "NOTE_CODE_1", "type": "string" },
+            { "name": "NOTE_CODE_2", "type": "string" },
+            { "name": "NOTE_CODE_3", "type": "string" },
+            { "name": "NOTE_CODE_4", "type": "string" },
+            { "name": "NOTE_CODE_5", "type": "string" },
+            { "name": "METRIC_IMPERIAL_INDICATOR", "type": "string" },
+            { "name": "METER_CORRECTION_FACTOR", "type": "string" },
+            { "name": "CORRECTOR_CORRECTION_FACTOR", "type": "string" },
+            { "name": "READING_FACTOR", "type": "string" },
+            { "name": "METER_THROUGH_ZEROS_COUNT", "type": "string" },
+            { "name": "CORRECTOR_THROUGH_ZEROS_COUNT", "type": "string" },
+            { "name": "METERING_SET_REFERENCE_NUMBER", "type": "string" },
+            { "name": "CONFIRMATION_REFERENCE_NUMBER", "type": "string" },
+            { "name": "NON_CYCLIC_TOLERANCE", "type": "string" },
+            { "name": "METER_PULSE_VALUE", "type": "string" },
+            { "name": "METER_MANUFACTURER_ORG_ID", "type": "string" },
+            { "name": "METER_LOCATION_DESCRIPTION", "type": "string" },
+            { "name": "METER_LOCATION_CODE", "type": "string" },
+            { "name": "METER_MODEL", "type": "string" },
+            { "name": "CORRECTOR_SERIAL_NUMBER", "type": "string" },
+            { "name": "METER_MECHANISM", "type": "string" },
+            { "name": "CORRECTED_READING_UNITS", "type": "string" }
+          ],
+          "name": "Items",
+          "namespace": "mbr.split.m03.m03",
+          "type": "record"
+        }
+      },
+      {
+        "doc": "the Id of this record. Each record gets assigned a unique Id.",
+        "name": "recordId",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": {
+          "fields": [
+            { "name": "eventId", "type": "string" },
+            { "logicalType": "timestamp-millis", "name": "createdAt", "type": "long" },
+            { "name": "traceToken", "type": "string" },
+            {
+              "doc": "The url of the parsed Avro Data file from which the record was extracted.",
+              "name": "sourcePath",
+              "type": "string"
+            },
+            {
+              "doc": "The md5Hash of the parsed Avro Data file from which the record was extracted.",
+              "name": "md5Hash",
+              "type": "string"
+            },
+            {
+              "doc": "The url of the original raw flow file.",
+              "name": "rawSourcePath",
+              "type": "string"
+            },
+            {
+              "doc": "The md5Hash of the original raw flow file.",
+              "name": "rawSourceMd5Hash",
+              "type": "string"
+            }
+          ],
+          "name": "metaV1",
+          "namespace": "metaV1",
+          "type": "record"
+        }
+      },
+      {
+        "name": "header",
+        "type": {
+          "fields": [
+            { "name": "groupName", "type": "string" },
+            {
+              "name": "items",
+              "type": {
+                "fields": [
+                  { "name": "Organisation_ID", "type": "string" },
+                  { "name": "flowName", "type": "string" },
+                  { "name": "Creation_Date", "type": "string" },
+                  { "name": "Creation_Time", "type": "string" },
+                  { "name": "Generation_Number", "type": "string" }
+                ],
+                "name": "Items",
+                "namespace": "mbr.split.a00",
+                "type": "record"
+              }
+            }
+          ],
+          "name": "A00",
+          "namespace": "mbr.split",
+          "type": "record"
+        }
+      },
+      {
+        "name": "footer",
+        "type": {
+          "fields": [
+            { "name": "groupName", "type": "string" },
+            {
+              "name": "items",
+              "type": {
+                "fields": [{ "name": "Record_Count", "type": "string" }],
+                "name": "Items",
+                "namespace": "mbr.split.z99",
+                "type": "record"
+              }
+            }
+          ],
+          "name": "Z99",
+          "namespace": "mbr.split",
+          "type": "record"
+        }
+      }
+    ],
+    "name": "M03",
+    "namespace": "mbr.split.m03",
+    "type": "record"
+  }
