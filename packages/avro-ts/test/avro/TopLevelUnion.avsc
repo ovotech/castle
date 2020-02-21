@@ -1,0 +1,42 @@
+[
+  {
+    "type": "record",
+    "name": "Cancelled",
+    "namespace": "com.example.avro",
+    "fields": [
+      {
+        "name": "metadata",
+        "type": {
+          "type": "record",
+          "name": "EventMetadata",
+          "namespace": "com.example.avro.event",
+          "fields": [
+            {
+              "name": "eventId",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      {
+        "name": "CancellationId",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "type": "record",
+    "name": "Creation",
+    "namespace": "com.example.avro",
+    "fields": [
+      {
+        "name": "metadata",
+        "type": "com.example.avro.event.EventMetadata"
+      },
+      {
+        "name": "creationId",
+        "type": "string"
+      }
+    ]
+  }
+]

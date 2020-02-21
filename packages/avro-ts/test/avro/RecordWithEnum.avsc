@@ -1,0 +1,38 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.example.avro",
+  "doc": "This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.\n\nNote this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!",
+  "fields": [
+    {
+      "name": "id",
+      "doc": "System-assigned numeric user ID. Cannot be changed by the user.",
+      "type": "int"
+    },
+    {
+      "name": "username",
+      "doc": "The username chosen by the user. Can be changed by the user.",
+      "type": "string"
+    },
+    {
+      "name": "passwordHash",
+      "doc": "The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).",
+      "type": "string"
+    },
+    {
+      "name": "signupDate",
+      "doc": "Timestamp (milliseconds since epoch) when the user signed up",
+      "type": "long"
+    },
+    {
+      "name": "status",
+      "doc": "Indicator of whether this authorization is currently active, or has been revoked",
+      "type": {
+        "type": "enum",
+        "name": "status",
+        "doc": "* `PENDING`: the user has started authorizing, but not yet finished\n* `ACTIVE`: the token should work\n* `DENIED`: the user declined the authorization\n* `EXPIRED`: the token used to work, but now it doesn't\n* `REVOKED`: the user has explicitly revoked the token",
+        "symbols": ["ACTIVE", "INACTIVE"]
+      }
+    }
+  ]
+}

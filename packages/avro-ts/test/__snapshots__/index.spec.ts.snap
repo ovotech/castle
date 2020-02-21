@@ -1,0 +1,856 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Avro ts test Should convert BalanceAdjustment.avsc successfully 1`] = `
+"export namespace Names {
+    export const Config = \\"com.ovoenergy.kafka.common.event.Config\\";
+    export const ConfigExtended = \\"com.ovoenergy.kafka.common.event.ConfigExtended\\";
+    export const BalanceAdjustmentRequest = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\";
+    export const BalanceAdjustmentResponse = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\";
+}
+
+export type Record = BalanceAdjustment;
+
+export interface BalanceAdjustment {
+    metadata: EventMetadata;
+    event: NamespacedBalanceAdjustmentRequest | NamespacedBalanceAdjustmentResponse;
+}
+
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: string;
+    config: NamespacedConfig | NamespacedConfigExtended;
+}
+
+export interface Config {
+    tokenId: string;
+}
+
+export interface NamespacedConfig {
+    \\"com.ovoenergy.kafka.common.event.Config\\": Config;
+    \\"com.ovoenergy.kafka.common.event.ConfigExtended\\"?: never;
+}
+
+export interface ConfigExtended {
+    tokenId: string;
+    extensionId: string;
+}
+
+export interface NamespacedConfigExtended {
+    \\"com.ovoenergy.kafka.common.event.ConfigExtended\\": ConfigExtended;
+    \\"com.ovoenergy.kafka.common.event.Config\\"?: never;
+}
+
+export interface BalanceAdjustmentRequest {
+    /**
+     * A unique balance adjustment job id. Will correspond with the jobId of BalanceAdjustmentResponse
+     */
+    jobId: string;
+    /**
+     * Unique identifier for the customer. Gentrack Account ID. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * Meter Serial Number of the meter having its balance adjusted
+     */
+    msn: string;
+    /**
+     * A Meter Point Administration Number (Electricity) or Meter Point Reference Number (Gas). It is expected that the specified meter supplies this Supply Point.
+     */
+    mpxn: string;
+    /**
+     * Type of fuel of the meter
+     */
+    fuel: \\"Gas\\" | \\"Electricity\\";
+    /**
+     * The amount the balance was adjusted with, in thousands of a penny
+     */
+    amount: number;
+}
+
+export interface NamespacedBalanceAdjustmentRequest {
+    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\": BalanceAdjustmentRequest;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\"?: never;
+}
+
+export interface BalanceAdjustmentResponse {
+    /**
+     * A unique adjustment job id. Will correspond with the jobId S2BalanceAdjustmentRequest
+     */
+    jobId: string;
+    /**
+     * The status of the balance adjustment when its completed
+     */
+    status: \\"Error\\" | \\"Success\\";
+    /**
+     * The resulting the balance after the adjustemt, in thousands of a penny
+     */
+    balance: number;
+}
+
+export interface NamespacedBalanceAdjustmentResponse {
+    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\": BalanceAdjustmentResponse;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\"?: never;
+}"
+`;
+
+exports[`Avro ts test Should convert ComplexRecord.avsc successfully 1`] = `
+"export type Record = User;
+
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    mapField: {
+        [index: string]: Foo;
+    };
+    /**
+     * All email addresses on the user's account
+     */
+    emailAddresses: EmailAddress[];
+    /**
+     * Indicator of whether this authorization is currently active, or has been revoked
+     */
+    status: \\"ACTIVE\\" | \\"INACTIVE\\";
+}
+
+export interface Foo {
+    label: string;
+}
+
+export interface EmailAddress {
+    /**
+     * The email address, e.g. \`foo@example.com\`
+     */
+    address: string;
+    /**
+     * true if the user has clicked the link in a confirmation email to this address.
+     */
+    verified: boolean;
+    /**
+     * Timestamp (milliseconds since epoch) when the email address was added to the account.
+     */
+    dateAdded: number;
+}"
+`;
+
+exports[`Avro ts test Should convert ComplexUnionLogicalTypes.avsc successfully 1`] = `
+"export namespace Names {
+    export const AccountMigrationCancelledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\";
+    export const AccountMigrationCompletedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\";
+    export const AccountMigrationRollBackInitiatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\";
+    export const AccountMigrationRolledBackEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\";
+    export const AccountMigrationScheduledEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\";
+    export const AccountMigrationValidatedEvent = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\";
+    export const BalanceRetrievedMigrationEvent = \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\";
+}
+
+export type Record = AccountMigrationEvent;
+
+export interface AccountMigrationEvent {
+    event: NamespacedAccountMigrationCancelledEvent | NamespacedAccountMigrationCompletedEvent | NamespacedAccountMigrationRollBackInitiatedEvent | NamespacedAccountMigrationRolledBackEvent | NamespacedAccountMigrationScheduledEvent | NamespacedAccountMigrationValidatedEvent | NamespacedBalanceRetrievedMigrationEvent;
+}
+
+export interface AccountMigrationCancelledEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was cancelled (in epoch millis)
+     */
+    cancelledAt: string;
+}
+
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: string;
+}
+
+export interface NamespacedAccountMigrationCancelledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+}
+
+export interface AccountMigrationCompletedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was completed (in epoch millis)
+     */
+    completedAt: string;
+}
+
+export interface NamespacedAccountMigrationCompletedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+}
+
+export interface AccountMigrationRollBackInitiatedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration rollback was initiated (in epoch millis)
+     */
+    rollBackInitiatedAt: string;
+}
+
+export interface NamespacedAccountMigrationRollBackInitiatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+}
+
+export interface AccountMigrationRolledBackEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was rolled back (in epoch millis)
+     */
+    rolledBackAt: string;
+}
+
+export interface NamespacedAccountMigrationRolledBackEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+}
+
+export interface AccountMigrationScheduledEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the customer came on supply with Boost (in epoch days)
+     */
+    supplyStartDate: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was scheduled (in epoch millis)
+     */
+    scheduledAt: string;
+}
+
+export interface NamespacedAccountMigrationScheduledEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+}
+
+export interface AccountMigrationValidatedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migrated balance and transactions were validated (in epoch millis)
+     */
+    validatedAt: string;
+}
+
+export interface NamespacedAccountMigrationValidatedEvent {
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+}
+
+export interface BalanceRetrievedMigrationEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the balance and transaction history was fetched (in epoch millis)
+     */
+    retrievedAt: string;
+}
+
+export interface NamespacedBalanceRetrievedMigrationEvent {
+    \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+    \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+}"
+`;
+
+exports[`Avro ts test Should convert NestedRecordNamespace.avsc successfully 1`] = `
+"export namespace Names {
+    export const Level1Record = \\"com.avro.example.Level1Record\\";
+    export const Level1Sibling = \\"com.avro.example.Level1Sibling\\";
+    export const Level2Record = \\"com.avro.example.Level2Record\\";
+    export const Level2Sibling = \\"com.avro.example.Level2Sibling\\";
+}
+
+export type Record = NestRecordEvent;
+
+export interface NestRecordEvent {
+    event: NamespacedLevel1Record | NamespacedLevel1Sibling;
+}
+
+export interface Level1Record {
+    id: string;
+    child: NamespacedLevel2Record | NamespacedLevel2Sibling;
+}
+
+export interface Level2Record {
+    id: string;
+}
+
+export interface NamespacedLevel2Record {
+    \\"com.avro.example.Level2Record\\": Level2Record;
+    \\"com.avro.example.Level2Sibling\\"?: never;
+}
+
+export interface Level2Sibling {
+    id: string;
+}
+
+export interface NamespacedLevel2Sibling {
+    \\"com.avro.example.Level2Sibling\\": Level2Sibling;
+    \\"com.avro.example.Level2Record\\"?: never;
+}
+
+export interface NamespacedLevel1Record {
+    \\"com.avro.example.Level1Record\\": Level1Record;
+    \\"com.avro.example.Level1Sibling\\"?: never;
+}
+
+export interface Level1Sibling {
+    id: string;
+}
+
+export interface NamespacedLevel1Sibling {
+    \\"com.avro.example.Level1Sibling\\": Level1Sibling;
+    \\"com.avro.example.Level1Record\\"?: never;
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithDefault.avsc successfully 1`] = `
+"export type Record = RecordWithDefault;
+
+export interface RecordWithDefault {
+    pleaseNoNamespace?: null | NoNeedForNamespace;
+}
+
+export interface NoNeedForNamespace {
+    /**
+     * A fictitious id
+     */
+    id: string;
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithEnum.avsc successfully 1`] = `
+"export type Record = User;
+
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    /**
+     * Indicator of whether this authorization is currently active, or has been revoked
+     */
+    status: \\"ACTIVE\\" | \\"INACTIVE\\";
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithInterface.avsc successfully 1`] = `
+"export type Record = User;
+
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    /**
+     * All email addresses on the user's account
+     */
+    emailAddresses: EmailAddress[];
+}
+
+export interface EmailAddress {
+    /**
+     * The email address, e.g. \`foo@example.com\`
+     */
+    address: string;
+    /**
+     * true if the user has clicked the link in a confirmation email to this address.
+     */
+    verified: boolean;
+    /**
+     * Timestamp (milliseconds since epoch) when the email address was added to the account.
+     */
+    dateAdded: number;
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully 1`] = `
+"export type Record = Event;
+
+export interface Event {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: string;
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully 1`] = `
+"import { Decimal } from 'my-library'
+
+export type Record = Event;
+
+export interface Event {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * A Decimal that we need a library for
+     */
+    decimalValue: Decimal;
+    /**
+     * Another decimal to make sure we don't add the import more than once
+     */
+    anotherDecimal: Decimal;
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithMap.avsc successfully 1`] = `
+"export type Record = User;
+
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    mapField: {
+        [index: string]: Foo;
+    };
+}
+
+export interface Foo {
+    label: string;
+}"
+`;
+
+exports[`Avro ts test Should convert RecordWithUnion.avsc successfully 1`] = `
+"export type Record = User;
+
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    unionType?: null | string;
+}"
+`;
+
+exports[`Avro ts test Should convert SimpleRecord.avsc successfully 1`] = `
+"export type Record = User;
+
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+}"
+`;
+
+exports[`Avro ts test Should convert TopLevelUnion.avsc successfully 1`] = `
+"export namespace Names {
+    export const Cancelled = \\"com.example.avro.Cancelled\\";
+    export const Creation = \\"com.example.avro.Creation\\";
+}
+
+export type Record = NamespacedCancelled | NamespacedCreation;
+
+export interface Cancelled {
+    metadata: EventMetadata;
+    CancellationId: string;
+}
+
+export interface EventMetadata {
+    eventId: string;
+}
+
+export interface NamespacedCancelled {
+    \\"com.example.avro.Cancelled\\": Cancelled;
+    \\"com.example.avro.Creation\\"?: never;
+}
+
+export interface Creation {
+    metadata: EventMetadata;
+    creationId: string;
+}
+
+export interface NamespacedCreation {
+    \\"com.example.avro.Creation\\": Creation;
+    \\"com.example.avro.Cancelled\\"?: never;
+}"
+`;
+
+exports[`Avro ts test Should convert TradeCollection.avsc successfully 1`] = `
+"export type Record = TradeCollection;
+
+export interface TradeCollection {
+    producerId: string;
+    exchange: string;
+    market: string;
+    trades: Trade[];
+}
+
+export interface Trade {
+    id: string;
+    price: number;
+    amount: number;
+    datetime: string;
+    timestamp: number;
+    type?: null | (\\"Market\\" | \\"Limit\\");
+    side?: null | (\\"Buy\\" | \\"Sell\\");
+}"
+`;
+
+exports[`Avro ts test Should convert User.avsc successfully 1`] = `
+"export type Record = User;
+
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    /**
+     * All email addresses on the user's account
+     */
+    emailAddresses: EmailAddress[];
+    /**
+     * All Twitter accounts that the user has OAuthed
+     */
+    twitterAccounts: TwitterAccount[];
+    /**
+     * The top-level items in the user's to-do list
+     */
+    toDoItems: ToDoItem[];
+}
+
+export interface EmailAddress {
+    /**
+     * The email address, e.g. \`foo@example.com\`
+     */
+    address: string;
+    /**
+     * true if the user has clicked the link in a confirmation email to this address.
+     */
+    verified: boolean;
+    /**
+     * Timestamp (milliseconds since epoch) when the email address was added to the account.
+     */
+    dateAdded: number;
+    /**
+     * Timestamp (milliseconds since epoch) when an email sent to this address last bounced. Reset to null when the address no longer bounces.
+     */
+    dateBounced?: null | number;
+}
+
+export interface TwitterAccount {
+    /**
+     * Indicator of whether this authorization is currently active, or has been revoked
+     */
+    status: \\"PENDING\\" | \\"ACTIVE\\" | \\"DENIED\\" | \\"EXPIRED\\" | \\"REVOKED\\";
+    /**
+     * Twitter's numeric ID for this user
+     */
+    userId: number;
+    /**
+     * The twitter username for this account (can be changed by the user)
+     */
+    screenName: string;
+    /**
+     * The OAuth token for this Twitter account
+     */
+    oauthToken: string;
+    /**
+     * The OAuth secret, used for signing requests on behalf of this Twitter account. \`null\` whilst the OAuth flow is not yet complete.
+     */
+    oauthTokenSecret?: null | string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user last authorized this Twitter account
+     */
+    dateAuthorized: number;
+}
+
+export interface ToDoItem {
+    /**
+     * User-selected state for this item (e.g. whether or not it is marked as done)
+     */
+    status: \\"HIDDEN\\" | \\"ACTIONABLE\\" | \\"DONE\\" | \\"ARCHIVED\\" | \\"DELETED\\";
+    /**
+     * One-line summary of the item
+     */
+    title: string;
+    /**
+     * Detailed description (may contain HTML markup)
+     */
+    description?: null | string;
+    /**
+     * Timestamp (milliseconds since epoch) at which the item should go from \`HIDDEN\` to \`ACTIONABLE\` status
+     */
+    snoozeDate?: null | number;
+    /**
+     * List of children of this to-do tree node
+     */
+    subItems: any[];
+}"
+`;
+
+exports[`Avro ts test supports providing different names for record and namespaced type 1`] = `
+"export namespace Names {
+    export const Cancelled = \\"com.example.avro.Cancelled\\";
+    export const Creation = \\"com.example.avro.Creation\\";
+}
+
+export type Event = NSCancelled | NSCreation;
+
+export interface Cancelled {
+    metadata: EventMetadata;
+    CancellationId: string;
+}
+
+export interface EventMetadata {
+    eventId: string;
+}
+
+export interface NSCancelled {
+    \\"com.example.avro.Cancelled\\": Cancelled;
+    \\"com.example.avro.Creation\\"?: never;
+}
+
+export interface Creation {
+    metadata: EventMetadata;
+    creationId: string;
+}
+
+export interface NSCreation {
+    \\"com.example.avro.Creation\\": Creation;
+    \\"com.example.avro.Cancelled\\"?: never;
+}"
+`;
