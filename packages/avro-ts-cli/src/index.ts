@@ -1,0 +1,1 @@
+export { convertCommand } from './convertCommand';
