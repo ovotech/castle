@@ -1103,6 +1103,14 @@
   dependencies:
     uuid "^3.3.2"
 
+"@ovotech/castle@^0.3.0":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@ovotech/castle/-/castle-0.3.1.tgz#8302de58e2a4429c7cb39a9f6027f3b104fe44c0"
+  integrity sha512-56gzu9kEwg2rw8vn+ekKQZNmF19xFWAY7XXT/7UZf3ZsPQ5G2P0FEDWlRQrrPVuqH1xYYW3ep+NjB00ZC7Wmxw==
+  dependencies:
+    "@ovotech/avro-kafkajs" "^0.1.4"
+    kafkajs "^1.12.0"
+
 "@ovotech/schema-registry-api@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@ovotech/schema-registry-api/-/schema-registry-api-1.0.5.tgz#95914deba765ee9e8ec7523b34de744028f0c934"

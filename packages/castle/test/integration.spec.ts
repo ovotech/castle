@@ -142,6 +142,7 @@ describe('Integration', () => {
 
     await retry(
       async () => {
+        expect(castle.isRunning()).toBe(true);
         expect(data).toEqual({
           0: expect.arrayContaining(['test1', 'test4', 'test7']),
           1: expect.arrayContaining(['test2', 'test5', 'test6']),
