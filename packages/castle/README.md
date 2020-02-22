@@ -69,6 +69,7 @@ enum Topic {
   Start = 'start',
   Complete = 'complete',
   Feedback = 'feedback',
+  Batched = 'batched',
 }
 
 // Define multiple producers as pure functions
@@ -85,13 +86,20 @@ const eachStartEvent = consumeEachMessage<StartEvent>(async ({ message }) => {
 const eachBatchFeedbackEvent = consumeEachBatch<FeedbackEvent>(async ({ batch, producer }) => {
   console.log(`Feedback ${batch.messages.map(msg => `${msg.value.id}:${msg.value.status}`)}`);
   console.log('Sending complete events');
-  sendComplete(producer, batch.messages.map(msg => ({ value: { id: msg.value.id } })));
+  sendComplete(
+    producer,
+    batch.messages.map(msg => ({ value: { id: msg.value.id } })),
+  );
 });
 
 // Define a parallel consumer as a pure function
 const eachCompleteEvent = consumeEachMessage<CompleteEvent>(async ({ message }) => {
   console.log(`Completed ${message.value.id}`);
 });
+
+const eachSizedBatch = consumeEachBatch(async ({ batch: { messages, partition } }) =>
+  console.log('Batch Size', partition, messages.length),
+);
 
 const main = async () => {
   const castle = createCastle({
@@ -121,6 +129,21 @@ const main = async () => {
         groupId: 'complete-group-1',
         partitionsConsumedConcurrently: 2,
         eachMessage: eachCompleteEvent,
+      },
+      {
+        topic: Topic.Batched,
+        groupId: 'batched-group-1',
+        /* Use eachSizedBatch to instruct castle to break down
+         * Kafkajs batches into chunks of size up to maxBatchSize.
+         *
+         * Castle will handle heartbeats and nudging kafka to commitIfNecessary
+         * after each chunk is processed.
+         *
+         * The consumer will be called sequentially for each chunk within
+         * a given partition.
+         */
+        eachSizedBatch,
+        maxBatchSize: 50,
       },
     ],
   });
