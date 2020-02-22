@@ -26,15 +26,14 @@ Examples:
     .option('-C, --config <configFile>', 'config file with connection deails')
     .action(async (name, { depth, json, config: configFile }: Options) => {
       await output.wrap(json, async () => {
-        const subject = `${name}-value`;
         const config = await loadConfigFile({ file: configFile });
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
 
         output.log(header('Showing schema', name, config));
 
-        const versions = await schemaRegistry.getSubjectVersions(subject);
+        const versions = await schemaRegistry.getSubjectVersions(name);
         const versionSchemas = await Promise.all(
-          versions.map(version => schemaRegistry.getSubjectVersionSchema(subject, version)),
+          versions.map(version => schemaRegistry.getSubjectVersionSchema(name, version)),
         );
         output.json(versionSchemas);
         output.log(`Found ${versions.length} versions`);

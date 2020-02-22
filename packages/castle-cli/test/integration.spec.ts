@@ -224,7 +224,8 @@ describe('Integration', () => {
     });
 
     const schemaFile = join(__dirname, 'schema1.json');
-    const produceMessage1 = `topic message ${topic1} --schema-file ${schemaFile} --message {"field1":"other"}`;
+    const keySchemaFile = join(__dirname, 'schema2.json');
+    const produceMessage1 = `topic message ${topic1} --schema-file ${schemaFile} --key-schema-file ${keySchemaFile} --message {"field1":"other"} --key {"id":11}`;
     castleTopicMessage(new Command(), output).parse(produceMessage1.split(' '));
 
     await retry(
@@ -283,12 +284,12 @@ describe('Integration', () => {
     // Schema
     // ================================================
 
-    const schema2 = `schema show ${topic2} --depth 8`;
+    const schema2 = `schema show ${topic2}-value --depth 8`;
     castleSchemaShow(new Command(), output).parse(schema2.split(' '));
 
     await retry(
       async () => {
-        expect(logger.std).toContain(`Showing schema "${topic2}"`);
+        expect(logger.std).toContain(`Showing schema "${topic2}-value"`);
         expect(logger.std).toContain('Version 01');
         expect(logger.std).toContain("type: 'record'");
         expect(logger.std).toContain("name: 'Event'");
@@ -297,6 +298,24 @@ describe('Integration', () => {
         logger.clear();
       },
       { retries: 4, delay: 1000 },
+    );
+
+    // Consume With Key
+    // ================================================
+
+    const consume1 = `topic consume ${topic1} --group-id ${groupId} --encoded-key`;
+    castleTopicConsume(new Command(), output).parse(consume1.split(' '));
+
+    await retry(
+      async () => {
+        expect(logger.std).toContain(`Consume "${topic1}"`);
+        expect(logger.std).toContain('Key { id: 11 }');
+        expect(logger.std).toContain("Event { field1: 'other' }");
+        expect(logger.std).toContain('Success');
+
+        logger.clear();
+      },
+      { retries: 8, delay: 1000 },
     );
 
     // Consume

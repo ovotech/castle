@@ -12,13 +12,17 @@ import { getPartitionProgress, isPartitionProgressFinished } from '../../helpers
 const toMessageOutput = (
   { partition }: AvroBatch,
   { key, offset, value }: AvroKafkaMessage,
-  depth: number,
+  { depth, encodedKey }: { encodedKey: boolean; depth: number },
 ): string => {
-  return (
-    devider(`Partition ${partition} - Key ${key} - Offset ${offset} `) +
-    '\n' +
-    inspect(value, { depth, colors: true })
-  );
+  return encodedKey
+    ? devider(`Partition ${partition} - Offset ${offset} `) +
+        '\n' +
+        inspect(key, { depth, colors: true }) +
+        '\n' +
+        inspect(value, { depth, colors: true })
+    : devider(`Partition ${partition} - Key ${key} - Offset ${offset} `) +
+        '\n' +
+        inspect(value, { depth, colors: true });
 };
 
 interface Options {
@@ -26,6 +30,7 @@ interface Options {
   groupId: string;
   depth: number;
   tail?: boolean;
+  encodedKey: boolean;
   json: boolean;
   verbose?: 1 | 2 | 3 | 4;
 }
@@ -55,6 +60,7 @@ Example:
       `castle-cli-${uuid.v4()}`,
     )
     .option('-T, --tail', 'start listening for new events')
+    .option('-K, --encoded-key', 'Decode the key with avro schema too', false)
     .option('-J, --json', 'output as json')
     .option(
       '-v, --verbose',
@@ -63,102 +69,110 @@ Example:
       0,
     )
     .option('-C, --config <configFile>', 'config file with connection deails')
-    .action(async (topic, { verbose, groupId, depth, json, tail, config: configFile }: Options) => {
-      await output.wrap(json, async () => {
-        const config = await loadConfigFile({ file: configFile, verbose, output });
-        const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
-        const kafka = new Kafka({
-          clientId: 'castle-cli',
-          ...config.kafka,
-        });
-        const avroKafka = new AvroKafka(schemaRegistry, kafka);
+    .action(
+      async (
+        topic,
+        { verbose, encodedKey, groupId, depth, json, tail, config: configFile }: Options,
+      ) => {
+        await output.wrap(json, async () => {
+          const config = await loadConfigFile({ file: configFile, verbose, output });
+          const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
+          const kafka = new Kafka({
+            clientId: 'castle-cli',
+            ...config.kafka,
+          });
+          const avroKafka = new AvroKafka(schemaRegistry, kafka);
 
-        output.log(header('Consume', topic, config));
+          output.log(header('Consume', topic, config));
 
-        const consumer = avroKafka.consumer({ groupId });
-        const admin = kafka.admin();
-        await Promise.all([consumer.connect(), admin.connect()]);
+          const consumer = avroKafka.consumer({ groupId });
+          const admin = kafka.admin();
+          await Promise.all([consumer.connect(), admin.connect()]);
 
-        try {
-          let jsonResult: AvroProducerRecord;
+          try {
+            let jsonResult: AvroProducerRecord;
 
-          await consumer.subscribe({ topic, fromBeginning: !tail });
-          const partitionsProgress = await getPartitionProgress(admin, topic, groupId);
-          await admin.disconnect();
+            await consumer.subscribe({ topic, fromBeginning: !tail });
+            const partitionsProgress = await getPartitionProgress(admin, topic, groupId);
+            await admin.disconnect();
 
-          output.log(devider(`Offsets for groupId ${groupId} `));
-          output.log(
-            table([
-              ['Partition', 'Offset', 'Group Offset', 'Lag'],
-              ...partitionsProgress.map(item => [
-                String(item.partition),
-                item.topicOffset,
-                item.groupOffset,
-                item.lag,
+            output.log(devider(`Offsets for groupId ${groupId} `));
+            output.log(
+              table([
+                ['Partition', 'Offset', 'Group Offset', 'Lag'],
+                ...partitionsProgress.map(item => [
+                  String(item.partition),
+                  item.topicOffset,
+                  item.groupOffset,
+                  item.lag,
+                ]),
               ]),
-            ]),
-          );
+            );
 
-          if (isPartitionProgressFinished(partitionsProgress)) {
-            output.error('No more messages for this consumer group');
-            output.json([]);
-            await consumer.disconnect();
-          } else {
-            await consumer.run({
-              eachBatch: async payload => {
-                const batch = payload.batch;
-                const offsetLagLow = Long.fromString(batch.offsetLagLow());
-                const nonZeroOffsetLagLow = offsetLagLow.isZero()
-                  ? Long.fromValue(1)
-                  : offsetLagLow;
-                const offsetLag = Long.fromString(batch.offsetLag());
+            if (isPartitionProgressFinished(partitionsProgress)) {
+              output.error('No more messages for this consumer group');
+              output.json([]);
+              await consumer.disconnect();
+            } else {
+              await consumer.run({
+                encodedKey,
+                eachBatch: async payload => {
+                  const batch = payload.batch;
+                  const offsetLagLow = Long.fromString(batch.offsetLagLow());
+                  const nonZeroOffsetLagLow = offsetLagLow.isZero()
+                    ? Long.fromValue(1)
+                    : offsetLagLow;
+                  const offsetLag = Long.fromString(batch.offsetLag());
 
-                const progress = nonZeroOffsetLagLow
-                  .subtract(offsetLag)
-                  .divide(nonZeroOffsetLagLow)
-                  .toInt();
-                const progressPercent = Math.round(progress * 100);
+                  const progress = nonZeroOffsetLagLow
+                    .subtract(offsetLag)
+                    .divide(nonZeroOffsetLagLow)
+                    .toInt();
+                  const progressPercent = Math.round(progress * 100);
 
-                const range = `${batch.firstOffset()}...${batch.lastOffset()}`;
-                output.log('');
-                output.log(
-                  devider(
-                    `Partition ${batch.partition} - Offsets ${range} (${progressPercent}%) `,
-                    '#',
-                  ),
-                );
-                output.log(
-                  batch.messages.map(message => toMessageOutput(batch, message, depth)).join('\n'),
-                );
+                  const range = `${batch.firstOffset()}...${batch.lastOffset()}`;
+                  output.log('');
+                  output.log(
+                    devider(
+                      `Partition ${batch.partition} - Offsets ${range} (${progressPercent}%) `,
+                      '#',
+                    ),
+                  );
+                  output.log(
+                    batch.messages
+                      .map(message => toMessageOutput(batch, message, { depth, encodedKey }))
+                      .join('\n'),
+                  );
 
-                jsonResult = {
-                  topic,
-                  schema: batch.messages[0].schema,
-                  messages: (jsonResult ? jsonResult.messages : []).concat(
-                    batch.messages.map(message => ({
-                      partition: batch.partition,
-                      value: message.value,
-                      key: message.key,
-                    })),
-                  ),
-                };
+                  jsonResult = {
+                    topic,
+                    schema: batch.messages[0].schema,
+                    messages: (jsonResult ? jsonResult.messages : []).concat(
+                      batch.messages.map(message => ({
+                        partition: batch.partition,
+                        value: message.value,
+                        key: message.key,
+                      })),
+                    ),
+                  };
 
-                partitionsProgress[
-                  partitionsProgress.findIndex(item => item.partition === batch.partition)
-                ].isFinished = Long.fromString(batch.offsetLag()).isZero();
+                  partitionsProgress[
+                    partitionsProgress.findIndex(item => item.partition === batch.partition)
+                  ].isFinished = Long.fromString(batch.offsetLag()).isZero();
 
-                if (!tail && isPartitionProgressFinished(partitionsProgress)) {
-                  output.json(jsonResult);
-                  output.success('Success');
-                  consumer.pause([{ topic }]);
-                  setTimeout(() => consumer.disconnect(), 0);
-                }
-              },
-            });
+                  if (!tail && isPartitionProgressFinished(partitionsProgress)) {
+                    output.json(jsonResult);
+                    output.success('Success');
+                    consumer.pause([{ topic }]);
+                    setTimeout(() => consumer.disconnect(), 0);
+                  }
+                },
+              });
+            }
+          } catch (error) {
+            consumer.disconnect();
+            throw error;
           }
-        } catch (error) {
-          consumer.disconnect();
-          throw error;
-        }
-      });
-    });
+        });
+      },
+    );

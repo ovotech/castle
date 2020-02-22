@@ -11,48 +11,63 @@ import {
 } from 'kafkajs';
 import { Schema } from 'avsc';
 
-export interface AvroEachMessagePayload<T = unknown> extends Omit<EachMessagePayload, 'message'> {
-  message: AvroKafkaMessage<T>;
+export interface AvroEachMessagePayload<T = unknown, KT = KafkaMessage['key']>
+  extends Omit<EachMessagePayload, 'message'> {
+  message: AvroKafkaMessage<T, KT>;
 }
 
-export interface AvroBatch<T = unknown> extends Omit<Batch, 'messages'> {
-  messages: AvroKafkaMessage<T>[];
+export interface AvroBatch<T = unknown, KT = KafkaMessage['key']> extends Omit<Batch, 'messages'> {
+  messages: AvroKafkaMessage<T, KT>[];
 }
 
-export interface AvroEachBatchPayload<T = unknown> extends Omit<EachBatchPayload, 'batch'> {
-  batch: AvroBatch<T>;
+export interface AvroEachBatchPayload<T = unknown, KT = KafkaMessage['key']>
+  extends Omit<EachBatchPayload, 'batch'> {
+  batch: AvroBatch<T, KT>;
 }
 
-export type AvroEachMessage<T = unknown> = (payload: AvroEachMessagePayload<T>) => Promise<void>;
-export type AvroEachBatch<T = unknown> = (payload: AvroEachBatchPayload<T>) => Promise<void>;
+export type AvroEachMessage<T = unknown, KT = KafkaMessage['key']> = (
+  payload: AvroEachMessagePayload<T, KT>,
+) => Promise<void>;
+export type AvroEachBatch<T = unknown, KT = KafkaMessage['key']> = (
+  payload: AvroEachBatchPayload<T, KT>,
+) => Promise<void>;
 
-export interface AvroKafkaMessage<T = unknown> extends Omit<KafkaMessage, 'value'> {
+export interface AvroKafkaMessage<T = unknown, KT = KafkaMessage['key']>
+  extends Omit<KafkaMessage, 'value' | 'key'> {
   schema: Schema;
+  key: KT;
   value: T;
 }
 
-export interface AvroMessage<T = unknown> extends Omit<Message, 'value'> {
+export interface AvroMessage<T = unknown, KT = Message['key']>
+  extends Omit<Message, 'value' | 'key'> {
+  key?: KT;
   value: T;
 }
 
-export interface AvroProducerRecord<T = unknown> extends Omit<ProducerRecord, 'messages'> {
+export interface AvroProducerRecord<T = unknown, KT = Message['key']>
+  extends Omit<ProducerRecord, 'messages'> {
   schema: Schema;
-  messages: AvroMessage<T>[];
+  keySchema?: Schema;
+  messages: AvroMessage<T, KT>[];
 }
 
-export interface AvroTopicMessages<T = unknown> extends Omit<TopicMessages, 'messages'> {
+export interface AvroTopicMessages<T = unknown, KT = Message['key']>
+  extends Omit<TopicMessages, 'messages'> {
   schema: Schema;
-  messages: AvroMessage<T>[];
+  keySchema?: Schema;
+  messages: AvroMessage<T, KT>[];
 }
 
 export interface AvroProducerBatch extends Omit<ProducerBatch, 'topicMessages'> {
-  topicMessages: AvroTopicMessages[];
+  topicMessages: AvroTopicMessages<unknown, unknown>[];
 }
 
-export interface AvroConsumerRun<T = unknown>
+export interface AvroConsumerRun<T = unknown, KT = KafkaMessage['key']>
   extends Omit<ConsumerRunConfig, 'eachBatch' | 'eachMessage'> {
-  eachBatch?: (payload: AvroEachBatchPayload<T>) => Promise<void>;
-  eachMessage?: (payload: AvroEachMessagePayload<T>) => Promise<void>;
+  encodedKey?: boolean;
+  eachBatch?: (payload: AvroEachBatchPayload<T, KT>) => Promise<void>;
+  eachMessage?: (payload: AvroEachMessagePayload<T, KT>) => Promise<void>;
 }
 
 export type TopicsAlias = { [key: string]: string };

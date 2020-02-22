@@ -6,6 +6,7 @@ import {
   ProducerEvents,
   ValueOf,
   RemoveInstrumentationEventListener,
+  Message,
 } from 'kafkajs';
 import { AvroProducerRecord, AvroProducerBatch, TopicsAlias } from './types';
 import { AvroTransaction } from './AvroTransaction';
@@ -38,7 +39,9 @@ export class AvroProducer {
     return this.producer.logger();
   }
 
-  public async send<T = unknown>(record: AvroProducerRecord<T>): Promise<RecordMetadata[]> {
+  public async send<T = unknown, KT = Message['key']>(
+    record: AvroProducerRecord<T, KT>,
+  ): Promise<RecordMetadata[]> {
     return this.producer.send(
       await toProducerRecord(this.schemaRegistry, resolveTopic(record, this.topicsAlias)),
     );

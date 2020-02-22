@@ -11,6 +11,7 @@ interface Options {
   key?: string;
   partition?: number;
   schemaFile: string;
+  keySchemaFile?: string;
   verbose?: 1 | 2 | 3 | 4;
 }
 export const castleTopicMessage = (command: Command, output = new Output(console)): Command =>
@@ -19,16 +20,20 @@ export const castleTopicMessage = (command: Command, output = new Output(console
     .arguments('<topic>')
     .description(
       `Produce an ad-hoc message for a topic.
-You need to specify schema file (with --schema) and message content as json (--message).
+You need to specify schema file (with --schema-file) and message content as json (--message).
+If you define --key-schema-file as well you can encode your keys too.
 
 Example:
   castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}'
+  castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}' --key my-key
+  castle topic message my-topic --schema-file my-schema.json --key-schema-file key-schema.json --message '{"text":"other"}' --key '{"id":10}'
   castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}' -vvvv`,
     )
     .option('-P, --partition <partition>', 'the partion to send this on', val => parseInt(val))
     .option('-K, --key <key>', 'message key')
     .requiredOption('-M, --message <message>', 'the JSON message to be sent')
     .requiredOption('-S, --schema-file <schema>', 'path to the schema file')
+    .option('-E, --key-schema-file <schema>', 'optional path to the key schema file')
     .option('-C, --config <config>', 'config file with connection deails')
     .option(
       '-v, --verbose',
@@ -39,12 +44,29 @@ Example:
     .action(
       async (
         topic,
-        { config: configFile, message: messageJson, verbose, schemaFile, key, partition }: Options,
+        {
+          config: configFile,
+          message: messageJson,
+          verbose,
+          schemaFile,
+          keySchemaFile,
+          key,
+          partition,
+        }: Options,
       ) => {
         await output.wrap(false, async () => {
           const config = await loadConfigFile({ file: configFile, verbose, output });
           const schema = JSON.parse(readFileSync(schemaFile, 'utf8'));
-          const messages = [{ value: JSON.parse(messageJson), key, partition }];
+          const keySchema = keySchemaFile
+            ? JSON.parse(readFileSync(keySchemaFile, 'utf8'))
+            : undefined;
+          const messages = [
+            {
+              value: JSON.parse(messageJson),
+              key: keySchema && key ? JSON.parse(key) : key,
+              partition,
+            },
+          ];
 
           const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
           const kafka = new Kafka(config.kafka);
@@ -55,7 +77,7 @@ Example:
           await producer.connect();
 
           try {
-            await producer.send({ messages, schema, topic });
+            await producer.send({ messages, schema, keySchema, topic });
             output.success('Success');
           } finally {
             producer.disconnect();

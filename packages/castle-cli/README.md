@@ -160,6 +160,7 @@ Options:
 - `-G, --group-id <groupId>` - consumer group id, defaults to random uuid (default: "random group name")
 - `-T, --tail` - start listening for new events
 - `-J, --json` - output as json
+- `-K, --encoded-key` - Decode the key with avro schema too
 - `-v, --verbose` - Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level
 - `-C, --config <configFile>` - config file with connection deails
 - `-h, --help` - output usage information
@@ -176,6 +177,7 @@ castle topic consume my-topic --json
 
 Produce messages for a topic.
 Using a file that contains schema, topic and messages to be produced.
+Schemas for keys are supported with the "keySchema" field in the produce file.
 
 Options:
 
@@ -205,7 +207,8 @@ Example produce file:
 ### castle topic message
 
 Produce an ad-hoc message for a topic.
-You need to specify schema file (with `--schema`) and message content as json (`--message`).
+You need to specify schema file (with --schema-file) and message content as json (--message).
+If you define --key-schema-file as well you can encode your keys too.
 
 Options:
 
@@ -213,6 +216,7 @@ Options:
 - `-K, --key <key>` - message key
 - `-M, --message <message>` - the JSON message to be sent
 - `-S, --schema-file <schema>` - path to the schema file
+- `-E, --key-schema-file <schema>` - optional path to the key schema file
 - `-C, --config <config>` - config file with connection deails
 - `-v, --verbose` - Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level
 - `-h, --help` - output usage information

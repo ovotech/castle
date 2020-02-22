@@ -1,7 +1,6 @@
 import {
   idToSchema,
   schemaToId,
-  toSubject,
   getSubjects,
   getSubjectVersionSchema,
   getSubjectVersions,
@@ -87,14 +86,19 @@ export class SchemaRegistry {
     }
   }
 
-  public async getDecodeItem(topic: string, schema: Schema): Promise<DecodeItem> {
-    const cached = this.decodeCache.get(topic);
+  public async getDecodeItem(
+    topic: string,
+    schemaType: 'value' | 'key',
+    schema: Schema,
+  ): Promise<DecodeItem> {
+    const subject = `${topic}-${schemaType}`;
+    const cached = this.decodeCache.get(subject);
     if (cached) {
       return cached;
     } else {
-      const id = await schemaToId(this.uri, toSubject(topic), schema);
+      const id = await schemaToId(this.uri, subject, schema);
       const type = Type.forSchema(schema, { registry: {}, ...this.options });
-      this.decodeCache.set(topic, { id, type });
+      this.decodeCache.set(subject, { id, type });
       return { id, type };
     }
   }
@@ -111,9 +115,13 @@ export class SchemaRegistry {
     return { type, value };
   }
 
-  public async encode<T = unknown>(topic: string, schema: Schema, value: T): Promise<Buffer> {
-    const { id, type } = await this.getDecodeItem(topic, schema);
-
+  public async encode<T = unknown>(
+    topic: string,
+    schemaType: 'value' | 'key',
+    schema: Schema,
+    value: T,
+  ): Promise<Buffer> {
+    const { id, type } = await this.getDecodeItem(topic, schemaType, schema);
     return constructMessage({ id, buffer: type.toBuffer(value) });
   }
 }
