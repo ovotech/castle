@@ -35,7 +35,7 @@ const main = async () => {
   await consumer.run({
     eachMessage: async ({ message }) => {
       const value = await schemaRegistry.decode<MyMessage>(message.value);
-      const key = await schemaRegistry.decode<MyMessage>(message.key);
+      const key = await schemaRegistry.decode<MyKey>(message.key);
       console.log(value, key);
     },
   });

@@ -142,9 +142,20 @@ const mySchema: Schema = {
   fields: [{ name: 'field1', type: 'string' }],
 };
 
+const myKeySchema: Schema = {
+  type: 'record',
+  name: 'MyKey',
+  fields: [{ name: 'id', type: 'int' }],
+};
+
 // Typescript types for the schema
 interface MyMessage {
   field1: string;
+}
+
+// Typescript types for the key schema
+interface MyKey {
+  id: number;
 }
 
 const main = async () => {
@@ -158,7 +169,8 @@ const main = async () => {
   await consumer.run({
     eachMessage: async ({ message }) => {
       const value = await schemaRegistry.decode<MyMessage>(message.value);
-      console.log(value);
+      const key = await schemaRegistry.decode<MyKey>(message.key);
+      console.log(value, key);
     },
   });
 
@@ -166,10 +178,16 @@ const main = async () => {
   const producer = kafka.producer();
   await producer.connect();
 
-  const value = await schemaRegistry.encode<MyMessage>('my-topic', mySchema, {
+  // Encode the value
+  const value = await schemaRegistry.encode<MyMessage>('my-topic', 'value', mySchema, {
     field1: 'my-string',
   });
-  await producer.send({ topic: 'my-topic', messages: [{ value }] });
+
+  // Optionally encode the key
+  const key = await schemaRegistry.encode<MyKey>('my-topic', 'key', myKeySchema, {
+    id: 10,
+  });
+  await producer.send({ topic: 'my-topic', messages: [{ value, key }] });
 };
 
 main();
