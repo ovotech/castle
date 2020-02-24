@@ -1,0 +1,8 @@
+{
+  "type": "record",
+  "name": "Event",
+  "fields": [
+    { "name": "id", "type": "int" },
+    { "name": "createdAt", "type": { "type": "int", "logicalType": "date" } }
+  ]
+}

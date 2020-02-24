@@ -1,0 +1,127 @@
+{
+  "type": "record",
+  "name": "BalanceAdjustment",
+  "namespace": "uk.co.boostpower.support.kafka.messages",
+  "doc": "A balance adjustment request and response events",
+  "fields": [
+    {
+      "name": "metadata",
+      "type": {
+        "type": "record",
+        "name": "EventMetadata",
+        "namespace": "com.ovoenergy.kafka.common.event",
+        "doc": "Metadata, to be used in each event class",
+        "fields": [
+          {
+            "name": "eventId",
+            "type": "string",
+            "doc": "A globally unique ID for this Kafka message"
+          },
+          {
+            "name": "traceToken",
+            "type": "string",
+            "doc": "An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable"
+          },
+          {
+            "name": "createdAt",
+            "type": { "type": "long", "logicalType": "timestamp-millis" },
+            "doc": "A timestamp for when the event was created (in epoch millis)"
+          },
+          {
+            "name": "config",
+            "type": [
+              {
+                "type": "record",
+                "name": "Config",
+                "fields": [
+                  {
+                    "name": "tokenId",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "type": "record",
+                "name": "ConfigExtended",
+                "fields": [
+                  {
+                    "name": "tokenId",
+                    "type": "string"
+                  },
+                  {
+                    "name": "extensionId",
+                    "type": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "event",
+      "type": [
+        {
+          "type": "record",
+          "name": "BalanceAdjustmentRequest",
+          "doc": "Balance Adjustment request has been sent",
+          "fields": [
+            {
+              "name": "jobId",
+              "type": "string",
+              "doc": "A unique balance adjustment job id. Will correspond with the jobId of BalanceAdjustmentResponse"
+            },
+            {
+              "name": "accountId",
+              "type": "string",
+              "doc": "Unique identifier for the customer. Gentrack Account ID. Usually 7 digits."
+            },
+            {
+              "name": "msn",
+              "type": "string",
+              "doc": "Meter Serial Number of the meter having its balance adjusted"
+            },
+            {
+              "name": "mpxn",
+              "type": "string",
+              "doc": "A Meter Point Administration Number (Electricity) or Meter Point Reference Number (Gas). It is expected that the specified meter supplies this Supply Point."
+            },
+            {
+              "name": "fuel",
+              "type": { "type": "enum", "name": "Fuel", "symbols": ["Gas", "Electricity"] },
+              "doc": "Type of fuel of the meter"
+            },
+            {
+              "name": "amount",
+              "type": { "type": "long", "logicalType": "thousands-of-a-penny" },
+              "doc": "The amount the balance was adjusted with, in thousands of a penny"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "BalanceAdjustmentResponse",
+          "doc": "Balance Adjustment Completion",
+          "fields": [
+            {
+              "name": "jobId",
+              "type": "string",
+              "doc": "A unique adjustment job id. Will correspond with the jobId S2BalanceAdjustmentRequest"
+            },
+            {
+              "name": "status",
+              "type": { "type": "enum", "name": "Status", "symbols": ["Error", "Success"] },
+              "doc": "The status of the balance adjustment when its completed"
+            },
+            {
+              "name": "balance",
+              "type": { "type": "long", "logicalType": "thousands-of-a-penny" },
+              "doc": "The resulting the balance after the adjustemt, in thousands of a penny"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
