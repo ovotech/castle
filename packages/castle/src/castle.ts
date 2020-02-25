@@ -5,6 +5,7 @@ import {
   AvroProducer,
   SchemaRegistry,
   AvroProducerRecord,
+  AvroConsumer,
 } from '@ovotech/avro-kafkajs';
 import {
   CastleConsumerConfig,
@@ -52,16 +53,26 @@ export const consumeEachBatch = <T, TContext extends object = {}>(
 ): ((payload: CastleEachBatchPayload<T> & TContext) => Promise<void>) => config;
 
 export const createCastle = (config: CastleConfig): Castle => {
+  const servicesStatus = new Map<AvroConsumer | AvroProducer, boolean>();
+
   const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
   const kafka = new AvroKafka(schemaRegistry, new Kafka(config.kafka), config.topicsAlias);
+
   const producer = kafka.producer(config.producer);
+  servicesStatus.set(producer, false);
+  producer.on('producer.connect', () => servicesStatus.set(producer, true));
+  producer.on('producer.disconnect', () => servicesStatus.set(producer, false));
+  producer.on('producer.network.request', () => servicesStatus.set(producer, true));
+
   const consumers: CastleConsumer[] = config.consumers.map(config => {
     const finalConfig = toFinalCastleConsumerConfig(config);
-    return { instance: kafka.consumer(finalConfig), config: finalConfig };
-  });
+    const instance = kafka.consumer(finalConfig);
+    servicesStatus.set(instance, false);
+    instance.on('consumer.connect', () => servicesStatus.set(instance, true));
+    instance.on('consumer.disconnect', () => servicesStatus.set(instance, false));
 
-  const services = [producer, ...consumers.map(consumer => consumer.instance)];
-  let running = false;
+    return { instance, config: finalConfig };
+  });
 
   const run = async (): Promise<void> => {
     await Promise.all(
@@ -76,15 +87,13 @@ export const createCastle = (config: CastleConfig): Castle => {
     kafka,
     consumers,
     producer,
-    isRunning: () => running,
+    isRunning: () => [...servicesStatus.values()].includes(true),
     start: async () => {
-      await Promise.all(services.map(service => service.connect()));
+      await Promise.all([...servicesStatus.keys()].map(service => service.connect()));
       await run();
-      running = true;
     },
     stop: async () => {
-      await Promise.all(services.map(service => service.disconnect()));
-      running = false;
+      await Promise.all([...servicesStatus.keys()].map(service => service.disconnect()));
     },
   };
 };
