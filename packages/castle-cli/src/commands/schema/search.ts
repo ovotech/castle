@@ -30,9 +30,7 @@ Examples:
         output.log(header('Searching for schemas', name ? name : '<all>', config));
 
         const subjects = await schemaRegistry.getSubjects();
-        const filtered = subjects
-          .filter(subject => (name ? subject.includes(name) : true))
-          .map(subject => subject.replace(/-value$/, ''));
+        const filtered = subjects.filter(subject => (name ? subject.includes(name) : true));
         output.json(filtered);
 
         if (filtered.length === 0) {

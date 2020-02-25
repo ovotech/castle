@@ -7,19 +7,31 @@ import {
 import { Kafka, logLevel, Admin, Producer, Consumer } from 'kafkajs';
 import { retry } from 'ts-retry-promise';
 import * as uuid from 'uuid';
-import { Schema } from 'avsc';
+import { schema } from 'avsc';
+
+interface MessageType {
+  stringField: string;
+  intField?: number | null;
+}
+
+type KeyType = number;
+
+const schema: schema.RecordType = {
+  type: 'record',
+  name: 'TestMessage',
+  fields: [
+    { type: 'string', name: 'stringField' },
+    { type: ['null', 'int'], name: 'intField' },
+  ],
+};
+
+const keySchema: schema.PrimitiveType = 'int';
 
 const topic = `dev_avroKafkajs_${uuid.v4()}`;
 interface MessageType {
   stringField: string;
   intField?: number | null;
 }
-
-const schema = {
-  type: 'record',
-  name: 'TestMessage',
-  fields: [{ type: 'string', name: 'stringField' }, { type: ['null', 'int'], name: 'intField' }],
-} as Schema;
 
 describe('Functions', () => {
   let producer: Producer;
@@ -91,9 +103,9 @@ describe('Functions', () => {
     );
   });
 
-  it('Should process using raw SchemaRegistry', async () => {
+  it('Should process using raw SchemaRegistry with encoded keys', async () => {
     jest.setTimeout(10000);
-    const consumed: Array<{ value: MessageType; partition: number }> = [];
+    const consumed: Array<{ value: MessageType; key: KeyType; partition: number }> = [];
 
     await admin.createTopics({ topics: [{ topic, numPartitions: 2 }] });
     await consumer.subscribe({ topic });
@@ -101,25 +113,30 @@ describe('Functions', () => {
       partitionsConsumedConcurrently: 2,
       eachMessage: async payload => {
         const value = await schemaRegistry.decode<MessageType>(payload.message.value);
-        consumed.push({ value, partition: payload.partition });
+        const key = await schemaRegistry.decode<KeyType>(payload.message.key);
+        consumed.push({ value, key, partition: payload.partition });
       },
     });
 
-    const value1 = await schemaRegistry.encode<MessageType>(topic, schema, {
+    const value1 = await schemaRegistry.encode<MessageType>(topic, 'value', schema, {
       intField: 10,
       stringField: 'test1',
     });
 
-    const value2 = await schemaRegistry.encode<MessageType>(topic, schema, {
+    const key1 = await schemaRegistry.encode<KeyType>(topic, 'key', keySchema, 101);
+
+    const value2 = await schemaRegistry.encode<MessageType>(topic, 'value', schema, {
       intField: null,
       stringField: 'test2',
     });
 
+    const key2 = await schemaRegistry.encode<KeyType>(topic, 'key', keySchema, 102);
+
     await producer.send({
       topic,
       messages: [
-        { value: value1, partition: 0, key: 'test-1' },
-        { value: value2, partition: 1, key: 'test-2' },
+        { value: value1, partition: 0, key: key1 },
+        { value: value2, partition: 1, key: key2 },
       ],
     });
 
@@ -130,12 +147,14 @@ describe('Functions', () => {
           expect.objectContaining({
             partition: 0,
             value: { intField: 10, stringField: 'test1' },
+            key: 101,
           }),
         );
         expect(consumed).toContainEqual(
           expect.objectContaining({
             partition: 1,
             value: { intField: null, stringField: 'test2' },
+            key: 102,
           }),
         );
       },

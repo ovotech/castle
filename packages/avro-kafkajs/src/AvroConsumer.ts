@@ -7,6 +7,7 @@ import {
   ConsumerEvents,
   ValueOf,
   RemoveInstrumentationEventListener,
+  KafkaMessage,
 } from 'kafkajs';
 import { AvroConsumerRun, TopicsAlias } from './types';
 import { toAvroEachMessage, toAvroEachBatch, resolveTopic } from './avro';
@@ -34,17 +35,17 @@ export class AvroConsumer {
     return this.consumer.stop();
   }
 
-  public run<T = unknown>(config?: AvroConsumerRun<T>): Promise<void> {
+  public run<T = unknown, KT = KafkaMessage['key']>(config: AvroConsumerRun<T, KT>): Promise<void> {
+    const { eachMessage, eachBatch, encodedKey, ...rest } = config;
+
     return this.consumer.run({
-      ...config,
-      eachMessage:
-        config && config.eachMessage
-          ? toAvroEachMessage<T>(this.schemaRegistry, config.eachMessage)
-          : undefined,
-      eachBatch:
-        config && config.eachBatch
-          ? toAvroEachBatch<T>(this.schemaRegistry, config.eachBatch)
-          : undefined,
+      ...rest,
+      eachMessage: eachMessage
+        ? toAvroEachMessage<T, KT>(this.schemaRegistry, eachMessage, encodedKey)
+        : undefined,
+      eachBatch: eachBatch
+        ? toAvroEachBatch<T, KT>(this.schemaRegistry, eachBatch, encodedKey)
+        : undefined,
     });
   }
 

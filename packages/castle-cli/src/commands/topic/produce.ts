@@ -44,6 +44,7 @@ const ProduceFileType = Record({
 }).And(
   Partial({
     timeout: Number,
+    keySchema: TypeSchema,
     compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)),
   }),
 );
@@ -68,6 +69,7 @@ export const castleTopicProduce = (command: Command, output = new Output(console
     .description(
       `Produce messages for a topic.
 Using a file that contains schema, topic and messages to be produced.
+Schemas for keys are supported with the "keySchema" field in the produce file.
 
 Example:
   castle topic produce my-produce-file.json
@@ -95,7 +97,7 @@ Example produce file:
       await output.wrap(false, async () => {
         const config = await loadConfigFile({ file: configFile, verbose, output });
 
-        const { messages, schema, topic } = loadAvroProducerRecordFile(file);
+        const { messages, schema, keySchema, topic } = loadAvroProducerRecordFile(file);
 
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
         const kafka = new Kafka(config.kafka);
@@ -110,7 +112,7 @@ Example produce file:
         await producer.connect();
 
         try {
-          await producer.send({ messages, schema, topic });
+          await producer.send({ messages, schema, keySchema, topic });
           output.success('Success');
         } finally {
           producer.disconnect();
