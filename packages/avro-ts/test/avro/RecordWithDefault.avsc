@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "name": "RecordWithDefault",
+  "namespace": "com.example.avro",
+  "fields": [
+    {
+      "name": "pleaseNoNamespace",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "NoNeedForNamespace",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "doc": "A fictitious id"
+            }
+          ]
+        }
+      ],
+      "default": null
+    }
+  ]
+}

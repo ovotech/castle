@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "Event",
+  "fields": [
+    { "name": "id", "type": "int" },
+    { "name": "decimalValue", "type": { "type": "long", "logicalType": "decimal" } },
+    { "name": "anotherDecimal", "type": { "type": "long", "logicalType": "decimal" } }
+  ]
+}
