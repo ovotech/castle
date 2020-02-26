@@ -11,7 +11,7 @@ export const convertMapType: Convert<schema.MapType> = (context, schema) => {
   return {
     context: map.context,
     type: Type.TypeLiteral({
-      index: Type.Index({ name: 'index', nameType: Type.Str, type: map.type }),
+      index: Type.Index({ name: 'index', nameType: Type.String, type: map.type }),
     }),
   };
 };

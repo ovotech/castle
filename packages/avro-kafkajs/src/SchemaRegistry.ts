@@ -104,7 +104,7 @@ export class SchemaRegistry {
   }
 
   public async decode<T = unknown>(avroBuffer: Buffer): Promise<T> {
-    const { value } = await this.decodeWithType(avroBuffer);
+    const { value } = await this.decodeWithType<T>(avroBuffer);
     return value;
   }
 

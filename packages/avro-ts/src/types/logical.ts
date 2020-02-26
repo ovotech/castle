@@ -10,7 +10,7 @@ export const convertLogicalType: Convert<schema.LogicalType> = (context, schema)
   const logicalType = context.logicalTypes?.[schema.logicalType];
   if (logicalType) {
     if (typeof logicalType === 'string') {
-      return document(context, Type.Ref(logicalType));
+      return document(context, Type.Referance(logicalType));
     } else {
       return document(
         withImports(
@@ -19,7 +19,7 @@ export const convertLogicalType: Convert<schema.LogicalType> = (context, schema)
             ? { ...logicalType, named: [{ name: logicalType.named }] }
             : logicalType,
         ),
-        Type.Ref(
+        Type.Referance(
           'named' in logicalType
             ? logicalType.named
             : 'defaultAs' in logicalType

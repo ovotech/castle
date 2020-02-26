@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/blaise",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An API to generate mock payloads for @ovotech/castle using @ovotech/avro-mock-generator",
   "keywords": [
     "castle",
@@ -39,23 +39,23 @@
     "preset": "../../jest.json"
   },
   "devDependencies": {
-    "@ovotech/avro-kafkajs": "^0.1.3",
-    "@ovotech/castle": "^0.3.0",
+    "@ovotech/avro-kafkajs": "^0.2.0",
+    "@ovotech/castle": "^0.4.1",
     "@types/lodash.merge": "^4.6.6",
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
     "avsc": "^5.4.18",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.9.0",
-    "jest": "^24.9.0",
+    "eslint-config-prettier": "^6.10.0",
+    "jest": "^25.1.0",
     "prettier": "^1.19.1",
-    "ts-jest": "^24.3.0",
-    "typescript": "^3.7.4"
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.2"
   },
   "dependencies": {
     "@ovotech/avro-mock-generator": "^1.1.3",
     "lodash.merge": "^4.6.2",
-    "ts-essentials": "^4.0.0"
+    "ts-essentials": "^6.0.1"
   },
   "peerDependencies": {
     "@ovotech/castle": ">=0.3"

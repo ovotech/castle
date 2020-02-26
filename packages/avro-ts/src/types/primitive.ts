@@ -6,14 +6,14 @@ import { Type, document } from '@ovotech/ts-compose';
 const primitiveTypeMap: {
   [key in schema.PrimitiveType]: ts.TypeNode;
 } = {
-  long: Type.Num,
-  int: Type.Num,
-  double: Type.Num,
-  float: Type.Num,
-  bytes: Type.Ref('Buffer'),
+  long: Type.Number,
+  int: Type.Number,
+  double: Type.Number,
+  float: Type.Number,
+  bytes: Type.Referance('Buffer'),
   null: Type.Null,
-  boolean: Type.Bool,
-  string: Type.Str,
+  boolean: Type.Boolean,
+  string: Type.String,
 };
 
 export const isPrimitiveType = (type: Schema): type is schema.PrimitiveType =>

@@ -53,8 +53,8 @@ export const convertType: Convert = (context, type) => {
     const namespace = nameNamespace ?? context.namespace;
 
     const ref = namespace
-      ? Type.Ref([convertNamespace(namespace), firstUpperCase(name)])
-      : Type.Ref(firstUpperCase(name));
+      ? Type.Referance([convertNamespace(namespace), firstUpperCase(name)])
+      : Type.Referance(firstUpperCase(name));
 
     return document(context, ref);
   } else {

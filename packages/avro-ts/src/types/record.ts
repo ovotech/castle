@@ -37,5 +37,5 @@ export const convertRecordType: Convert<schema.RecordType> = (context, schema) =
       )
     : fields.context;
 
-  return document(withIdentifier(contextWithRef, record, namespaceName), Type.Ref(fullName));
+  return document(withIdentifier(contextWithRef, record, namespaceName), Type.Referance(fullName));
 };

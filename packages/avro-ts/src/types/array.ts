@@ -8,5 +8,5 @@ export const isArrayType = (type: Schema): type is schema.ArrayType =>
 
 export const convertArrayType: Convert<schema.ArrayType> = (context, schema) => {
   const converted = convertType(context, schema.items);
-  return document(converted.context, Type.Arr(converted.type));
+  return document(converted.context, Type.Array(converted.type));
 };

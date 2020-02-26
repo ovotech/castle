@@ -15,8 +15,8 @@ export const devider = (text = '', char = '-', size = 100): string =>
   chalk.yellow(text.padEnd(size, char));
 
 export const connection = (config: Config): string => {
-  const { host, port, auth, protocol, path } = parse(config.schemaRegistry.uri);
-  const schemaRegistry = format({ host, port, auth: auth ? '***' : undefined, protocol, path });
+  const { host, port, auth, protocol, pathname } = parse(config.schemaRegistry.uri);
+  const schemaRegistry = format({ host, port, auth: auth ? '***' : undefined, protocol, pathname });
   const modifiers = [
     ...(config.kafka.ssl ? ['(TLS)'] : []),
     ...(config.kafka.sasl ? ['(SASL)'] : []),
