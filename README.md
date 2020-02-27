@@ -88,6 +88,12 @@ castle --config uat topic consume my-topic-full-name
 
 Using it without a specified config would connect to the default local kafka server.
 
+## Castle also holds a collection of avro logical types, separate into descrete packages
+
+- [@ovotech/avro-timestamp-millis](packages/avro-timestamp-millis) - Date stored as the number of milliseconds since epoch
+- [@ovotech/avro-epoch-days](packages/avro-epoch-days) - Date stored as the number of days since epoch
+- [@ovotech/avro-decimal](packages/avro-decimal) - Decimal object value as raw bytes
+
 ## Running the tests
 
 You can run the tests with:
