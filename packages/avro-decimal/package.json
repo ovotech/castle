@@ -1,0 +1,36 @@
+{
+  "name": "@ovotech/avro-decimal",
+  "description": "A logical type representing Decimal as binary bytes",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "author": "Ivan Kerin <ikerin@gmail.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "jest --runInBand",
+    "lint:prettier": "prettier --list-different {src,test}/**/*.ts",
+    "lint:eslint": "eslint '{src,test}/**/*.ts'",
+    "lint": "yarn lint:prettier && yarn lint:eslint",
+    "build": "tsc --outDir dist --declaration",
+    "build:docs": "build-docs README.md"
+  },
+  "devDependencies": {
+    "avsc": "^5.4.18",
+    "eslint-config-prettier": "^6.10.0",
+    "jest": "^25.1.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.6.2"
+  },
+  "peerDependencies": {
+    "avsc": "^5.4.18"
+  },
+  "dependencies": {
+    "decimal.js": "^10.2.0",
+    "int64-buffer": "^0.99.1007"
+  },
+  "jest": {
+    "preset": "../../jest.json"
+  }
+}
