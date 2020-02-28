@@ -8,7 +8,7 @@ A Logical type for representing a date stored as the number of days since epoch
 yarn add @ovotech/avro-epoch-days
 ```
 
-And then you can use `AvroEpochDays` for a logicalType of a feild.
+And then you can use `AvroEpochDays` for a logicalType of a field.
 
 > [examples/simple.ts](examples/simple.ts)
 

@@ -8,7 +8,7 @@ A Logical type for representing a decimal object value as raw bytes
 yarn add @ovotech/avro-decimal
 ```
 
-And then you can use `AvroDecimal` for a logicalType of a feild.
+And then you can use `AvroDecimal` for a logicalType of a field.
 
 > [examples/simple.ts](examples/simple.ts)
 
