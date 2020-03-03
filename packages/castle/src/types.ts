@@ -77,7 +77,7 @@ export interface CastleConfig {
   producer?: ProducerConfig;
   admin?: AdminConfig;
   schemaRegistry: SchemaRegistryConfig;
-  consumers: CastleConsumerConfig[];
+  consumers?: CastleConsumerConfig[];
 }
 
 export interface CastleService {
