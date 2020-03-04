@@ -64,7 +64,7 @@ export const createCastle = (config: CastleConfig): Castle => {
   producer.on('producer.disconnect', () => servicesStatus.set(producer, false));
   producer.on('producer.network.request', () => servicesStatus.set(producer, true));
 
-  const consumers: CastleConsumer[] = config.consumers.map(config => {
+  const consumers: CastleConsumer[] = (config.consumers || []).map(config => {
     const finalConfig = toFinalCastleConsumerConfig(config);
     const instance = kafka.consumer(finalConfig);
     servicesStatus.set(instance, false);
