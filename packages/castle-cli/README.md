@@ -283,9 +283,9 @@ Options:
 - `-h, --help` - output usage information
 
 ```shell
-castle group-info my-group-id my-topic
-castle group-info my-group-id my-topic -vv
-castle group-info my-group-id my-topic --json
+castle group show my-group-id my-topic
+castle group show my-group-id my-topic -vv
+castle group show my-group-id my-topic --json
 ```
 
 ### castle group update
@@ -302,9 +302,9 @@ Options:
 - `-h, --help` - output usage information
 
 ```shell
-castle group-update my-group-id my-topic --reset-offsets earliest
-castle group-update my-group-id my-topic --reset-offsets earliest -vv
-castle group-update my-group-id my-topic --set-offset 0=10 --set-offset 1=10
+castle group update my-group-id my-topic --reset-offsets earliest
+castle group update my-group-id my-topic --reset-offsets earliest -vv
+castle group update my-group-id my-topic --set-offset 0=10 --set-offset 1=10
 ```
 
 ## Running the tests

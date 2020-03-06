@@ -18,9 +18,9 @@ export const castleGroupShow = (command: Command, output = new Output(console)):
 Break it down by partition and calculate current lag (difference between current and latest offset)
 
 Example:
-  castle group-info my-group-id my-topic
-  castle group-info my-group-id my-topic -vv
-  castle group-info my-group-id my-topic --json`,
+  castle group show my-group-id my-topic
+  castle group show my-group-id my-topic -vv
+  castle group show my-group-id my-topic --json`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
