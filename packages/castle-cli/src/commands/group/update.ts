@@ -19,9 +19,9 @@ export const castleGroupUpdate = (command: Command, output = new Output(console)
 Requires either --reset-offsets or --set-offset options.
 
 Example:
-  castle group-update my-group-id my-topic --reset-offsets earliest
-  castle group-update my-group-id my-topic --reset-offsets earliest -vv
-  castle group-update my-group-id my-topic --set-offset 0=10 --set-offset 1=10`,
+  castle group update my-group-id my-topic --reset-offsets earliest
+  castle group update my-group-id my-topic --reset-offsets earliest -vv
+  castle group update my-group-id my-topic --set-offset 0=10 --set-offset 1=10`,
     )
     .option(
       '-R, --reset-offsets <earliest|latest>',
