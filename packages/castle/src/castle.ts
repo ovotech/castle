@@ -16,6 +16,7 @@ import {
   CastleEachMessagePayload,
   CastleEachBatchPayload,
   FinalCastleConsumerConfig,
+  OptionalCastleConsumerConfig,
 } from './types';
 import { withEachSizedBatch } from './each-sized-batch';
 
@@ -43,6 +44,14 @@ export const toFinalCastleConsumerConfig = (
     return config;
   }
 };
+
+const isCastleConsumerConfig = (
+  config: OptionalCastleConsumerConfig,
+): config is CastleConsumerConfig => Boolean(config.topic);
+
+export const optionalConsumers = (
+  configs: OptionalCastleConsumerConfig[],
+): CastleConsumerConfig[] => configs.filter(isCastleConsumerConfig);
 
 export const consumeEachMessage = <T, TContext extends object = {}>(
   config: (payload: CastleEachMessagePayload<T> & TContext) => Promise<void>,

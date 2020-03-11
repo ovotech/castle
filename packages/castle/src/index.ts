@@ -1,4 +1,10 @@
-export { createCastle, produce, consumeEachMessage, consumeEachBatch } from './castle';
+export {
+  createCastle,
+  produce,
+  consumeEachMessage,
+  consumeEachBatch,
+  optionalConsumers,
+} from './castle';
 export {
   CastleEachMessagePayload,
   CastleEachBatchPayload,
