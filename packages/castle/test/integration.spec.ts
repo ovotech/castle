@@ -7,6 +7,7 @@ import {
   Logger,
   toLogCreator,
   consumeEachBatch,
+  optionalConsumers,
 } from '../src';
 import * as uuid from 'uuid';
 import { Schema } from 'avsc';
@@ -71,8 +72,12 @@ const castle = createCastle({
   schemaRegistry: { uri: 'http://localhost:8081' },
   kafka: { brokers: ['localhost:29092'], logCreator },
   consumers: [
-    { topic: topic1, fromBeginning: true, groupId: groupId1, eachMessage: logging(eachEvent1) },
-    { topic: topic2, fromBeginning: true, groupId: groupId2, eachBatch: logging(eachEvent2) },
+    ...optionalConsumers([
+      { topic: undefined, groupId: groupId1, eachMessage: logging(eachEvent1) },
+      { topic: undefined, groupId: groupId2, eachBatch: logging(eachEvent2) },
+      { topic: topic1, fromBeginning: true, groupId: groupId1, eachMessage: logging(eachEvent1) },
+      { topic: topic2, fromBeginning: true, groupId: groupId2, eachBatch: logging(eachEvent2) },
+    ]),
     {
       topic: topic3,
       fromBeginning: true,

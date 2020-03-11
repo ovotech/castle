@@ -18,6 +18,8 @@ export const getPartitionProgress = async (
   const offsets = await admin.fetchTopicOffsets(topic);
   const groupOffsets = await admin.fetchOffsets({ groupId, topic });
 
+  console.log(groupOffsets);
+
   return offsets.map(offset => {
     const groupOffset = groupOffsets.find(item => item.partition === offset.partition);
     return {
