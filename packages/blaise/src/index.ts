@@ -1,5 +1,5 @@
 import { AvroKafkaMessage } from '@ovotech/avro-kafkajs/dist/types';
-import avroToJson from '@ovotech/avro-mock-generator';
+import avroMock, { Seeded } from '@ovotech/avro-mock-generator';
 import {
   CastleEachBatchPayload,
   CastleEachMessagePayload,
@@ -49,17 +49,26 @@ export const defaultPayload: BlaiseDefaults = {
   avro: {
     schema: 'boolean',
   },
+  generator: avroMock,
 };
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 const buildBlaise = <T = unknown>(defaults = defaultPayload): Blaise<T> => {
   const blaise = <T1 = T>(
     newDefaults?: DeepPartial<BlaiseDefaults>,
-  ): Blaise<T1> => buildBlaise<T1>(merge({}, defaults, newDefaults));
+  ): Blaise<T1> => {
+    if (newDefaults?.avro?.seed) {
+      newDefaults.generator = Seeded<T>(newDefaults.avro.seed);
+    }
+    return buildBlaise<T1>(merge({}, defaults, newDefaults));
+  };
 
   blaise.default = blaise;
+
   blaise.pickUnion = <T1 = T>(pickUnion: Array<string>) =>
     blaise<T1>({ avro: { pickUnion } });
+
+  blaise.seed = <T1 = T>(seed: number) => blaise<T1>({ avro: { seed } });
 
   blaise.getDefault = () => defaults as BlaiseDefaults<T>;
 
@@ -67,10 +76,12 @@ const buildBlaise = <T = unknown>(defaults = defaultPayload): Blaise<T> => {
     message?: DeepPartial<AvroKafkaMessage<T>>,
   ): AvroKafkaMessage<T> =>
     merge(
-      { value: avroToJson(defaults.avro.schema, defaults.avro) },
+      {
+        value: defaults.generator(defaults.avro.schema, defaults.avro),
+      },
       defaults.message,
       message,
-    );
+    ) as AvroKafkaMessage<T>;
 
   blaise.eachMessage = (
     message?: DeepPartial<AvroKafkaMessage<T>>,

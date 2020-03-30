@@ -155,5 +155,32 @@ describe('Blaise', () => {
         ).toEqual(expect.any(Number));
       });
     });
+
+    describe('seed', () => {
+      it('generates reproducible mocks', () => {
+        const seeded = withAvro.default({ avro: { seed: 132 } });
+        const {
+          message: { value },
+        } = seeded.eachMessage();
+        expect(value).toMatchSnapshot();
+      });
+
+      it('generates different objects by default', () => {
+        const seeded = withAvro.seed(132);
+        expect(seeded.eachMessage()).not.toMatchObject(seeded.eachMessage());
+      });
+
+      it('resets the generator if provided the same seed twice', () => {
+        const seeded = withAvro.seed(132);
+        const seeded2 = withAvro.seed(132);
+        expect(seeded.eachMessage()).toMatchObject(seeded2.eachMessage());
+      });
+
+      it("doesn't resets the generator new defaults with the seed unchanged", () => {
+        const seeded = withAvro.seed(132);
+        const seeded2 = withAvro.default({});
+        expect(seeded.eachMessage()).not.toMatchObject(seeded2.eachMessage());
+      });
+    });
   });
 });

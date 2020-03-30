@@ -1,5 +1,5 @@
 import { AvroKafkaMessage } from '@ovotech/avro-kafkajs/dist/types';
-import { Options as AvroOptions } from '@ovotech/avro-mock-generator';
+import { Options as AvroOptions, AvroMock } from '@ovotech/avro-mock-generator';
 import {
   CastleEachBatchPayload,
   CastleEachMessagePayload,
@@ -11,6 +11,7 @@ export interface Blaise<T = unknown> {
   <T1 = T>(newDefaults?: DeepPartial<BlaiseDefaults<T>>): Blaise<T1>;
   default<T1 = T>(newDefaults: DeepPartial<BlaiseDefaults<T>>): Blaise<T1>;
   pickUnion<T1 = T>(unions: Array<string>): Blaise<T1>;
+  seed<T1 = T>(seed: number): Blaise<T1>;
 
   getDefault(): BlaiseDefaults<T>;
 
@@ -28,5 +29,6 @@ export type BlaiseDefaults<T = unknown> = {
     { batch: { messages: never } }
   >;
   message: AvroKafkaMessage<T>;
-  avro: AvroOptions & { schema: schema.AvroSchema };
+  avro: AvroOptions & { schema: schema.AvroSchema; seed?: number };
+  generator: AvroMock<T>;
 };

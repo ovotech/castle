@@ -1285,12 +1285,13 @@
     decimal.js "^10.2.0"
     int64-buffer "^0.99.1007"
 
-"@ovotech/avro-mock-generator@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@ovotech/avro-mock-generator/-/avro-mock-generator-1.1.3.tgz#6aa6916e0933dca65c7004921ae9ddd095048730"
-  integrity sha512-SPhbCqC8glX+7tFdrC08Vw7KehjNfGh7yhMmT4y8BOtF9yBTN2fAunL+PCJdZsFLVjcfNr2lyEV60Due2F418Q==
+"@ovotech/avro-mock-generator@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ovotech/avro-mock-generator/-/avro-mock-generator-2.0.0.tgz#b0d34816914d2e3206327afcf43f276e879da1c5"
+  integrity sha512-022lWpdkmuln2i/tdCLuFAdidwhGkrhFTEDeawGaEwUJVKeyYpJ2p5FFxI+WMqKBaDRpZFjeJK0iCWZHFuBfPg==
   dependencies:
-    uuid "^3.3.2"
+    mersenne-twister "^1.1.0"
+    uuid "^7.0.2"
 
 "@ovotech/schema-registry-api@^1.0.5":
   version "1.0.5"
@@ -5061,6 +5062,11 @@ merge2@^1.2.3:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.3.0.tgz#5b366ee83b2f1582c48f87e47cf1a9352103ca81"
   integrity sha512-2j4DAdlBOkiSZIsaXk4mTE3sRS02yBHAtfy127xRV3bQUFqXkjHCHLW6Scv7DwNRbIWNHH8zpnz9zMaKXIdvYw==
 
+mersenne-twister@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/mersenne-twister/-/mersenne-twister-1.1.0.tgz#f916618ee43d7179efcf641bec4531eb9670978a"
+  integrity sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=
+
 micromatch@^3.1.10, micromatch@^3.1.4:
   version "3.1.10"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-3.1.10.tgz#70859bc95c9840952f359a068a3fc49f9ecfac23"
@@ -7567,6 +7573,11 @@ uuid@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.1.tgz#95ed6ff3d8c881cbf85f0f05cc3915ef994818ef"
   integrity sha512-yqjRXZzSJm9Dbl84H2VDHpM3zMjzSJQ+hn6C4zqd5ilW+7P4ZmLEEqwho9LjP+tGuZlF4xrHQXT0h9QZUS/pWA==
+
+uuid@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.2.tgz#7ff5c203467e91f5e0d85cfcbaaf7d2ebbca9be6"
+  integrity sha512-vy9V/+pKG+5ZTYKf+VcphF5Oc6EFiu3W8Nv3P3zIh0EqVI80ZxOzuPfe9EHjkFNvf8+xuTHVeei4Drydlx4zjw==
 
 v8-compile-cache@^2.0.3:
   version "2.1.0"
