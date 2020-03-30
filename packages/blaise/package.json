@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/blaise",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "An API to generate mock payloads for @ovotech/castle using @ovotech/avro-mock-generator",
   "keywords": [
     "castle",
