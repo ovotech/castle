@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Blaise With Avro seed generates reproducible mocks 1`] = `
+Object {
+  "added": "4b1db2f0-0c24-5e49-8fc8-dc0972d1e8f7",
+  "anInt": 1676978352,
+}
+`;
