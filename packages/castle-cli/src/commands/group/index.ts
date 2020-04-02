@@ -9,6 +9,3 @@ export const castleGroup = (output = new Output(console)): commander.Command =>
     .description('Subcommands to manipulate consumer group offsets.')
     .addCommand(castleGroupShow(output))
     .addCommand(castleGroupUpdate(output));
-
-// .command('show', 'show details of a consumer group for a topic')
-// .command('update', 'update offsets for a consumer group for a topic')
