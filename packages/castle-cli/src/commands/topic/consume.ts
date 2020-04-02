@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
 import { inspect } from 'util';
 import { loadConfigFile } from '../../config';
@@ -35,8 +35,9 @@ interface Options {
   verbose?: 1 | 2 | 3 | 4;
 }
 
-export const castleTopicConsume = (command: Command, output = new Output(console)): Command =>
-  command
+export const castleTopicConsume = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('consume')
     .description(
       `Consume messages of a topic. Use schema registry to decode avro messages.
 By default would use a new random consumer group id to retrieve all the messages and exit.
@@ -48,11 +49,11 @@ Example:
   castle topic consume my-topic -vvvv
   castle topic consume my-topic --tail
   castle topic consume my-topic --group-id my-group-id
-  castle topic consume my-topic --json`,
+  castle topic consume my-topic --json
+`,
     )
-    .name('castle topic consume')
     .arguments('<topic>')
-    .option('-D, --depth <depth>', 'depth for the schemas output', val => parseInt(val), 5)
+    .option('-D, --depth <depth>', 'depth for the schemas output', (val) => parseInt(val), 5)
     .option(
       '-G, --group-id <groupId>',
       'consumer group id, defaults to random uuid',
@@ -100,7 +101,7 @@ Example:
             output.log(
               table([
                 ['Partition', 'Offset', 'Group Offset', 'Lag'],
-                ...partitionsProgress.map(item => [
+                ...partitionsProgress.map((item) => [
                   String(item.partition),
                   item.topicOffset,
                   item.groupOffset,
@@ -114,63 +115,68 @@ Example:
               output.json([]);
               await consumer.disconnect();
             } else {
-              await consumer.run({
-                encodedKey,
-                eachBatch: async payload => {
-                  const batch = payload.batch;
-                  const offsetLagLow = Long.fromString(batch.offsetLagLow());
-                  const nonZeroOffsetLagLow = offsetLagLow.isZero()
-                    ? Long.fromValue(1)
-                    : offsetLagLow;
-                  const offsetLag = Long.fromString(batch.offsetLag());
+              await new Promise(async (resolve) => {
+                await consumer.run({
+                  encodedKey,
+                  eachBatch: async (payload) => {
+                    const batch = payload.batch;
+                    const offsetLagLow = Long.fromString(batch.offsetLagLow());
+                    const nonZeroOffsetLagLow = offsetLagLow.isZero()
+                      ? Long.fromValue(1)
+                      : offsetLagLow;
+                    const offsetLag = Long.fromString(batch.offsetLag());
 
-                  const progress = nonZeroOffsetLagLow
-                    .subtract(offsetLag)
-                    .divide(nonZeroOffsetLagLow)
-                    .toInt();
-                  const progressPercent = Math.round(progress * 100);
+                    const progress = nonZeroOffsetLagLow
+                      .subtract(offsetLag)
+                      .divide(nonZeroOffsetLagLow)
+                      .toInt();
 
-                  const range = `${batch.firstOffset()}...${batch.lastOffset()}`;
-                  output.log('');
-                  output.log(
-                    devider(
-                      `Partition ${batch.partition} - Offsets ${range} (${progressPercent}%) `,
-                      '#',
-                    ),
-                  );
-                  output.log(
-                    batch.messages
-                      .map(message => toMessageOutput(batch, message, { depth, encodedKey }))
-                      .join('\n'),
-                  );
+                    const progressPercent = Math.round(progress * 100);
 
-                  jsonResult = {
-                    topic,
-                    schema: batch.messages[0].schema,
-                    messages: (jsonResult ? jsonResult.messages : []).concat(
-                      batch.messages.map(message => ({
-                        partition: batch.partition,
-                        value: message.value,
-                        key: message.key,
-                      })),
-                    ),
-                  };
+                    const range = `${batch.firstOffset()}...${batch.lastOffset()}`;
+                    output.log('');
+                    output.log(
+                      devider(
+                        `Partition ${batch.partition} - Offsets ${range} (${progressPercent}%) `,
+                        '#',
+                      ),
+                    );
+                    output.log(
+                      batch.messages
+                        .map((message) => toMessageOutput(batch, message, { depth, encodedKey }))
+                        .join('\n'),
+                    );
 
-                  partitionsProgress[
-                    partitionsProgress.findIndex(item => item.partition === batch.partition)
-                  ].isFinished = Long.fromString(batch.offsetLag()).isZero();
+                    jsonResult = {
+                      topic,
+                      schema: batch.messages[0].schema,
+                      messages: (jsonResult ? jsonResult.messages : []).concat(
+                        batch.messages.map((message) => ({
+                          partition: batch.partition,
+                          value: message.value,
+                          key: message.key,
+                        })),
+                      ),
+                    };
+                    partitionsProgress[
+                      partitionsProgress.findIndex((item) => item.partition === batch.partition)
+                    ].isFinished = Long.fromString(batch.offsetLag()).isZero();
 
-                  if (!tail && isPartitionProgressFinished(partitionsProgress)) {
-                    output.json(jsonResult);
-                    output.success('Success');
-                    consumer.pause([{ topic }]);
-                    setTimeout(() => consumer.disconnect(), 0);
-                  }
-                },
+                    if (!tail && isPartitionProgressFinished(partitionsProgress)) {
+                      output.json(jsonResult);
+                      output.success('Success');
+                      consumer.pause([{ topic }]);
+                      setTimeout(async () => {
+                        await consumer.disconnect();
+                        resolve();
+                      }, 10);
+                    }
+                  },
+                });
               });
             }
           } catch (error) {
-            consumer.disconnect();
+            await consumer.disconnect();
             throw error;
           }
         });

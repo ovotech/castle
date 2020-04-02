@@ -18,17 +18,15 @@ export const getPartitionProgress = async (
   const offsets = await admin.fetchTopicOffsets(topic);
   const groupOffsets = await admin.fetchOffsets({ groupId, topic });
 
-  return offsets.map(offset => {
-    const groupOffset = groupOffsets.find(item => item.partition === offset.partition);
+  return offsets.map((offset) => {
+    const groupOffset = groupOffsets.find((item) => item.partition === offset.partition);
     return {
       partition: offset.partition,
       groupOffset: groupOffset ? groupOffset.offset : '',
       topicOffset: offset.offset,
       isFinished: groupOffset ? groupOffset.offset === offset.offset : false,
       lag: groupOffset
-        ? Long.fromString(offset.offset)
-            .subtract(Long.fromString(groupOffset.offset))
-            .toString()
+        ? Long.fromString(offset.offset).subtract(Long.fromString(groupOffset.offset)).toString()
         : '',
       metadata: groupOffset && groupOffset.metadata ? groupOffset.metadata : '',
     };
@@ -36,4 +34,4 @@ export const getPartitionProgress = async (
 };
 
 export const isPartitionProgressFinished = (partitionProgress: PartitionProgress[]): boolean =>
-  partitionProgress.every(item => item.isFinished);
+  partitionProgress.every((item) => item.isFinished);

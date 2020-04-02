@@ -1,24 +1,7 @@
 import { retry } from 'ts-retry-promise';
 import * as ansiRegex from 'ansi-regex';
 import * as uuid from 'uuid';
-import { Command } from 'commander';
-import {
-  Output,
-  castleTopicCreate,
-  castleTopicShow,
-  castleTopicUpdate,
-  castleTopicSearch,
-  castleTopicMessage,
-  castleTopicProduce,
-  castleSchemaShow,
-  castleTopicConsume,
-  castleGroupShow,
-  castleGroupUpdate,
-  castleSchemaSearch,
-  castleConfigSet,
-  castleConfigSearch,
-  castleConfigRemove,
-} from '../src';
+import { Output, castle } from '../src';
 import { AvroKafka, SchemaRegistry } from '@ovotech/avro-kafkajs';
 import { Kafka, logLevel, ResourceTypes } from 'kafkajs';
 import { join } from 'path';
@@ -65,80 +48,55 @@ describe('Integration', () => {
 
     // Config set
     // ================================================
-    const configSet1 = `config set ${config} --schema-registry http://localhost:8081 --kafka-broker localhost:29092`;
-    castleConfigSet(new Command(), output).parse(configSet1.split(' '));
+    const configSet1 = `node castle config set ${config} --schema-registry http://localhost:8081 --kafka-broker localhost:29092`;
+    await castle(output).parseAsync(configSet1.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Setting config "${config}"`);
-        expect(logger.std).toContain(`Success`);
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Setting config "${config}"`);
+    expect(logger.std).toContain(`Success`);
+    logger.clear();
 
     // Config search
     // ================================================
-    const configSearch1 = `config search ${config}`;
-    castleConfigSearch(new Command(), output).parse(configSearch1.split(' '));
+    const configSearch1 = `node castle config search ${config}`;
+    await castle(output).parseAsync(configSearch1.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Searching for config "${config}"`);
-        expect(logger.std).toContain(
-          `${config} | Kafka: localhost:29092  SchemaRegistry: http://localhost:8081`,
-        );
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
+    expect(logger.std).toContain(`Searching for config "${config}"`);
+    expect(logger.std).toContain(
+      `${config} | Kafka: localhost:29092  SchemaRegistry: http://localhost:8081`,
     );
+    logger.clear();
 
     // Config remove
     // ================================================
-    const configRemove1 = `config remove ${config}`;
-    castleConfigRemove(new Command(), output).parse(configRemove1.split(' '));
+    const configRemove1 = `node castle config remove ${config}`;
+    await castle(output).parseAsync(configRemove1.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Removing config "${config}"`);
-        expect(logger.std).toContain('Success');
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Removing config "${config}"`);
+    expect(logger.std).toContain('Success');
+    logger.clear();
 
     // Create small topic
     // ================================================
-    const createTopic1 = `topic create ${topic1}`;
-    castleTopicCreate(new Command(), output).parse(createTopic1.split(' '));
+    const createTopic1 = `node castle topic create ${topic1}`;
+    await castle(output).parseAsync(createTopic1.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Creating topic "${topic1}"`);
-        expect(logger.std).toContain(`Number of partitions | 1`);
-        expect(logger.std).toContain(`Replication factor   | 1`);
-        expect(logger.std).toContain(`Complete`);
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Creating topic "${topic1}"`);
+    expect(logger.std).toContain(`Number of partitions | 1`);
+    expect(logger.std).toContain(`Replication factor   | 1`);
+    expect(logger.std).toContain(`Complete`);
+    logger.clear();
 
     // Create big topic
     // ================================================
-    const createTopic2 = `topic create ${topic2} --num-partitions 3 --config-entry file.delete.delay.ms=40000`;
-    castleTopicCreate(new Command(), output).parse(createTopic2.split(' '));
+    const createTopic2 = `node castle topic create ${topic2} --num-partitions 3 --config-entry file.delete.delay.ms=40000`;
+    await castle(output).parseAsync(createTopic2.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Creating topic "${topic2}"`);
-        expect(logger.std).toContain(`Number of partitions | 3`);
-        expect(logger.std).toContain(`Replication factor   | 1`);
-        expect(logger.std).toContain(`file.delete.delay.ms | 40000`);
-        expect(logger.std).toContain(`Complete`);
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Creating topic "${topic2}"`);
+    expect(logger.std).toContain(`Number of partitions | 3`);
+    expect(logger.std).toContain(`Replication factor   | 1`);
+    expect(logger.std).toContain(`file.delete.delay.ms | 40000`);
+    expect(logger.std).toContain(`Complete`);
+    logger.clear();
 
     // Check topics actually created
     // ================================================
@@ -156,32 +114,22 @@ describe('Integration', () => {
 
     // Check topic-info for big topic
     // ================================================
-    const topicInfo2 = `topic info ${topic2}`;
-    castleTopicShow(new Command(), output).parse(topicInfo2.split(' '));
+    const topicInfo2 = `node castle topic show ${topic2}`;
+    await castle(output).parseAsync(topicInfo2.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Topic "${topic2}"`);
-        expect(logger.std).toContain(`file.delete.delay.ms                    | 40000`);
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Topic "${topic2}"`);
+    expect(logger.std).toContain(`file.delete.delay.ms                    | 40000`);
+    logger.clear();
 
     // Check topic-update works for big topic
     // ================================================
-    const topicUpdate2 = `topic update ${topic2} --config-entry file.delete.delay.ms=50000`;
-    castleTopicUpdate(new Command(), output).parse(topicUpdate2.split(' '));
+    const topicUpdate2 = `node castle topic update ${topic2} --config-entry file.delete.delay.ms=50000`;
+    await castle(output).parseAsync(topicUpdate2.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Updating topic "${topic2}"`);
-        expect(logger.std).toContain(`file.delete.delay.ms | 50000`);
-        expect(logger.std).toContain(`Complete`);
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Updating topic "${topic2}"`);
+    expect(logger.std).toContain(`file.delete.delay.ms | 50000`);
+    expect(logger.std).toContain(`Complete`);
+    logger.clear();
 
     // Check config was updated
     // ================================================
@@ -199,17 +147,12 @@ describe('Integration', () => {
 
     // Check topics
     // ================================================
-    const topics = `topic search ${topic2}`;
-    castleTopicSearch(new Command(), output).parse(topics.split(' '));
+    const topics = `node castle topic search ${topic2}`;
+    await castle(output).parseAsync(topics.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Topics containing "${topic2}"`);
-        expect(logger.std).toContain(`${topic2} | 3          | 168 Hours         | delete`);
-        logger.clear();
-      },
-      { retries: 3, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Topics containing "${topic2}"`);
+    expect(logger.std).toContain(`${topic2} | 3          | 168 Hours         | delete`);
+    logger.clear();
 
     // Produce Ad-Hoc Messages
     // ================================================
@@ -225,17 +168,18 @@ describe('Integration', () => {
 
     const schemaFile = join(__dirname, 'schema1.json');
     const keySchemaFile = join(__dirname, 'schema2.json');
-    const produceMessage1 = `topic message ${topic1} --schema-file ${schemaFile} --key-schema-file ${keySchemaFile} --message {"field1":"other"} --key {"id":11}`;
-    castleTopicMessage(new Command(), output).parse(produceMessage1.split(' '));
+    const produceMessage1 = `node castle topic message ${topic1} --schema-file ${schemaFile} --key-schema-file ${keySchemaFile} --message {"field1":"other"} --key {"id":11}`;
+    await castle(output).parseAsync(produceMessage1.split(' '));
+
+    expect(logger.std).toContain(`Produce message in "${topic1}"`);
+    expect(logger.std).toContain(`Success`);
+    logger.clear();
 
     await retry(
       async () => {
-        expect(logger.std).toContain(`Produce message in "${topic1}"`);
-        expect(logger.std).toContain(`Success`);
         expect(topicMessages).toContainEqual(
           expect.objectContaining({ value: { field1: 'other' } }),
         );
-        logger.clear();
       },
       { retries: 4, delay: 1000 },
     );
@@ -249,16 +193,16 @@ describe('Integration', () => {
     const produceFile = join(__dirname, '__generated__', 'produce-file.json');
     writeFileSync(produceFile, JSON.stringify({ ...produceTemplate, topic: topic2 }));
 
-    const produce2 = `topic produce ${produceFile}`;
-    castleTopicProduce(new Command(), output).parse(produce2.split(' '));
+    const produce2 = `node castle topic produce ${produceFile}`;
+    await castle(output).parseAsync(produce2.split(' '));
+
+    expect(logger.std).toContain(`Produce "10" messages for ${topic2}`);
+    expect(logger.std).toContain('Success');
+    logger.clear();
 
     await retry(
       async () => {
-        expect(logger.std).toContain(`Produce "10" messages for ${topic2}`);
-        expect(logger.std).toContain('Success');
         expect(topicMessages).toHaveLength(11);
-
-        logger.clear();
       },
       { retries: 4, delay: 1000 },
     );
@@ -269,132 +213,94 @@ describe('Integration', () => {
     // Schema Search
     // ================================================
 
-    const schemaSearch2 = `schema search ${topic2}`;
-    castleSchemaSearch(new Command(), output).parse(schemaSearch2.split(' '));
+    const schemaSearch2 = `node castle schema search ${topic2}`;
+    await castle(output).parseAsync(schemaSearch2.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Searching for schemas "${topic2}"`);
-
-        logger.clear();
-      },
-      { retries: 4, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Searching for schemas "${topic2}"`);
+    logger.clear();
 
     // Schema
     // ================================================
 
-    const schema2 = `schema show ${topic2}-value --depth 8`;
-    castleSchemaShow(new Command(), output).parse(schema2.split(' '));
+    const schema2 = `node castle schema show ${topic2}-value --depth 8`;
+    await castle(output).parseAsync(schema2.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Showing schema "${topic2}-value"`);
-        expect(logger.std).toContain('Version 01');
-        expect(logger.std).toContain("type: 'record'");
-        expect(logger.std).toContain("name: 'Event'");
-        expect(logger.std).toContain("fields: [ { name: 'field1', type: 'string' } ]");
-
-        logger.clear();
-      },
-      { retries: 4, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Showing schema "${topic2}-value"`);
+    expect(logger.std).toContain('Version 01');
+    expect(logger.std).toContain("type: 'record'");
+    expect(logger.std).toContain("name: 'Event'");
+    expect(logger.std).toContain("fields: [ { name: 'field1', type: 'string' } ]");
+    logger.clear();
 
     // Consume With Key
     // ================================================
 
-    const consume1 = `topic consume ${topic1} --group-id ${groupId} --encoded-key`;
-    castleTopicConsume(new Command(), output).parse(consume1.split(' '));
+    const consume1 = `node castle topic consume ${topic1} --group-id ${groupId} --encoded-key`;
+    await castle(output).parseAsync(consume1.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Consume "${topic1}"`);
-        expect(logger.std).toContain('Key { id: 11 }');
-        expect(logger.std).toContain("Event { field1: 'other' }");
-        expect(logger.std).toContain('Success');
+    expect(logger.std).toContain(`Consume "${topic1}"`);
+    expect(logger.std).toContain('Key { id: 11 }');
+    expect(logger.std).toContain("Event { field1: 'other' }");
+    expect(logger.std).toContain('Success');
 
-        logger.clear();
-      },
-      { retries: 8, delay: 1000 },
-    );
+    logger.clear();
 
     // Consume
     // ================================================
 
-    const consume2 = `topic consume ${topic2} --group-id ${groupId}`;
-    castleTopicConsume(new Command(), output).parse(consume2.split(' '));
+    const consume2 = `node castle topic consume ${topic2} --group-id ${groupId}`;
+    await castle(output).parseAsync(consume2.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Consume "${topic2}"`);
-        expect(logger.std).toContain('Partition 0 - Offsets 0...2 (100%)');
-        expect(logger.std).toContain("Event { field1: 'test1' }");
-        expect(logger.std).toContain("Event { field1: 'test4' }");
-        expect(logger.std).toContain("Event { field1: 'test5' }");
-        expect(logger.std).toContain('Partition 1 - Offsets 0...3 (100%)');
-        expect(logger.std).toContain("Event { field1: 'test2' }");
-        expect(logger.std).toContain("Event { field1: 'test6' }");
-        expect(logger.std).toContain("Event { field1: 'test7' }");
-        expect(logger.std).toContain("Event { field1: 'test8' }");
-        expect(logger.std).toContain('Partition 2 - Offsets 0...2 (100%)');
-        expect(logger.std).toContain("Event { field1: 'test3' }");
-        expect(logger.std).toContain("Event { field1: 'test10' }");
-        expect(logger.std).toContain("Event { field1: 'test11' }");
-        expect(logger.std).toContain('Success');
+    expect(logger.std).toContain(`Consume "${topic2}"`);
+    expect(logger.std).toContain('Partition 0 - Offsets 0...2 (100%)');
+    expect(logger.std).toContain("Event { field1: 'test1' }");
+    expect(logger.std).toContain("Event { field1: 'test4' }");
+    expect(logger.std).toContain("Event { field1: 'test5' }");
+    expect(logger.std).toContain('Partition 1 - Offsets 0...3 (100%)');
+    expect(logger.std).toContain("Event { field1: 'test2' }");
+    expect(logger.std).toContain("Event { field1: 'test6' }");
+    expect(logger.std).toContain("Event { field1: 'test7' }");
+    expect(logger.std).toContain("Event { field1: 'test8' }");
+    expect(logger.std).toContain('Partition 2 - Offsets 0...2 (100%)');
+    expect(logger.std).toContain("Event { field1: 'test3' }");
+    expect(logger.std).toContain("Event { field1: 'test10' }");
+    expect(logger.std).toContain("Event { field1: 'test11' }");
+    expect(logger.std).toContain('Success');
 
-        logger.clear();
-      },
-      { retries: 8, delay: 1000 },
-    );
+    logger.clear();
 
     // Group Show
     // ================================================
 
-    const groupShow = `group show ${groupId} ${topic2}`;
-    castleGroupShow(new Command(), output).parse(groupShow.split(' '));
+    const groupShow = `node castle group show ${groupId} ${topic2}`;
+    await castle(output).parseAsync(groupShow.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Consumer group "${groupId}"`);
-        expect(logger.std).toContain('Partition | Offset | Group Offset | Lag | Metadata');
-        expect(logger.std).toContain('0         | 3      | 3            | 0   |');
-        expect(logger.std).toContain('1         | 4      | 4            | 0   |');
-        expect(logger.std).toContain('2         | 3      | 3            | 0   |');
+    expect(logger.std).toContain(`Consumer group "${groupId}"`);
+    expect(logger.std).toContain('Partition | Offset | Group Offset | Lag | Metadata');
+    expect(logger.std).toContain('0         | 3      | 3            | 0   |');
+    expect(logger.std).toContain('1         | 4      | 4            | 0   |');
+    expect(logger.std).toContain('2         | 3      | 3            | 0   |');
 
-        logger.clear();
-      },
-      { retries: 4, delay: 1000 },
-    );
+    logger.clear();
 
     // Group Update Reset Offsets
     // ================================================
 
-    const groupUpdate1 = `group update ${groupId} ${topic2} --reset-offsets latest`;
-    castleGroupUpdate(new Command(), output).parse(groupUpdate1.split(' '));
+    const groupUpdate1 = `node castle group update ${groupId} ${topic2} --reset-offsets latest`;
+    await castle(output).parseAsync(groupUpdate1.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Success. Topic ${topic2} offsets reset to latest`);
-        logger.clear();
-      },
-      { retries: 20, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Success. Topic ${topic2} offsets reset to latest`);
+    logger.clear();
 
     // Group Update Set Offsets
     // ================================================
 
-    const groupUpdate2 = `group update ${groupId} ${topic2} --set-offset 0=2 --set-offset 1=2`;
-    castleGroupUpdate(new Command(), output).parse(groupUpdate2.split(' '));
+    const groupUpdate2 = `node castle group update ${groupId} ${topic2} --set-offset 0=2 --set-offset 1=2`;
+    await castle(output).parseAsync(groupUpdate2.split(' '));
 
-    await retry(
-      async () => {
-        expect(logger.std).toContain(`Success. Topic ${topic2} offsets set`);
-        expect(logger.std).toContain(`Partition | Offset`);
-        expect(logger.std).toContain(`0         | 2`);
-        expect(logger.std).toContain(`1         | 2`);
-        logger.clear();
-      },
-      { retries: 20, delay: 1000 },
-    );
+    expect(logger.std).toContain(`Success. Topic ${topic2} offsets set`);
+    expect(logger.std).toContain(`Partition | Offset`);
+    expect(logger.std).toContain(`0         | 2`);
+    expect(logger.std).toContain(`1         | 2`);
   });
 });

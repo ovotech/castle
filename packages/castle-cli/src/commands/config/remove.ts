@@ -1,21 +1,21 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { header, Output } from '../../output';
 import { join } from 'path';
 import { existsSync, unlinkSync } from 'fs';
 import { configsDir } from '../../config';
 
-export const castleConfigRemove = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle config remove')
+export const castleConfigRemove = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('remove')
     .arguments('<name>')
-
     .description(
       `Remove a configuration file from the default config directory (${configsDir}).
 
 Example:
-  castle config remove uat`,
+  castle config remove uat
+`,
     )
-    .action(async name => {
+    .action(async (name) => {
       await output.wrap(false, async () => {
         const file = join(configsDir, name);
 

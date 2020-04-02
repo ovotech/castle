@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { loadConfigFile } from '../../config';
 import { Kafka } from 'kafkajs';
 import { table, devider, header, Output } from '../../output';
@@ -9,9 +9,9 @@ interface Options {
   json?: boolean;
   verbose?: 1 | 2 | 3 | 4;
 }
-export const castleGroupShow = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle group show')
+export const castleGroupShow = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('show')
     .arguments('<groupId> <topic>')
     .description(
       `Show consumer group offsets for a topic.
@@ -20,7 +20,8 @@ Break it down by partition and calculate current lag (difference between current
 Example:
   castle group show my-group-id my-topic
   castle group show my-group-id my-topic -vv
-  castle group show my-group-id my-topic --json`,
+  castle group show my-group-id my-topic --json
+`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
@@ -47,7 +48,7 @@ Example:
           output.log(
             table([
               ['Partition', 'Offset', 'Group Offset', 'Lag', 'Metadata'],
-              ...partitionsProgress.map(item => [
+              ...partitionsProgress.map((item) => [
                 String(item.partition),
                 item.topicOffset,
                 item.groupOffset,

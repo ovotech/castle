@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { loadConfigFile } from '../../config';
 import { Kafka } from 'kafkajs';
 import { table, header, Output } from '../../output';
@@ -16,9 +16,9 @@ interface Options {
   verbose?: 1 | 2 | 3 | 4;
 }
 
-export const castleTopicCreate = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle topic create')
+export const castleTopicCreate = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('create')
     .arguments('<topic>')
     .description(
       `Create a topic. Can specify number of partitions, replaction factors and config entries.
@@ -26,15 +26,16 @@ export const castleTopicCreate = (command: Command, output = new Output(console)
 Example:
   castle topic create my-topic
   castle topic create my-topic -vvvv
-  castle topic create my-topic --num-partitions 2 --replication-factor 2 --config-entry file.delete.delay.ms=40000`,
+  castle topic create my-topic --num-partitions 2 --replication-factor 2 --config-entry file.delete.delay.ms=40000
+`,
     )
-    .option('-P, --num-partitions <partitions>', 'number of partitions', val => parseInt(val), 1)
-    .option('-R, --replication-factor <factor>', 'replication Factor', val => parseInt(val), 1)
+    .option('-P, --num-partitions <partitions>', 'number of partitions', (val) => parseInt(val), 1)
+    .option('-R, --replication-factor <factor>', 'replication Factor', (val) => parseInt(val), 1)
     .option(
       '-E, --config-entry <entry>',
       'set a config entry, title=value, can use multiple times',
       (entry: string, configEntries: ConfigEntry[]) => {
-        const [name, value] = entry.split('=').map(item => item.trim());
+        const [name, value] = entry.split('=').map((item) => item.trim());
         return configEntries.concat([{ name, value }]);
       },
       [],
@@ -70,7 +71,7 @@ Example:
                 ['Title', 'Value'],
                 ['Number of partitions', String(numPartitions)],
                 ['Replication factor', String(replicationFactor)],
-                ...(configEntries ? configEntries.map(item => [item.name, item.value]) : []),
+                ...(configEntries ? configEntries.map((item) => [item.name, item.value]) : []),
               ]),
             );
 

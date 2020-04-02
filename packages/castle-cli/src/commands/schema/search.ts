@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { SchemaRegistry } from '@ovotech/avro-kafkajs';
 import { loadConfigFile } from '../../config';
 import { header, Output, highlight } from '../../output';
@@ -8,9 +8,9 @@ interface Options {
   json?: boolean;
 }
 
-export const castleSchemaSearch = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle schema search')
+export const castleSchemaSearch = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('search')
     .arguments('[name]')
     .description(
       `Search for schemas with the given name in the schema registry. If you don't specify a search string returns all of them.
@@ -18,7 +18,8 @@ export const castleSchemaSearch = (command: Command, output = new Output(console
 Examples:
   castle schema search
   castle schema search my-to
-  castle schema search my-topic --json`,
+  castle schema search my-topic --json
+`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
@@ -30,7 +31,7 @@ Examples:
         output.log(header('Searching for schemas', name ? name : '<all>', config));
 
         const subjects = await schemaRegistry.getSubjects();
-        const filtered = subjects.filter(subject => (name ? subject.includes(name) : true));
+        const filtered = subjects.filter((subject) => (name ? subject.includes(name) : true));
         output.json(filtered);
 
         if (filtered.length === 0) {

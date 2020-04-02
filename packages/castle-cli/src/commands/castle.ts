@@ -1,11 +1,16 @@
-#!/usr/bin/env node
+import * as commander from 'commander';
+import { castleTopic } from './topic';
+import { castleSchema } from './schema';
+import { castleConfig } from './config';
+import { castleGroup } from './group';
+import { Output } from '../output';
 
-import * as program from 'commander';
-
-program
-  .version('0.2.2')
-  .description(
-    `Castle CLI - a tool for inspecting kafka topics with schema registry.
+export const castle = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('castle')
+    .version('0.2.2')
+    .description(
+      `Castle CLI - a tool for inspecting kafka topics with schema registry.
 
 By default connects to local kafka (localhost:29092) and schema registry (localhost:8081). But can define a config file that can be used to connect to external servers.
 
@@ -33,9 +38,8 @@ Example:
   castle config uat --kafka-broker example.com:3203 --key private.pem --ca ca.pem --cert cert.pem --schema-registry http://example.com:8081
   castle --config uat topic my-topic
 `,
-  )
-  .command('topic', 'search, show create or update topics, consume or produce messages')
-  .command('schema', 'search or show schemas')
-  .command('config', 'search, set or remove connection configs')
-  .command('group', 'search, show or update consumer groups')
-  .parse(process.argv);
+    )
+    .addCommand(castleTopic(output))
+    .addCommand(castleSchema(output))
+    .addCommand(castleConfig(output))
+    .addCommand(castleGroup(output));
