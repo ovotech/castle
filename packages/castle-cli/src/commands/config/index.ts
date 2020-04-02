@@ -13,7 +13,3 @@ export const castleConfig = (output = new Output(console)): commander.Command =>
     .addCommand(castleConfigSet(output))
     .addCommand(castleConfigRemove(output))
     .addCommand(castleConfigSearch(output));
-
-// .command('set', 'create or update a config file')
-// .command('remove', 'remove a config from the default config folder')
-// .command('search', 'search for configs in default config folder')
