@@ -33,7 +33,7 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/ts-compose": "^0.11.0",
+    "@ovotech/ts-compose": "^0.11.1",
     "typescript": "^3.8.3"
   }
 }

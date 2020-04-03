@@ -8,10 +8,10 @@
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
   "bin": {
-    "avro-ts": "./dist/avro-ts.js"
+    "avro-ts": "./scripts/avro-ts"
   },
   "scripts": {
-    "avro-ts": "node -r ts-node/register src/avro-ts.ts",
+    "avro-ts": "node -r ts-node/register src/cli.ts",
     "build": "tsc --declaration",
     "build:docs": "build-docs README.md",
     "test": "jest test --runInBand",

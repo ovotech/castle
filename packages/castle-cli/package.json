@@ -24,7 +24,7 @@
     "typescript": "^3.8.3"
   },
   "bin": {
-    "castle": "./dist/cli.js"
+    "castle": "./scripts/castle"
   },
   "scripts": {
     "castle": "node -r ts-node/register src/cli.ts",
