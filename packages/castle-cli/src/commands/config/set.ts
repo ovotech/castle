@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { Config, defaults } from '../../config';
 import { header, Output, OutputType } from '../../output';
 import { join } from 'path';
@@ -14,16 +14,17 @@ interface Options {
   json?: boolean;
 }
 
-export const castleConfigSet = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle config set')
+export const castleConfigSet = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('set')
     .arguments('<name>')
     .description(
       `Create a new configuration file or update an existing one in the default config directory (${configsDir}).
 
 Example:
   castle config set uat --kafka-broker localhost:3203 --schema-registry http://localhost:8081
-  castle config set uat --kafka-broker localhost:3203 --key private.pem --ca ca.pem --cert cert.pem --schema-registry http://localhost:8081`,
+  castle config set uat --kafka-broker localhost:3203 --key private.pem --ca ca.pem --cert cert.pem --schema-registry http://localhost:8081
+`,
     )
     .option(
       '-B, --kafka-broker <host>',

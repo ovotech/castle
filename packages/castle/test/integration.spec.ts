@@ -122,7 +122,7 @@ describe('Integration', () => {
   });
 
   it('Should process response', async () => {
-    jest.setTimeout(10000);
+    jest.setTimeout(15000);
     await Promise.all([
       sendEvent1(castle.producer, [{ value: { field1: 'test1' }, partition: 0 }]),
       sendEvent1(castle.producer, [

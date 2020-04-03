@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
 import { loadConfigFile } from '../../config';
 import { header, Output } from '../../output';
@@ -14,9 +14,9 @@ interface Options {
   keySchemaFile?: string;
   verbose?: 1 | 2 | 3 | 4;
 }
-export const castleTopicMessage = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle topic message')
+export const castleTopicMessage = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('message')
     .arguments('<topic>')
     .description(
       `Produce an ad-hoc message for a topic.
@@ -27,9 +27,10 @@ Example:
   castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}'
   castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}' --key my-key
   castle topic message my-topic --schema-file my-schema.json --key-schema-file key-schema.json --message '{"text":"other"}' --key '{"id":10}'
-  castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}' -vvvv`,
+  castle topic message my-topic --schema-file my-schema.json --message '{"text":"other"}' -vvvv
+`,
     )
-    .option('-P, --partition <partition>', 'the partion to send this on', val => parseInt(val))
+    .option('-P, --partition <partition>', 'the partion to send this on', (val) => parseInt(val))
     .option('-K, --key <key>', 'message key')
     .requiredOption('-M, --message <message>', 'the JSON message to be sent')
     .requiredOption('-S, --schema-file <schema>', 'path to the schema file')

@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { loadConfigFile } from '../../config';
 import { Kafka, ResourceTypes } from 'kafkajs';
 import { devider, table, header, Output } from '../../output';
@@ -9,9 +9,9 @@ interface Options {
   verbose?: 1 | 2 | 3 | 4;
 }
 
-export const castleTopicShow = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle topic show')
+export const castleTopicShow = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('show')
     .arguments('<topic>')
     .description(
       `Show partition, offsets and config entries of a topic.
@@ -19,7 +19,8 @@ export const castleTopicShow = (command: Command, output = new Output(console)):
 Example:
   castle topic show my-topic
   castle topic show my-topic -vv
-  castle topic show my-topic --json`,
+  castle topic show my-topic --json
+`,
     )
     .option('-J, --json', 'output as json')
     .option('-C, --config <configFile>', 'config file with connection deails')
@@ -48,8 +49,8 @@ Example:
           ]);
 
           const configEntries =
-            resources.resources.find(resource => resource.resourceName === topic)?.configEntries ??
-            [];
+            resources.resources.find((resource) => resource.resourceName === topic)
+              ?.configEntries ?? [];
 
           output.json({ offsets, configEntries });
 
@@ -57,7 +58,7 @@ Example:
           output.log(
             table([
               ['Partition', 'Offset', 'High', 'Low'],
-              ...offsets.map(item => [
+              ...offsets.map((item) => [
                 String(item.partition),
                 String(item.offset),
                 item.high,
@@ -70,7 +71,7 @@ Example:
           output.log(
             table([
               ['Config Name', 'Value'],
-              ...configEntries.map(entry => [entry.configName, entry.configValue]),
+              ...configEntries.map((entry) => [entry.configName, entry.configValue]),
             ]),
           );
         } finally {

@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { toTypeScript } from '@ovotech/avro-ts';
 import { join, basename } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
@@ -14,12 +14,9 @@ interface Options {
   outputDir?: string;
 }
 
-export const convert = (
-  command: Command,
-  output: { log: (msg: string) => void } = console,
-): Command =>
-  command
-    .name('avro-ts')
+export const convert = (logger: { log: (msg: string) => void } = console): commander.Command =>
+  commander
+    .createCommand('avro-ts')
     .arguments('[input...]')
     .option('-O, --output-dir <outputDir>', 'Directory to write typescript files to')
     .option(
@@ -61,7 +58,6 @@ export const convert = (
       },
       {},
     )
-
     .description(
       `Convert avsc to typescript files.
 
@@ -91,20 +87,18 @@ Example:
         }: Options,
       ) => {
         if (input.length === 0) {
-          output.log(chalk.red('No files specified to convert'));
+          logger.log(chalk.red('No files specified to convert'));
         } else {
-          output.log('Converting Avro to TypeScript');
-          output.log('');
-
+          logger.log('Converting Avro to TypeScript');
+          logger.log('');
           const logicalTypes = {
             ...logicalType,
             ...logicalTypeImport,
             ...logicalTypeImportAll,
             ...logicalTypeImportDefault,
           };
-
           if (logicalTypes && Object.keys(logicalTypes).length) {
-            output.log(
+            logger.log(
               table([
                 ['Logical Type', 'TypeScript Type'],
                 ...Object.entries(logicalTypes).map(([logical, tsType]) => [
@@ -113,21 +107,18 @@ Example:
                 ]),
               ]),
             );
-            output.log('');
+            logger.log('');
           }
-
-          const result = input.map(file => {
+          const result = input.map((file) => {
             const avroSchema = JSON.parse(String(readFileSync(file)));
             const ts = toTypeScript(avroSchema, { logicalTypes });
             const outputFile = outputDir ? join(outputDir, `${basename(file)}.ts`) : `${file}.ts`;
             writeFileSync(outputFile, ts);
-
             const shortFile = file.replace(process.cwd(), '.');
             const shortOutputFile = outputFile.replace(process.cwd(), '.');
-
             return [chalk.green(shortFile), chalk.yellow(shortOutputFile)];
           });
-          output.log(table([['Avro Schema', 'TypeScript File'], ...result]));
+          logger.log(table([['Avro Schema', 'TypeScript File'], ...result]));
         }
       },
     );

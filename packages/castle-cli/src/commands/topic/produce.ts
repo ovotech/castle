@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
 import { loadConfigFile } from '../../config';
 import { Output } from '../../output';
@@ -62,9 +62,9 @@ interface Options {
   verbose?: 1 | 2 | 3 | 4;
 }
 
-export const castleTopicProduce = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle topic produce')
+export const castleTopicProduce = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('produce')
     .arguments('<file>')
     .description(
       `Produce messages for a topic.
@@ -84,7 +84,8 @@ Example produce file:
     "fields": [{"name": "field1","type": "string"}]
   },
   "messages": [{"partition": 0, "value": { "field1": "test1" }}]
-}`,
+}
+`,
     )
     .option('-C, --config <configFile>', 'config file with connection deails')
     .option(

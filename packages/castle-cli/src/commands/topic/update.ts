@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { loadConfigFile } from '../../config';
 import { Kafka, ResourceTypes } from 'kafkajs';
 import { table, header, Output } from '../../output';
@@ -14,9 +14,9 @@ interface Options {
   verbose?: 1 | 2 | 3 | 4;
 }
 
-export const castleTopicUpdate = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle topic update')
+export const castleTopicUpdate = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('update')
     .arguments('<topic>')
     .description(
       `Update config entries of a topic.
@@ -24,13 +24,14 @@ All the available topic configurations can be found in the confluent documentati
 
 Example:
   castle topic update my-topic --config-entry file.delete.delay.ms=40000
-  castle topic update my-topic --config-entry file.delete.delay.ms=40000 -vv`,
+  castle topic update my-topic --config-entry file.delete.delay.ms=40000 -vv
+`,
     )
     .requiredOption(
       '-E, --config-entry <entry>',
       'set a config entry, title=value, can use multiple times',
       (entry: string, configEntries: ConfigEntry[]) => {
-        const [name, value] = entry.split('=').map(item => item.trim());
+        const [name, value] = entry.split('=').map((item) => item.trim());
         return configEntries.concat([{ name, value }]);
       },
       [],
@@ -54,7 +55,7 @@ Example:
           output.log(
             table([
               ['Config', 'Update Value'],
-              ...configEntries.map(item => [item.name, item.value]),
+              ...configEntries.map((item) => [item.name, item.value]),
             ]),
           );
           await admin.alterConfigs({

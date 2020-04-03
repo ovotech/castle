@@ -64,14 +64,14 @@ describe('Class', () => {
   afterEach(() => Promise.all([consumer.disconnect(), producer.disconnect(), admin.disconnect()]));
 
   it('Should process avro messages one by one', async () => {
-    jest.setTimeout(10000);
+    jest.setTimeout(12000);
     const consumed: AvroEachMessagePayload<MessageType>[] = [];
 
     await admin.createTopics({ topics: [{ topic: realTopicName, numPartitions: 2 }] });
     await consumer.subscribe({ topic: TOPIC_ALIAS });
     await consumer.run<MessageType>({
       partitionsConsumedConcurrently: 2,
-      eachMessage: async payload => {
+      eachMessage: async (payload) => {
         consumed.push(payload);
       },
     });
@@ -132,7 +132,7 @@ describe('Class', () => {
   });
 
   it('Should process avro messages with encoded keys', async () => {
-    jest.setTimeout(10000);
+    jest.setTimeout(12000);
     const consumed: AvroEachMessagePayload<MessageType, KeyType>[] = [];
 
     await admin.createTopics({ topics: [{ topic: realTopicName, numPartitions: 2 }] });
@@ -140,7 +140,7 @@ describe('Class', () => {
     await consumer.run<MessageType, KeyType>({
       partitionsConsumedConcurrently: 2,
       encodedKey: true,
-      eachMessage: async payload => {
+      eachMessage: async (payload) => {
         consumed.push(payload);
       },
     });
@@ -210,13 +210,13 @@ describe('Class', () => {
   });
 
   it('Should process avro messages in batches', async () => {
-    jest.setTimeout(10000);
+    jest.setTimeout(12000);
     const consumed: AvroBatch<MessageType>[] = [];
 
     await admin.createTopics({ topics: [{ topic: realTopicName, numPartitions: 2 }] });
     await consumer.subscribe({ topic: TOPIC_ALIAS });
     await consumer.run<MessageType>({
-      eachBatch: async payload => {
+      eachBatch: async (payload) => {
         consumed.push(payload.batch);
       },
     });
@@ -285,14 +285,14 @@ describe('Class', () => {
   });
 
   it('Should process avro messages in batches with encoded keys', async () => {
-    jest.setTimeout(10000);
+    jest.setTimeout(12000);
     const consumed: AvroBatch<MessageType, KeyType>[] = [];
 
     await admin.createTopics({ topics: [{ topic: realTopicName, numPartitions: 2 }] });
     await consumer.subscribe({ topic: TOPIC_ALIAS });
     await consumer.run<MessageType, KeyType>({
       encodedKey: true,
-      eachBatch: async payload => {
+      eachBatch: async (payload) => {
         consumed.push(payload.batch);
       },
     });

@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { configsDir } from '../../config';
 import { Output, table, highlight, connection, header } from '../../output';
 import { join } from 'path';
@@ -12,16 +12,17 @@ const loadConfig = (file: string): string => {
   }
 };
 
-export const castleConfigSearch = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle config search')
+export const castleConfigSearch = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('search')
     .arguments('[name]')
     .description(
       `Search for configuration files inside the default config directory (${configsDir})
 
 Example:
   castle config search
-  castle config search uat`,
+  castle config search uat
+`,
     )
     .action(async (name = '') => {
       await output.wrap(false, async () => {
@@ -30,14 +31,14 @@ Example:
         }
 
         const all = readdirSync(configsDir);
-        const configs = name ? all.filter(config => config.includes(name)) : all;
+        const configs = name ? all.filter((config) => config.includes(name)) : all;
 
         output.log(header('Searching for config', name));
 
         output.log(
           table([
             ['Config name', 'Details'],
-            ...configs.map(config => {
+            ...configs.map((config) => {
               return [highlight(config, name), loadConfig(join(configsDir, config))];
             }),
           ]),

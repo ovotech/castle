@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import * as commander from 'commander';
 import { loadConfigFile } from '../../config';
 import { Kafka, SeekEntry } from 'kafkajs';
 import { table, header, Output } from '../../output';
@@ -10,9 +10,9 @@ interface Options {
   setOffset?: SeekEntry[];
   verbose?: 1 | 2 | 3 | 4;
 }
-export const castleGroupUpdate = (command: Command, output = new Output(console)): Command =>
-  command
-    .name('castle group update')
+export const castleGroupUpdate = (output = new Output(console)): commander.Command =>
+  commander
+    .createCommand('update')
     .arguments('<groupId> <topic>')
     .description(
       `Update consumer group offsets for a topic.
@@ -21,7 +21,8 @@ Requires either --reset-offsets or --set-offset options.
 Example:
   castle group update my-group-id my-topic --reset-offsets earliest
   castle group update my-group-id my-topic --reset-offsets earliest -vv
-  castle group update my-group-id my-topic --set-offset 0=10 --set-offset 1=10`,
+  castle group update my-group-id my-topic --set-offset 0=10 --set-offset 1=10
+`,
     )
     .option(
       '-R, --reset-offsets <earliest|latest>',
@@ -32,7 +33,7 @@ Example:
       '-E, --set-offset <entry>',
       'set an offset, partition=offset, can use multiple times',
       (entry: string, partitions: SeekEntry[]) => {
-        const [partition, offset] = entry.split('=').map(item => item.trim());
+        const [partition, offset] = entry.split('=').map((item) => item.trim());
         return partitions.concat([{ partition: Number(partition), offset }]);
       },
       [],
@@ -64,7 +65,7 @@ Example:
               output.success(
                 table([
                   ['Partition', 'Offset'],
-                  ...setOffset.map(item => [String(item.partition), item.offset]),
+                  ...setOffset.map((item) => [String(item.partition), item.offset]),
                 ]),
               );
             } else {
