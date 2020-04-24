@@ -1831,10 +1831,10 @@ atob@^2.1.1:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-avsc@^5.4.19:
-  version "5.4.19"
-  resolved "https://registry.yarnpkg.com/avsc/-/avsc-5.4.19.tgz#d5608dee0586c59b24590c5a54474e49431b20c3"
-  integrity sha512-6trk8URrKU0nT2+uhHqO+8k47DYE9oehGmONJsS2RYR8aW1ldVGr4iZfVherkxC/jq0rJp1oJx+DDlQoCpfEHw==
+avsc@^5.4.21:
+  version "5.4.21"
+  resolved "https://registry.yarnpkg.com/avsc/-/avsc-5.4.21.tgz#eafaf5cbfd72bbc3d1bd82fc6bdeb7dda3ba8b2c"
+  integrity sha512-Vr733yyksCfwwXVZ6WjgttDF1TLlUeYWBJDHpO61qeOo6GnaIaVRiJ64ZgpwXfFtbPv1fCuLFV0qz++QUFCZPw==
 
 aws-sign2@~0.7.0:
   version "0.7.0"
