@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-ts",
   "description": "Convert avro schemas into typescript interfaces",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -21,7 +21,7 @@
     "@ovotech/avro-logical-types": "^1.0.0",
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.8",
-    "avsc": "^5.4.19",
+    "avsc": "^5.4.21",
     "eslint-config-prettier": "^6.10.1",
     "jest": "^25.2.6",
     "moment": "^2.24.0",
