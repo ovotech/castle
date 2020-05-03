@@ -10,6 +10,7 @@ Packages:
 - [@ovotech/blaise](packages/blaise/README.md) | - [@ovotech/castle](https://npmjs.com/@ovotech/castle) combined with [@ovotech/avro-mock-generator](https://npmjs.com/@ovotech/avro-mock-generator)
 - [@ovotech/castle](packages/castle) - core service server
 - [@ovotech/castle-cli](packages/castle-cli) - cli for interacting with kafka and [Schema Registry](https://www.confluent.io/confluent-schema-registry/)
+- [@ovotech/castle-stream](packages/castle-stream) - A castle implementation using streams as input instead of kafka consumers. Useful backfillers and the like.
 
 ## Usage
 

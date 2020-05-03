@@ -1284,6 +1284,14 @@
     once "^1.4.0"
     universal-user-agent "^4.0.0"
 
+"@ovotech/avro-kafkajs@^0.2.0":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@ovotech/avro-kafkajs/-/avro-kafkajs-0.2.2.tgz#ce21f2c3bd53c10a76bc926ee9849d2d49133ad3"
+  integrity sha512-uo82nva6zwBmsFZaE+g+Z4YuWontN7TDYrjci03/RcJdcbbSAzw+Siee9Wh9NmUSQJdbh9SAMuUSG01gpgrnRw==
+  dependencies:
+    "@ovotech/schema-registry-api" "^1.0.5"
+    avsc "^5.4.21"
+
 "@ovotech/avro-logical-types@^1.0.0":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@ovotech/avro-logical-types/-/avro-logical-types-1.1.2.tgz#889cc0ca929b67c629e068825aa99e4cb0548a28"

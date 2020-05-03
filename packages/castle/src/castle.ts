@@ -1,4 +1,4 @@
-import { Kafka } from 'kafkajs';
+import { Kafka, KafkaMessage } from 'kafkajs';
 import {
   AvroConsumerRun,
   AvroKafka,
@@ -20,9 +20,9 @@ import {
 } from './types';
 import { withEachSizedBatch } from './each-sized-batch';
 
-const withProducer = <T = unknown>(producer: AvroProducer) => (
-  config: FinalCastleConsumerConfig<T>,
-): AvroConsumerRun<T> => {
+const withProducer = <TValue = unknown, TKey = KafkaMessage['key']>(producer: AvroProducer) => (
+  config: FinalCastleConsumerConfig<TValue, TKey>,
+): AvroConsumerRun<TValue, TKey> => {
   if ('eachBatch' in config) {
     return { ...config, eachBatch: (payload) => config.eachBatch({ ...payload, producer }) };
   } else {
@@ -53,13 +53,17 @@ export const optionalConsumers = (
   configs: OptionalCastleConsumerConfig[],
 ): CastleConsumerConfig[] => configs.filter(isCastleConsumerConfig);
 
-export const consumeEachMessage = <T, TContext extends object = {}>(
-  config: (payload: CastleEachMessagePayload<T> & TContext) => Promise<void>,
-): ((payload: CastleEachMessagePayload<T> & TContext) => Promise<void>) => config;
+export const consumeEachMessage = <
+  TValue,
+  TContext extends object = {},
+  TKey = KafkaMessage['key']
+>(
+  config: (payload: CastleEachMessagePayload<TValue, TKey> & TContext) => Promise<void>,
+): ((payload: CastleEachMessagePayload<TValue, TKey> & TContext) => Promise<void>) => config;
 
-export const consumeEachBatch = <T, TContext extends object = {}>(
-  config: (payload: CastleEachBatchPayload<T> & TContext) => Promise<void>,
-): ((payload: CastleEachBatchPayload<T> & TContext) => Promise<void>) => config;
+export const consumeEachBatch = <TValue, TContext extends object = {}, TKey = KafkaMessage['key']>(
+  config: (payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>,
+): ((payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>) => config;
 
 export const createCastle = (config: CastleConfig): Castle => {
   const servicesStatus = new Map<AvroConsumer | AvroProducer, boolean>();

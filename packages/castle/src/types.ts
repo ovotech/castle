@@ -14,15 +14,17 @@ import {
   KafkaConfig,
   ProducerConfig,
   RecordMetadata,
-  AdminConfig,
   ConsumerSubscribeTopic,
+  KafkaMessage,
 } from 'kafkajs';
 
-export interface CastleEachMessagePayload<T = unknown> extends AvroEachMessagePayload<T> {
+export interface CastleEachMessagePayload<TValue = unknown, TKey = KafkaMessage['key']>
+  extends AvroEachMessagePayload<TValue, TKey> {
   producer: AvroProducer;
 }
 
-export interface CastleEachBatchPayload<T = unknown> extends AvroEachBatchPayload<T> {
+export interface CastleEachBatchPayload<TValue = unknown, TKey = KafkaMessage['key']>
+  extends AvroEachBatchPayload<TValue, TKey> {
   producer: AvroProducer;
 }
 
@@ -34,62 +36,61 @@ export type Middleware<TProvide extends object = {}, TRequire extends object = {
   next: Resolver<TProvide & TRequire & TInherit>,
 ) => Resolver<TRequire & TInherit>;
 
-export interface CastleTopicSubscribeEachMessage<T> {
-  eachMessage: (ctx: CastleEachMessagePayload<T>) => Promise<void>;
+export interface CastleTopicSubscribeEachMessage<TValue, TKey> {
+  eachMessage: (ctx: CastleEachMessagePayload<TValue, TKey>) => Promise<void>;
 }
 
-export interface CastleTopicSubscribeEachBatch<T> {
-  eachBatch: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
+export interface CastleTopicSubscribeEachBatch<TValue, TKey> {
+  eachBatch: (ctx: CastleEachBatchPayload<TValue, TKey>) => Promise<void>;
 }
 
-export interface CastleTopicSubscribeEachSizedBatch<T> {
-  eachSizedBatch: (ctx: CastleEachBatchPayload<T>) => Promise<void>;
+export interface CastleTopicSubscribeEachSizedBatch<TValue, TKey> {
+  eachSizedBatch: (ctx: CastleEachBatchPayload<TValue, TKey>) => Promise<void>;
   maxBatchSize: number;
 }
 
-export type FinalCastleTopicSubscribe<T> =
-  | CastleTopicSubscribeEachMessage<T>
-  | CastleTopicSubscribeEachBatch<T>;
+export type FinalCastleTopicSubscribe<TValue, TKey> =
+  | CastleTopicSubscribeEachMessage<TValue, TKey>
+  | CastleTopicSubscribeEachBatch<TValue, TKey>;
 
 export type CastleConsumerRun = Omit<AvroConsumerRun, 'eachBatch' | 'eachMessage'>;
-export type CastleTopicSubscribe<T> =
-  | CastleTopicSubscribeEachMessage<T>
-  | CastleTopicSubscribeEachBatch<T>
-  | CastleTopicSubscribeEachSizedBatch<T>;
+export type CastleTopicSubscribe<TValue, TKey> =
+  | CastleTopicSubscribeEachMessage<TValue, TKey>
+  | CastleTopicSubscribeEachBatch<TValue, TKey>
+  | CastleTopicSubscribeEachSizedBatch<TValue, TKey>;
 
 export interface CastleConsumerSubscribeTopic extends Omit<ConsumerSubscribeTopic, 'topic'> {
   topic?: ConsumerSubscribeTopic['topic'];
 }
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type CastleConsumerConfig<T = any> = ConsumerConfig &
+export type CastleConsumerConfig<TValue = any, TKey = any> = ConsumerConfig &
   CastleConsumerRun &
   ConsumerSubscribeTopic &
-  CastleTopicSubscribe<T>;
+  CastleTopicSubscribe<TValue, TKey>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type OptionalCastleConsumerConfig<T = any> = ConsumerConfig &
+export type OptionalCastleConsumerConfig<TValue = any, TKey = any> = ConsumerConfig &
   CastleConsumerRun &
   CastleConsumerSubscribeTopic &
-  CastleTopicSubscribe<T>;
+  CastleTopicSubscribe<TValue, TKey>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type FinalCastleConsumerConfig<T = any> = ConsumerConfig &
+export type FinalCastleConsumerConfig<TValue = any, TKey = any> = ConsumerConfig &
   CastleConsumerRun &
   ConsumerSubscribeTopic &
-  FinalCastleTopicSubscribe<T>;
+  FinalCastleTopicSubscribe<TValue, TKey>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export interface CastleConsumer<T = any> {
+export interface CastleConsumer<TValue = any, TKey = any> {
   instance: AvroConsumer;
-  config: FinalCastleConsumerConfig<T>;
+  config: FinalCastleConsumerConfig<TValue, TKey>;
 }
 
 export interface CastleConfig {
   kafka: KafkaConfig;
   topicsAlias?: TopicsAlias;
   producer?: ProducerConfig;
-  admin?: AdminConfig;
   schemaRegistry: SchemaRegistryConfig;
   consumers?: CastleConsumerConfig[];
 }
@@ -108,7 +109,7 @@ export interface Castle {
   stop: () => Promise<void>;
 }
 
-export type CastleSender<T = unknown> = (
+export type CastleSender<TValue = unknown, TKey = AvroMessage['key']> = (
   producer: AvroProducer,
-  messages: AvroMessage<T>[],
+  messages: AvroMessage<TValue, TKey>[],
 ) => Promise<RecordMetadata[]>;

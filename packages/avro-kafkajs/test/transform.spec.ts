@@ -49,10 +49,10 @@ describe('Transform', () => {
     const transform = new AvroTransformBatch<MessageType, ValueType, KeyType>({
       partitionHighWaterMark: 2,
       topic,
-      toPartition: (message) => Number(message.partition),
-      toKafkaMessage: ({ intField, stringField, key }) => ({
+      toKafkaMessage: ({ partition, intField, stringField, key }) => ({
         key: Number(key),
         schema,
+        partition: Number(partition),
         value: { stringField, intField },
       }),
     });
@@ -264,8 +264,17 @@ describe('Transform', () => {
     const transform = new AvroTransformBatch<MessageType, ValueType, KeyType>({
       partitionHighWaterMark: 2,
       topic,
-      toPartition: (message) => Number(message.partition),
-      toKafkaMessage: ({ intField, stringField, key, size, offset, timestamp, attributes }) => ({
+      toKafkaMessage: ({
+        partition,
+        intField,
+        stringField,
+        key,
+        size,
+        offset,
+        timestamp,
+        attributes,
+      }) => ({
+        partition: Number(partition),
         key: Number(key),
         schema,
         size,

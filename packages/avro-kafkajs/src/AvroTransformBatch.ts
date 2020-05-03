@@ -2,16 +2,20 @@ import { Transform, TransformCallback } from 'stream';
 import { AvroKafkaMessage, AvroEachBatchPayload, AvroBatch, Optional } from './types';
 import * as Long from 'long';
 
+export interface StreamKafkaMessage<TValue = unknown, TKey = AvroKafkaMessage['key']>
+  extends Optional<AvroKafkaMessage<TValue, TKey>, 'attributes' | 'timestamp' | 'size' | 'offset'> {
+  partition?: number;
+}
+
 export type ToPartition<TMessage = unknown> = (message: TMessage) => number;
-export type ToKafkaMessage<TMessage = unknown, TValue = unknown, TKey = unknown> = (
+export type ToKafkaMessage<TMessage = unknown, TValue = unknown, TKey = AvroKafkaMessage['key']> = (
   message: TMessage,
-) => Optional<AvroKafkaMessage<TValue, TKey>, 'attributes' | 'timestamp' | 'size' | 'offset'>;
+) => StreamKafkaMessage<TValue, TKey>;
 
 export interface AvroTransformBatchConfig<TMessage = unknown, TValue = unknown, TKey = unknown> {
   highWaterMark?: number;
   partitionHighWaterMark?: number;
   topic: string;
-  toPartition?: ToPartition<TMessage>;
   toKafkaMessage: ToKafkaMessage<TMessage, TValue, TKey>;
 }
 
@@ -86,39 +90,35 @@ export class AvroTransformBatch<
     number,
     { messages: AvroKafkaMessage<TValue, TKey>[]; offset: Long }
   >();
-  private toPartition: ToPartition<TMessage> | undefined;
   private toKafkaMessage: ToKafkaMessage<TMessage, TValue, TKey>;
 
   constructor({
     partitionHighWaterMark,
-    toPartition,
     toKafkaMessage,
     topic,
     highWaterMark,
   }: AvroTransformBatchConfig<TMessage, TValue, TKey>) {
     super({ highWaterMark, objectMode: true });
     this.partitionHighWaterMark = partitionHighWaterMark ?? 10000;
-    this.toPartition = toPartition;
     this.toKafkaMessage = toKafkaMessage;
     this.topic = topic;
   }
 
   add(
     partition: number,
-    message: TMessage,
+    { partition: _, ...message }: StreamKafkaMessage<TValue, TKey>,
   ): { messages: AvroKafkaMessage<TValue, TKey>[]; offset: Long } {
     const buffer = this.partitionBuffers.get(partition) ?? {
       offset: Long.fromNumber(0),
       messages: [],
     };
     const offset = buffer.offset;
-    const partialKafkaMessage = this.toKafkaMessage(message);
     const kafkaMessage = {
-      ...partialKafkaMessage,
-      size: partialKafkaMessage.size ?? 0,
-      attributes: partialKafkaMessage.attributes ?? 0,
-      offset: partialKafkaMessage.offset ?? offset.toString(),
-      timestamp: partialKafkaMessage.timestamp ?? new Date().toISOString(),
+      ...message,
+      size: message.size ?? 0,
+      attributes: message.attributes ?? 0,
+      offset: message.offset ?? offset.toString(),
+      timestamp: message.timestamp ?? new Date().toISOString(),
     };
     buffer.offset = offset.add(1);
     buffer.messages.push(kafkaMessage);
@@ -141,8 +141,9 @@ export class AvroTransformBatch<
     callback: TransformCallback,
   ): Promise<void> {
     try {
-      const partition = this.toPartition ? this.toPartition(message) : 0;
-      const buffer = this.add(partition, message);
+      const kafkaMessage = this.toKafkaMessage(message);
+      const partition = kafkaMessage.partition ?? 0;
+      const buffer = this.add(partition, kafkaMessage);
 
       if (buffer.messages.length >= this.partitionHighWaterMark) {
         this.push(toAvroBatch(partition, this.topic, buffer.messages));

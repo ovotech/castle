@@ -15,6 +15,7 @@ export {
   AvroTransformBatchConfig,
   ToPartition,
   ToKafkaMessage,
+  StreamKafkaMessage,
 } from './AvroTransformBatch';
 export {
   encodeMessages,
