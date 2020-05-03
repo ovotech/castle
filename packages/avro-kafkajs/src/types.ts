@@ -11,6 +11,8 @@ import {
 } from 'kafkajs';
 import { Schema } from 'avsc';
 
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<T>;
+
 export interface AvroEachMessagePayload<T = unknown, KT = KafkaMessage['key']>
   extends Omit<EachMessagePayload, 'message'> {
   message: AvroKafkaMessage<T, KT>;

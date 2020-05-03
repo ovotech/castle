@@ -1,32 +1,28 @@
 {
-  "name": "@ovotech/castle",
-  "version": "0.4.6",
+  "name": "@ovotech/castle-stream",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "description": "A kafka and avro based event listener",
+  "description": "A node stream implementation of castle",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "repository": "git@github.com:ovotech/castle.git",
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/jest": "^25.1.4",
-    "@types/lodash.chunk": "^4.2.6",
     "@types/node": "^13.9.8",
-    "@types/pg": "^7.14.3",
     "@types/uuid": "^7.0.2",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "jest": "^25.2.6",
-    "pg": "^8.0.0",
     "prettier": "^2.0.2",
-    "slonik": "^22.4.4",
     "ts-jest": "^25.3.0",
     "ts-node": "^8.8.1",
-    "ts-retry-promise": "^0.3.1",
-    "typescript": "^3.8.3",
+    "stream-mock": "^2.0.5",
     "uuid": "^7.0.3",
-    "winston": "^3.2.1"
+    "ts-retry-promise": "^0.3.1",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "build": "tsc --declaration",
@@ -40,8 +36,6 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/avro-kafkajs": "^0.3.0",
-    "kafkajs": "^1.12.0",
-    "lodash.chunk": "^4.2.0"
+    "@ovotech/castle": "^0.4.6"
   }
 }

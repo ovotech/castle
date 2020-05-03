@@ -1,4 +1,4 @@
-import { Kafka } from 'kafkajs';
+import { Kafka, KafkaMessage } from 'kafkajs';
 import {
   AvroConsumerRun,
   AvroKafka,
@@ -20,13 +20,13 @@ import {
 } from './types';
 import { withEachSizedBatch } from './each-sized-batch';
 
-const withProducer = <T = unknown>(producer: AvroProducer) => (
-  config: FinalCastleConsumerConfig<T>,
-): AvroConsumerRun<T> => {
+const withProducer = <TValue = unknown, TKey = KafkaMessage['key']>(producer: AvroProducer) => (
+  config: FinalCastleConsumerConfig<TValue, TKey>,
+): AvroConsumerRun<TValue, TKey> => {
   if ('eachBatch' in config) {
-    return { ...config, eachBatch: payload => config.eachBatch({ ...payload, producer }) };
+    return { ...config, eachBatch: (payload) => config.eachBatch({ ...payload, producer }) };
   } else {
-    return { ...config, eachMessage: payload => config.eachMessage({ ...payload, producer }) };
+    return { ...config, eachMessage: (payload) => config.eachMessage({ ...payload, producer }) };
   }
 };
 
@@ -53,13 +53,17 @@ export const optionalConsumers = (
   configs: OptionalCastleConsumerConfig[],
 ): CastleConsumerConfig[] => configs.filter(isCastleConsumerConfig);
 
-export const consumeEachMessage = <T, TContext extends object = {}>(
-  config: (payload: CastleEachMessagePayload<T> & TContext) => Promise<void>,
-): ((payload: CastleEachMessagePayload<T> & TContext) => Promise<void>) => config;
+export const consumeEachMessage = <
+  TValue,
+  TContext extends object = {},
+  TKey = KafkaMessage['key']
+>(
+  config: (payload: CastleEachMessagePayload<TValue, TKey> & TContext) => Promise<void>,
+): ((payload: CastleEachMessagePayload<TValue, TKey> & TContext) => Promise<void>) => config;
 
-export const consumeEachBatch = <T, TContext extends object = {}>(
-  config: (payload: CastleEachBatchPayload<T> & TContext) => Promise<void>,
-): ((payload: CastleEachBatchPayload<T> & TContext) => Promise<void>) => config;
+export const consumeEachBatch = <TValue, TContext extends object = {}, TKey = KafkaMessage['key']>(
+  config: (payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>,
+): ((payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>) => config;
 
 export const createCastle = (config: CastleConfig): Castle => {
   const servicesStatus = new Map<AvroConsumer | AvroProducer, boolean>();
@@ -73,7 +77,7 @@ export const createCastle = (config: CastleConfig): Castle => {
   producer.on('producer.disconnect', () => servicesStatus.set(producer, false));
   producer.on('producer.network.request', () => servicesStatus.set(producer, true));
 
-  const consumers: CastleConsumer[] = (config.consumers || []).map(config => {
+  const consumers: CastleConsumer[] = (config.consumers || []).map((config) => {
     const finalConfig = toFinalCastleConsumerConfig(config);
     const instance = kafka.consumer(finalConfig);
     servicesStatus.set(instance, false);
@@ -98,11 +102,11 @@ export const createCastle = (config: CastleConfig): Castle => {
     producer,
     isRunning: () => [...servicesStatus.values()].includes(true),
     start: async () => {
-      await Promise.all([...servicesStatus.keys()].map(service => service.connect()));
+      await Promise.all([...servicesStatus.keys()].map((service) => service.connect()));
       await run();
     },
     stop: async () => {
-      await Promise.all([...servicesStatus.keys()].map(service => service.disconnect()));
+      await Promise.all([...servicesStatus.keys()].map((service) => service.disconnect()));
     },
   };
 };

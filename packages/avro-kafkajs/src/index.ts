@@ -11,6 +11,13 @@ export { AvroProducer } from './AvroProducer';
 export { AvroConsumer } from './AvroConsumer';
 export { AvroTransaction } from './AvroTransaction';
 export {
+  AvroTransformBatch,
+  AvroTransformBatchConfig,
+  ToPartition,
+  ToKafkaMessage,
+  StreamKafkaMessage,
+} from './AvroTransformBatch';
+export {
   encodeMessages,
   toProducerRecord,
   toProducerBatch,
@@ -23,6 +30,7 @@ export {
   AvroBatch,
   AvroEachBatchPayload,
   AvroMessage,
+  AvroKafkaMessage,
   AvroProducerRecord,
   AvroTopicMessages,
   AvroProducerBatch,
