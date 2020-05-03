@@ -28,10 +28,6 @@ const schema: schema.RecordType = {
 const keySchema: schema.PrimitiveType = 'int';
 
 const topic = `dev_avroKafkajs_${uuid.v4()}`;
-interface MessageType {
-  stringField: string;
-  intField?: number | null;
-}
 
 describe('Functions', () => {
   let producer: Producer;
@@ -59,7 +55,7 @@ describe('Functions', () => {
     await consumer.subscribe({ topic });
     await consumer.run({
       partitionsConsumedConcurrently: 2,
-      eachMessage: toAvroEachMessage<MessageType>(schemaRegistry, async payload => {
+      eachMessage: toAvroEachMessage<MessageType>(schemaRegistry, async (payload) => {
         consumed.push(payload);
       }),
     });
@@ -111,7 +107,7 @@ describe('Functions', () => {
     await consumer.subscribe({ topic });
     await consumer.run({
       partitionsConsumedConcurrently: 2,
-      eachMessage: async payload => {
+      eachMessage: async (payload) => {
         const value = await schemaRegistry.decode<MessageType>(payload.message.value);
         const key = await schemaRegistry.decode<KeyType>(payload.message.key);
         consumed.push({ value, key, partition: payload.partition });

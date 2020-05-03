@@ -24,9 +24,9 @@ const withProducer = <T = unknown>(producer: AvroProducer) => (
   config: FinalCastleConsumerConfig<T>,
 ): AvroConsumerRun<T> => {
   if ('eachBatch' in config) {
-    return { ...config, eachBatch: payload => config.eachBatch({ ...payload, producer }) };
+    return { ...config, eachBatch: (payload) => config.eachBatch({ ...payload, producer }) };
   } else {
-    return { ...config, eachMessage: payload => config.eachMessage({ ...payload, producer }) };
+    return { ...config, eachMessage: (payload) => config.eachMessage({ ...payload, producer }) };
   }
 };
 
@@ -73,7 +73,7 @@ export const createCastle = (config: CastleConfig): Castle => {
   producer.on('producer.disconnect', () => servicesStatus.set(producer, false));
   producer.on('producer.network.request', () => servicesStatus.set(producer, true));
 
-  const consumers: CastleConsumer[] = (config.consumers || []).map(config => {
+  const consumers: CastleConsumer[] = (config.consumers || []).map((config) => {
     const finalConfig = toFinalCastleConsumerConfig(config);
     const instance = kafka.consumer(finalConfig);
     servicesStatus.set(instance, false);
@@ -98,11 +98,11 @@ export const createCastle = (config: CastleConfig): Castle => {
     producer,
     isRunning: () => [...servicesStatus.values()].includes(true),
     start: async () => {
-      await Promise.all([...servicesStatus.keys()].map(service => service.connect()));
+      await Promise.all([...servicesStatus.keys()].map((service) => service.connect()));
       await run();
     },
     stop: async () => {
-      await Promise.all([...servicesStatus.keys()].map(service => service.disconnect()));
+      await Promise.all([...servicesStatus.keys()].map((service) => service.disconnect()));
     },
   };
 };
