@@ -80,10 +80,10 @@ castle config set uat --kafka-broker localhost:3203 --key private.pem --ca ca.pe
 After that is set you can use it in any command by stating `--config uat` (or `-C uat`):
 
 ```
-castle --config uat schema search my-topic
-castle --config uat schema show my-topic-full-name
-castle --config uat topic search my-topic
-castle --config uat topic consume my-topic-full-name
+castle schema search my-topic --config uat
+castle schema show my-topic-full-name --config uat
+castle topic search my-topic --config uat
+castle topic consume my-topic-full-name --config uat
 ```
 
 Using it without a specified config would connect to the default local kafka server.

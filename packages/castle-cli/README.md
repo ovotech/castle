@@ -51,7 +51,7 @@ The "kafka" config object is the config for [kafkajs](https://kafka.js.org) itse
 When you have a file like that saved somewhere you can use it with the `--config` option
 
 ```shell
-castle --config ~/path/to/config.json topic search my-topic
+castle topic search my-topic --config ~/path/to/config.json
 ```
 
 ### Configuration Folder
@@ -59,7 +59,7 @@ castle --config ~/path/to/config.json topic search my-topic
 You can store the config inside `~/.castle-cli` folder which is also searched when you use the `--config` option
 
 ```shell
-castle --config config.json topic search my-topic
+castle topic search my-topic --config config.json
 ```
 
 You can also define the configuration directly using the config commands
@@ -72,7 +72,7 @@ castle config set my-env \
   --cert cert.pem \
   --schema-registry https://foo:bar@registry.example.com:2222`
 
-castle --config my-env topic search my-topic
+castle topic search my-topic --config my-env
 ```
 
 ## Topics
