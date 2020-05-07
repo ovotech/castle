@@ -8,7 +8,7 @@ import { Output } from '../output';
 export const castle = (output = new Output(console)): commander.Command =>
   commander
     .createCommand('castle')
-    .version('0.4.2')
+    .version('0.4.3')
     .description(
       `Castle CLI - a tool for inspecting kafka topics with schema registry.
 
@@ -36,7 +36,7 @@ Example:
   castle topic my-topic
   castle consume my-topic
   castle config uat --kafka-broker example.com:3203 --key private.pem --ca ca.pem --cert cert.pem --schema-registry http://example.com:8081
-  castle --config uat topic my-topic
+  castle topic my-topic --config uat
 `,
     )
     .addCommand(castleTopic(output))
