@@ -40,6 +40,7 @@ export const defaultPayload: BlaiseDefaults = {
   message: {
     schema: [],
     key: Buffer.from('blaise-default-key'),
+    rawValue: Buffer.from('blaise-default-raw-value'),
     value: {},
     timestamp: Date.now().toString(),
     size: 3,

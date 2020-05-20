@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/castle",
-  "version": "0.4.6",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka and avro based event listener",
@@ -40,7 +40,7 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/avro-kafkajs": "^0.3.0",
+    "@ovotech/avro-kafkajs": "^1.0.0",
     "kafkajs": "^1.12.0",
     "lodash.chunk": "^4.2.0"
   }

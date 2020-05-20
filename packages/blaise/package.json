@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/blaise",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "An API to generate mock payloads for @ovotech/castle using @ovotech/avro-mock-generator",
   "keywords": [
     "castle",
@@ -39,7 +39,7 @@
     "preset": "../../jest.json"
   },
   "devDependencies": {
-    "@ovotech/avro-kafkajs": "^0.2.0",
+    "@ovotech/avro-kafkajs": "^1.0.0",
     "@ovotech/castle": "^0.4.1",
     "@types/lodash.merge": "^4.6.6",
     "@typescript-eslint/eslint-plugin": "^2.26.0",

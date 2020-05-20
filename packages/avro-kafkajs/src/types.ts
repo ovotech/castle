@@ -38,6 +38,7 @@ export interface AvroKafkaMessage<T = unknown, KT = KafkaMessage['key']>
   extends Omit<KafkaMessage, 'value' | 'key'> {
   schema: Schema;
   key: KT;
+  rawValue: Buffer;
   value: T;
 }
 
