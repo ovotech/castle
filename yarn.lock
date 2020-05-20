@@ -1308,6 +1308,15 @@
     mersenne-twister "^1.1.0"
     uuid "^7.0.2"
 
+"@ovotech/castle@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@ovotech/castle/-/castle-0.4.6.tgz#68d772b452964f24b3f057c11edb3b2701390cac"
+  integrity sha512-rKQEO9JDwSAN8wJkGA7rfjar/rIduJWjOFck5AzdFZI8Hkl3E9RFUcWNV07BFigqdcPF3g6roS9ve5aBRS61Zw==
+  dependencies:
+    "@ovotech/avro-kafkajs" "^0.3.0"
+    kafkajs "^1.12.0"
+    lodash.chunk "^4.2.0"
+
 "@ovotech/schema-registry-api@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@ovotech/schema-registry-api/-/schema-registry-api-1.0.5.tgz#95914deba765ee9e8ec7523b34de744028f0c934"
