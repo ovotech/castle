@@ -33,9 +33,15 @@ export interface EncodeCache {
   get(id: number): Type | undefined;
   set(id: number, value: Type): unknown;
 }
+
+export interface DecodeCacheKey {
+  subject: string;
+  schema: Schema;
+}
+
 export interface DecodeCache {
-  get(topic: string): DecodeItem | undefined;
-  set(topic: string, value: DecodeItem): unknown;
+  get(topic: DecodeCacheKey): DecodeItem | undefined;
+  set(topic: DecodeCacheKey, value: DecodeItem): unknown;
 }
 
 export interface SchemaRegistryConfig {
@@ -54,7 +60,7 @@ export class SchemaRegistry {
     uri,
     options,
     encodeCache = new Map<number, Type>(),
-    decodeCache = new Map<string, DecodeItem>(),
+    decodeCache = new Map<DecodeCacheKey, DecodeItem>(),
   }: SchemaRegistryConfig) {
     this.uri = uri;
     this.options = options;
@@ -91,14 +97,14 @@ export class SchemaRegistry {
     schemaType: 'value' | 'key',
     schema: Schema,
   ): Promise<DecodeItem> {
-    const subject = `${topic}-${schemaType}`;
-    const cached = this.decodeCache.get(subject);
+    const cacheKey: DecodeCacheKey = { subject: `${topic}-${schemaType}`, schema };
+    const cached = this.decodeCache.get(cacheKey);
     if (cached) {
       return cached;
     } else {
-      const id = await schemaToId(this.uri, subject, schema);
+      const id = await schemaToId(this.uri, cacheKey.subject, cacheKey.schema);
       const type = Type.forSchema(schema, { registry: {}, ...this.options });
-      this.decodeCache.set(subject, { id, type });
+      this.decodeCache.set(cacheKey, { id, type });
       return { id, type };
     }
   }
