@@ -6,6 +6,7 @@ import {
   getSubjectVersions,
 } from '@ovotech/schema-registry-api';
 import { Schema, Type, ForSchemaOptions } from 'avsc';
+import { isDeepStrictEqual } from 'util';
 
 export interface AvroBuffer {
   id: number;
@@ -40,8 +41,8 @@ export interface DecodeCacheKey {
 }
 
 export interface DecodeCache {
-  get(topic: DecodeCacheKey): DecodeItem | undefined;
-  set(topic: DecodeCacheKey, value: DecodeItem): unknown;
+  get(cacheKey: DecodeCacheKey): DecodeItem | undefined;
+  set(cacheKey: DecodeCacheKey, value: DecodeItem): unknown;
 }
 
 export interface SchemaRegistryConfig {
@@ -49,6 +50,16 @@ export interface SchemaRegistryConfig {
   options?: Partial<ForSchemaOptions>;
   encodeCache?: EncodeCache;
   decodeCache?: DecodeCache;
+}
+
+export class DecodeCacheInMemory<KeyType, ValueType> {
+  private cache: Array<[KeyType, ValueType]> = [];
+  get(cacheKey: KeyType): ValueType | undefined {
+    return this.cache.find((item) => isDeepStrictEqual(item[0], cacheKey))?.[1];
+  }
+  set(cacheKey: KeyType, value: ValueType): void {
+    this.cache.push([cacheKey, value]);
+  }
 }
 
 export class SchemaRegistry {
@@ -60,7 +71,7 @@ export class SchemaRegistry {
     uri,
     options,
     encodeCache = new Map<number, Type>(),
-    decodeCache = new Map<DecodeCacheKey, DecodeItem>(),
+    decodeCache = new DecodeCacheInMemory<DecodeCacheKey, DecodeItem>(),
   }: SchemaRegistryConfig) {
     this.uri = uri;
     this.options = options;
