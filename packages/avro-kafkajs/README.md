@@ -268,6 +268,7 @@ const myOldSchema: Schema = {
   fields: [{ name: 'field1', type: 'string' }],
 };
 
+// Backwards compatible schema change
 const myNewSchema: Schema = {
   type: 'record',
   name: 'MyNewMessage',

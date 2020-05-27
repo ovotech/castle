@@ -36,6 +36,6 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/castle": "^0.4.6"
+    "@ovotech/castle": "^0.4.7"
   }
 }
