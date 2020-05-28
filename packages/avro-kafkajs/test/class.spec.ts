@@ -10,10 +10,21 @@ import { Kafka, logLevel, Admin, CompressionTypes } from 'kafkajs';
 import { retry } from 'ts-retry-promise';
 import * as uuid from 'uuid';
 import { schema } from 'avsc';
+import axios, { AxiosInstance } from 'axios';
 
 interface MessageType {
   stringField: string;
   intField?: number | null;
+}
+
+interface Message2Type {
+  stringField: string;
+  otherField?: number;
+  intField: number | null;
+}
+
+interface Message3Type {
+  incompatibleName: string;
 }
 
 interface KeyType {
@@ -28,6 +39,22 @@ const schema: schema.RecordType = {
     { type: 'string', name: 'stringField' },
     { type: ['null', 'int'], name: 'intField' },
   ],
+};
+
+const schema2: schema.RecordType = {
+  type: 'record',
+  name: 'TestMessage2',
+  fields: [
+    { type: 'string', name: 'stringField' },
+    { type: 'int', name: 'otherField', default: 20 },
+    { type: ['null', 'int'], name: 'intField' },
+  ],
+};
+
+const schema3: schema.RecordType = {
+  type: 'record',
+  name: 'TestMessag3',
+  fields: [{ type: 'string', name: 'incompatibleName' }],
 };
 
 const keySchema: schema.RecordType = {
@@ -46,6 +73,7 @@ describe('Class', () => {
   let producer: AvroProducer;
   let consumer: AvroConsumer;
   let admin: Admin;
+  let schemaRegistryApi: AxiosInstance;
   let groupId: string;
 
   beforeEach(async () => {
@@ -55,6 +83,10 @@ describe('Class', () => {
     const avroKafka = new AvroKafka(schemaRegistry, kafka, { [TOPIC_ALIAS]: realTopicName });
     groupId = uuid.v4();
 
+    schemaRegistryApi = axios.create({
+      headers: { 'Content-Type': 'application/vnd.schemaregistry.v1+json' },
+      baseURL: 'http://localhost:8081',
+    });
     admin = avroKafka.admin();
     consumer = avroKafka.consumer({ groupId });
     producer = avroKafka.producer();
@@ -65,11 +97,11 @@ describe('Class', () => {
 
   it('Should process avro messages one by one', async () => {
     jest.setTimeout(12000);
-    const consumed: AvroEachMessagePayload<MessageType>[] = [];
+    const consumed: AvroEachMessagePayload<MessageType | Message2Type | Message3Type>[] = [];
 
     await admin.createTopics({ topics: [{ topic: realTopicName, numPartitions: 2 }] });
     await consumer.subscribe({ topic: TOPIC_ALIAS });
-    await consumer.run<MessageType>({
+    await consumer.run<MessageType | Message2Type | Message3Type>({
       partitionsConsumedConcurrently: 2,
       eachMessage: async (payload) => {
         consumed.push(payload);
@@ -82,6 +114,33 @@ describe('Class', () => {
       messages: [
         { value: { intField: 10, stringField: 'test1' }, partition: 0, key: 'test-1' },
         { value: { intField: null, stringField: 'test2' }, partition: 1, key: 'test-2' },
+      ],
+    });
+
+    await producer.send<Message2Type>({
+      topic: TOPIC_ALIAS,
+      schema: schema2,
+      messages: [
+        {
+          value: { intField: 10, stringField: 'test1', otherField: 2 },
+          partition: 0,
+          key: 'test-other-1',
+        },
+        {
+          value: { intField: null, stringField: 'test2' },
+          partition: 1,
+          key: 'test-other-2',
+        },
+      ],
+    });
+
+    await schemaRegistryApi.put(`/config/${realTopicName}-value`, { compatibility: 'NONE' });
+
+    await producer.send<Message3Type>({
+      topic: TOPIC_ALIAS,
+      schema: schema3,
+      messages: [
+        { value: { incompatibleName: 'totally different' }, partition: 0, key: 'test-different-1' },
       ],
     });
 
@@ -99,7 +158,8 @@ describe('Class', () => {
 
     await retry(
       async () => {
-        expect(consumed).toHaveLength(2);
+        expect(consumed).toHaveLength(5);
+
         expect(consumed).toContainEqual(
           expect.objectContaining({
             partition: 0,
@@ -117,6 +177,34 @@ describe('Class', () => {
               key: Buffer.from('test-2'),
               value: { intField: null, stringField: 'test2' },
               schema,
+            }),
+          }),
+        );
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            partition: 0,
+            message: expect.objectContaining({
+              key: Buffer.from('test-other-1'),
+              value: { intField: 10, stringField: 'test1', otherField: 2 },
+            }),
+          }),
+        );
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            partition: 1,
+            message: expect.objectContaining({
+              key: Buffer.from('test-other-2'),
+              value: { intField: null, stringField: 'test2', otherField: 20 },
+            }),
+          }),
+        );
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            partition: 0,
+            message: expect.objectContaining({
+              key: Buffer.from('test-different-1'),
+              value: { incompatibleName: 'totally different' },
+              schema: schema3,
             }),
           }),
         );

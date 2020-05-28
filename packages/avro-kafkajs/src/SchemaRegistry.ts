@@ -6,6 +6,7 @@ import {
   getSubjectVersions,
 } from '@ovotech/schema-registry-api';
 import { Schema, Type, ForSchemaOptions } from 'avsc';
+import { isDeepStrictEqual } from 'util';
 
 export interface AvroBuffer {
   id: number;
@@ -33,9 +34,15 @@ export interface EncodeCache {
   get(id: number): Type | undefined;
   set(id: number, value: Type): unknown;
 }
+
+export interface DecodeCacheKey {
+  subject: string;
+  schema: Schema;
+}
+
 export interface DecodeCache {
-  get(topic: string): DecodeItem | undefined;
-  set(topic: string, value: DecodeItem): unknown;
+  get(cacheKey: DecodeCacheKey): DecodeItem | undefined;
+  set(cacheKey: DecodeCacheKey, value: DecodeItem): unknown;
 }
 
 export interface SchemaRegistryConfig {
@@ -43,6 +50,16 @@ export interface SchemaRegistryConfig {
   options?: Partial<ForSchemaOptions>;
   encodeCache?: EncodeCache;
   decodeCache?: DecodeCache;
+}
+
+export class DecodeCacheInMemory<KeyType, ValueType> {
+  private cache: Array<[KeyType, ValueType]> = [];
+  get(cacheKey: KeyType): ValueType | undefined {
+    return this.cache.find((item) => isDeepStrictEqual(item[0], cacheKey))?.[1];
+  }
+  set(cacheKey: KeyType, value: ValueType): void {
+    this.cache.push([cacheKey, value]);
+  }
 }
 
 export class SchemaRegistry {
@@ -54,7 +71,7 @@ export class SchemaRegistry {
     uri,
     options,
     encodeCache = new Map<number, Type>(),
-    decodeCache = new Map<string, DecodeItem>(),
+    decodeCache = new DecodeCacheInMemory<DecodeCacheKey, DecodeItem>(),
   }: SchemaRegistryConfig) {
     this.uri = uri;
     this.options = options;
@@ -91,14 +108,14 @@ export class SchemaRegistry {
     schemaType: 'value' | 'key',
     schema: Schema,
   ): Promise<DecodeItem> {
-    const subject = `${topic}-${schemaType}`;
-    const cached = this.decodeCache.get(subject);
+    const cacheKey: DecodeCacheKey = { subject: `${topic}-${schemaType}`, schema };
+    const cached = this.decodeCache.get(cacheKey);
     if (cached) {
       return cached;
     } else {
-      const id = await schemaToId(this.uri, subject, schema);
+      const id = await schemaToId(this.uri, cacheKey.subject, cacheKey.schema);
       const type = Type.forSchema(schema, { registry: {}, ...this.options });
-      this.decodeCache.set(subject, { id, type });
+      this.decodeCache.set(cacheKey, { id, type });
       return { id, type };
     }
   }

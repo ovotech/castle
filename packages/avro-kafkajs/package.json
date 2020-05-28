@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/avro-kafkajs",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A wrapper around Kafkajs to transparently use Schema Registry for producing and consuming messages with avro schemas.",
@@ -14,6 +14,7 @@
     "@types/uuid": "^7.0.2",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
+    "axios": "^0.19.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "jest": "^25.2.6",
