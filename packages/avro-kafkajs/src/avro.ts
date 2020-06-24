@@ -22,14 +22,14 @@ import {
 
 export const encodeMessages = async <T = unknown, KT = unknown>({
   schemaRegistry,
-  schema,
-  keySchema,
+  schemaOrSubject,
+  keySchemaOrSubject,
   topic,
   avroMessages,
 }: {
   schemaRegistry: SchemaRegistry;
-  schema: Schema;
-  keySchema?: Schema;
+  schemaOrSubject: Schema | string;
+  keySchemaOrSubject?: Schema | string;
   topic: string;
   avroMessages: AvroMessage<T, KT>[];
 }): Promise<Message[]> => {
@@ -39,11 +39,11 @@ export const encodeMessages = async <T = unknown, KT = unknown>({
     messages.push({
       ...message,
       key:
-        keySchema && message.key
-          ? await schemaRegistry.encode<KT>(topic, 'key', keySchema, message.key)
+        keySchemaOrSubject && message.key
+          ? await schemaRegistry.encode<KT>(topic, 'key', keySchemaOrSubject, message.key)
           : // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (message.key as any),
-      value: await schemaRegistry.encode<T>(topic, 'value', schema, message.value),
+      value: await schemaRegistry.encode<T>(topic, 'value', schemaOrSubject, message.value),
     });
   }
   return messages;
@@ -53,11 +53,11 @@ export const toProducerRecord = async <T = unknown, KT = Message['key']>(
   schemaRegistry: SchemaRegistry,
   record: AvroProducerRecord<T, KT>,
 ): Promise<ProducerRecord> => {
-  const { messages: avroMessages, schema, keySchema, topic, ...rest } = record;
+  const { messages: avroMessages, schemaOrSubject, keySchemaOrSubject, topic, ...rest } = record;
   const messages = await encodeMessages<T, KT>({
     schemaRegistry,
-    schema,
-    keySchema,
+    schemaOrSubject,
+    keySchemaOrSubject,
     topic,
     avroMessages,
   });
@@ -72,11 +72,11 @@ export const toProducerBatch = async (
   const topicMessages: TopicMessages[] = [];
   const { topicMessages: avroTopicMessages, ...rest } = record;
   for (const item of avroTopicMessages) {
-    const { messages: avroMessages, schema, keySchema, topic } = item;
+    const { messages: avroMessages, schemaOrSubject, keySchemaOrSubject, topic } = item;
     const messages = await encodeMessages({
       schemaRegistry,
-      schema,
-      keySchema,
+      schemaOrSubject,
+      keySchemaOrSubject,
       topic,
       avroMessages,
     });

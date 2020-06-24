@@ -57,14 +57,14 @@ Example:
       ) => {
         await output.wrap(false, async () => {
           const config = await loadConfigFile({ file: configFile, verbose, output });
-          const schema = JSON.parse(readFileSync(schemaFile, 'utf8'));
-          const keySchema = keySchemaFile
+          const schemaOrSubject = JSON.parse(readFileSync(schemaFile, 'utf8'));
+          const keySchemaOrSubject = keySchemaFile
             ? JSON.parse(readFileSync(keySchemaFile, 'utf8'))
             : undefined;
           const messages = [
             {
               value: JSON.parse(messageJson),
-              key: keySchema && key ? JSON.parse(key) : key,
+              key: keySchemaOrSubject && key ? JSON.parse(key) : key,
               partition,
             },
           ];
@@ -78,7 +78,7 @@ Example:
           await producer.connect();
 
           try {
-            await producer.send({ messages, schema, keySchema, topic });
+            await producer.send({ messages, schemaOrSubject, keySchemaOrSubject, topic });
             output.success('Success');
           } finally {
             producer.disconnect();

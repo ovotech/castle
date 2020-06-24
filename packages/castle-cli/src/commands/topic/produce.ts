@@ -30,7 +30,7 @@ const TypeSchema = Unknown.withConstraint<Schema>((item: unknown) => {
 
 const ProduceFileType = Record({
   topic: String,
-  schema: TypeSchema,
+  schemaOrSubject: TypeSchema.Or(String),
   messages: Array(
     Record({ value: Unknown }).And(
       Partial({
@@ -44,7 +44,7 @@ const ProduceFileType = Record({
 }).And(
   Partial({
     timeout: Number,
-    keySchema: TypeSchema,
+    keySchemaOrSubject: TypeSchema.Or(String),
     compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)),
   }),
 );
@@ -98,7 +98,9 @@ Example produce file:
       await output.wrap(false, async () => {
         const config = await loadConfigFile({ file: configFile, verbose, output });
 
-        const { messages, schema, keySchema, topic } = loadAvroProducerRecordFile(file);
+        const { messages, schemaOrSubject, keySchemaOrSubject, topic } = loadAvroProducerRecordFile(
+          file,
+        );
 
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
         const kafka = new Kafka(config.kafka);
@@ -113,7 +115,7 @@ Example produce file:
         await producer.connect();
 
         try {
-          await producer.send({ messages, schema, keySchema, topic });
+          await producer.send({ messages, schemaOrSubject, keySchemaOrSubject, topic });
           output.success('Success');
         } finally {
           producer.disconnect();

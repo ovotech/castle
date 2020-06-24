@@ -49,15 +49,15 @@ export interface AvroMessage<T = unknown, KT = Message['key']>
 
 export interface AvroProducerRecord<T = unknown, KT = Message['key']>
   extends Omit<ProducerRecord, 'messages'> {
-  schema: Schema;
-  keySchema?: Schema;
+  schemaOrSubject: Schema | string;
+  keySchemaOrSubject?: Schema | string;
   messages: AvroMessage<T, KT>[];
 }
 
 export interface AvroTopicMessages<T = unknown, KT = Message['key']>
   extends Omit<TopicMessages, 'messages'> {
-  schema: Schema;
-  keySchema?: Schema;
+  schemaOrSubject: Schema | string;
+  keySchemaOrSubject?: Schema | string;
   messages: AvroMessage<T, KT>[];
 }
 

@@ -91,6 +91,17 @@ export class SchemaRegistry {
     return await getSubjectVersionSchema(this.uri, subject, version);
   }
 
+  public async getSubjectLastVersionSchema(subject: string): Promise<Schema> {
+    const versions = await getSubjectVersions(this.uri, subject);
+    const last = versions.pop();
+
+    if (typeof last !== 'number') {
+      return Promise.reject('Could not retrieve the last version for given subject');
+    }
+
+    return await getSubjectVersionSchema(this.uri, subject, last);
+  }
+
   public async getType(id: number): Promise<Type> {
     const cached = this.encodeCache.get(id);
     if (cached) {
@@ -106,8 +117,15 @@ export class SchemaRegistry {
   public async getDecodeItem(
     topic: string,
     schemaType: 'value' | 'key',
-    schema: Schema,
+    schemaOrSubject: Schema | string,
   ): Promise<DecodeItem> {
+    let schema: Schema;
+    if (typeof schemaOrSubject === 'string') {
+      schema = await this.getSubjectLastVersionSchema(schemaOrSubject);
+    } else {
+      schema = schemaOrSubject;
+    }
+
     const cacheKey: DecodeCacheKey = { subject: `${topic}-${schemaType}`, schema };
     const cached = this.decodeCache.get(cacheKey);
     if (cached) {
@@ -135,10 +153,10 @@ export class SchemaRegistry {
   public async encode<T = unknown>(
     topic: string,
     schemaType: 'value' | 'key',
-    schema: Schema,
+    schemaOrSubject: Schema | string,
     value: T,
   ): Promise<Buffer> {
-    const { id, type } = await this.getDecodeItem(topic, schemaType, schema);
+    const { id, type } = await this.getDecodeItem(topic, schemaType, schemaOrSubject);
     return constructMessage({ id, buffer: type.toBuffer(value) });
   }
 }

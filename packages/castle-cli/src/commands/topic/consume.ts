@@ -149,7 +149,7 @@ Example:
 
                     jsonResult = {
                       topic,
-                      schema: batch.messages[0].schema,
+                      schemaOrSubject: batch.messages[0].schema,
                       messages: (jsonResult ? jsonResult.messages : []).concat(
                         batch.messages.map((message) => ({
                           partition: batch.partition,
