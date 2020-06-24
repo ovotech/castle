@@ -110,7 +110,7 @@ describe('Class', () => {
 
     await producer.send<MessageType>({
       topic: TOPIC_ALIAS,
-      schema,
+      schemaOrSubject: schema,
       messages: [
         { value: { intField: 10, stringField: 'test1' }, partition: 0, key: 'test-1' },
         { value: { intField: null, stringField: 'test2' }, partition: 1, key: 'test-2' },
@@ -119,7 +119,7 @@ describe('Class', () => {
 
     await producer.send<Message2Type>({
       topic: TOPIC_ALIAS,
-      schema: schema2,
+      schemaOrSubject: schema2,
       messages: [
         {
           value: { intField: 10, stringField: 'test1', otherField: 2 },
@@ -138,7 +138,7 @@ describe('Class', () => {
 
     await producer.send<Message3Type>({
       topic: TOPIC_ALIAS,
-      schema: schema3,
+      schemaOrSubject: schema3,
       messages: [
         { value: { incompatibleName: 'totally different' }, partition: 0, key: 'test-different-1' },
       ],
@@ -235,8 +235,8 @@ describe('Class', () => {
 
     await producer.send<MessageType, KeyType>({
       topic: TOPIC_ALIAS,
-      schema,
-      keySchema,
+      schemaOrSubject: schema,
+      keySchemaOrSubject: keySchema,
       messages: [
         {
           value: { intField: 10, stringField: 'test1' },
@@ -316,7 +316,7 @@ describe('Class', () => {
       topicMessages: [
         {
           topic: TOPIC_ALIAS,
-          schema,
+          schemaOrSubject: schema,
           messages: [
             { value: { intField: 1, stringField: 'test1' }, partition: 0, key: 'test-1' },
             { value: { intField: 2, stringField: 'test2' }, partition: 0, key: 'test-2' },
@@ -392,8 +392,8 @@ describe('Class', () => {
       topicMessages: [
         {
           topic: TOPIC_ALIAS,
-          schema,
-          keySchema,
+          schemaOrSubject: schema,
+          keySchemaOrSubject: keySchema,
           messages: [
             {
               value: { intField: 1, stringField: 'test1' },

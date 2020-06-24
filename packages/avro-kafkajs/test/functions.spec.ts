@@ -63,7 +63,7 @@ describe('Functions', () => {
     await producer.send(
       await toProducerRecord<MessageType>(schemaRegistry, {
         topic,
-        schema,
+        schemaOrSubject: schema,
         messages: [
           { value: { intField: 10, stringField: 'test1' }, partition: 0, key: 'test-1' },
           { value: { intField: null, stringField: 'test2' }, partition: 1, key: 'test-2' },
