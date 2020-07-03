@@ -92,7 +92,7 @@ export class AvroTransformBatch<
   >();
   private toKafkaMessage: ToKafkaMessage<TMessage, TValue, TKey>;
 
-  constructor({
+  public constructor({
     partitionHighWaterMark,
     toKafkaMessage,
     topic,
@@ -104,7 +104,7 @@ export class AvroTransformBatch<
     this.topic = topic;
   }
 
-  add(
+  public add(
     partition: number,
     { partition: _, ...message }: StreamKafkaMessage<TValue, TKey>,
   ): { messages: AvroKafkaMessage<TValue, TKey>[]; offset: Long } {
@@ -126,7 +126,7 @@ export class AvroTransformBatch<
     return buffer;
   }
 
-  async _final(callback: TransformCallback): Promise<void> {
+  public async _final(callback: TransformCallback): Promise<void> {
     for (const [partition, buffer] of this.partitionBuffers.entries()) {
       if (buffer.messages.length > 0) {
         this.push(toAvroBatch(partition, this.topic, buffer.messages));
@@ -135,7 +135,7 @@ export class AvroTransformBatch<
     callback();
   }
 
-  async _transform(
+  public async _transform(
     message: TMessage,
     encoding: string,
     callback: TransformCallback,

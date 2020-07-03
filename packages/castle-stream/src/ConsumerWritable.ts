@@ -4,13 +4,13 @@ import { CastleStreamTopicSubscribe } from './types';
 import { KafkaMessage } from 'kafkajs';
 
 export class ConsumerWritable<TValue = unknown, TKey = KafkaMessage['key']> extends Writable {
-  constructor(
+  public constructor(
     public producer: AvroProducer,
     private subscribers: CastleStreamTopicSubscribe<TValue, TKey>,
   ) {
     super({ objectMode: true });
   }
-  async _write(
+  public async _write(
     data: AvroEachBatchPayload<TValue, TKey>,
     encoding: string,
     callback: (error?: Error | null) => void,

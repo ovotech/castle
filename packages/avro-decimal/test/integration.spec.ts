@@ -61,7 +61,7 @@ describe('bufferToDecimal', () => {
       Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01]),
     ];
 
-    testOneBuffers.forEach(b => {
+    testOneBuffers.forEach((b) => {
       expect(bufferToDecimal(b, 0).equals('1')).toBe(true);
       expect(bufferToDecimal(b, 4).equals('0.0001')).toBe(true);
     });

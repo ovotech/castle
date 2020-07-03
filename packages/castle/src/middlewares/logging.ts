@@ -14,16 +14,21 @@ export interface LoggingContext<TLogger extends Logger = Logger> {
 }
 
 export interface LoggerOptions {
-  consume?: (ctx: object) => [string, Metadata];
+  consume?: (
+    ctx: CastleEachBatchPayload | CastleEachMessagePayload | Record<string, unknown>,
+  ) => [string, Metadata];
   error?: (error: Error) => [string, Metadata];
 }
 
-export const isBatch = (paylaod: object): paylaod is CastleEachBatchPayload => 'batch' in paylaod;
-export const isMessage = (paylaod: object): paylaod is CastleEachMessagePayload =>
-  'message' in paylaod;
+export const isBatch = (
+  paylaod: CastleEachBatchPayload | CastleEachMessagePayload | Record<string, unknown>,
+): paylaod is CastleEachBatchPayload => 'batch' in paylaod;
+export const isMessage = (
+  paylaod: CastleEachBatchPayload | CastleEachMessagePayload | Record<string, unknown>,
+): paylaod is CastleEachMessagePayload => 'message' in paylaod;
 
 export const defaultOptions: LoggerOptions = {
-  consume: ctx => {
+  consume: (ctx) => {
     if (isBatch(ctx)) {
       const offsetFirst = ctx.batch.firstOffset();
       const offsetLast = ctx.batch.lastOffset();
@@ -50,13 +55,13 @@ export const defaultOptions: LoggerOptions = {
       return ['Unknown payload', {}];
     }
   },
-  error: error => [error.message, { stack: error.stack }],
+  error: (error) => [error.message, { stack: error.stack }],
 };
 
 export const createLogging = <TLogger extends Logger = Logger>(
   logger: TLogger,
   userOptions: Partial<LoggerOptions> = {},
-): Middleware<LoggingContext<TLogger>> => next => async ctx => {
+): Middleware<LoggingContext<TLogger>> => (next) => async (ctx) => {
   const options = { ...defaultOptions, ...userOptions };
 
   try {

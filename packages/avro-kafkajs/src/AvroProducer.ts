@@ -13,7 +13,7 @@ import { AvroTransaction } from './AvroTransaction';
 import { toProducerRecord, toProducerBatch, resolveTopic } from './avro';
 
 export class AvroProducer {
-  constructor(
+  public constructor(
     public schemaRegistry: SchemaRegistry,
     public producer: Producer,
     public topicsAlias: TopicsAlias = {},
@@ -51,7 +51,7 @@ export class AvroProducer {
     return this.producer.sendBatch(
       await toProducerBatch(this.schemaRegistry, {
         ...batch,
-        topicMessages: batch.topicMessages.map(record => resolveTopic(record, this.topicsAlias)),
+        topicMessages: batch.topicMessages.map((record) => resolveTopic(record, this.topicsAlias)),
       }),
     );
   }
