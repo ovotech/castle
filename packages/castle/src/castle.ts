@@ -1,11 +1,11 @@
-import { Kafka, KafkaMessage } from 'kafkajs';
+import { Kafka, KafkaMessage, ProducerRecord } from 'kafkajs';
 import {
   AvroConsumerRun,
   AvroKafka,
   AvroProducer,
   SchemaRegistry,
-  AvroProducerRecord,
   AvroConsumer,
+  AvroProducerRecordSchema,
 } from '@ovotech/avro-kafkajs';
 import {
   CastleConsumerConfig,
@@ -30,7 +30,10 @@ const withProducer = <TValue = unknown, TKey = KafkaMessage['key']>(producer: Av
   }
 };
 
-export const produce = <T>(config: Omit<AvroProducerRecord<T>, 'messages'>): CastleSender<T> => {
+export const produce = <T>(
+  config: Omit<ProducerRecord, 'messages'> & AvroProducerRecordSchema,
+): CastleSender<T> => {
+  config;
   return (producer, messages) => producer.send<T>({ ...config, messages });
 };
 

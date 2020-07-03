@@ -114,19 +114,33 @@ describe('Functions', () => {
       },
     });
 
-    const value1 = await schemaRegistry.encode<MessageType>(topic, 'value', schema, {
-      intField: 10,
-      stringField: 'test1',
+    const value1 = await schemaRegistry.encode<MessageType>({
+      topic,
+      schemaType: 'value',
+      schema,
+      value: { intField: 10, stringField: 'test1' },
     });
 
-    const key1 = await schemaRegistry.encode<KeyType>(topic, 'key', keySchema, 101);
-
-    const value2 = await schemaRegistry.encode<MessageType>(topic, 'value', schema, {
-      intField: null,
-      stringField: 'test2',
+    const key1 = await schemaRegistry.encode<KeyType>({
+      topic,
+      schemaType: 'key',
+      schema: keySchema,
+      value: 101,
     });
 
-    const key2 = await schemaRegistry.encode<KeyType>(topic, 'key', keySchema, 102);
+    const value2 = await schemaRegistry.encode<MessageType>({
+      topic,
+      schemaType: 'value',
+      schema,
+      value: { intField: null, stringField: 'test2' },
+    });
+
+    const key2 = await schemaRegistry.encode<KeyType>({
+      topic,
+      schemaType: 'key',
+      schema: keySchema,
+      value: 102,
+    });
 
     await producer.send({
       topic,

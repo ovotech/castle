@@ -327,6 +327,63 @@ const main = async () => {
 main();
 ```
 
+## Custom schema registry subjects
+
+If the subject for a topic in schema registry is already created, you can specify it directly to produce a message with the desired schema registry subject. It will take the latest version of the subject.
+
+> [examples/custom-subject.ts](examples/custom-subject.ts)
+
+```typescript
+import { Kafka } from 'kafkajs';
+import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
+import { Schema } from 'avsc';
+
+const mySchema: Schema = {
+  type: 'record',
+  name: 'MyMessage',
+  fields: [{ name: 'field1', type: 'string' }],
+};
+
+// Typescript types for the schema
+interface MyMessage {
+  field1: string;
+}
+
+const main = async () => {
+  const schemaRegistry = new SchemaRegistry({ uri: 'http://localhost:8081' });
+  const kafka = new Kafka({ brokers: ['localhost:29092'] });
+  const avroKafka = new AvroKafka(schemaRegistry, kafka);
+
+  // Consuming
+  const consumer = avroKafka.consumer({ groupId: 'my-group' });
+  await consumer.connect();
+  await consumer.subscribe({ topic: 'my-topic' });
+  await consumer.run<MyMessage>({
+    eachMessage: async ({ message }) => {
+      console.log(message.value);
+    },
+  });
+
+  // Producing
+  const producer = avroKafka.producer();
+  await producer.connect();
+  await producer.send<MyMessage>({
+    topic: 'my-topic',
+    schema: mySchema,
+    messages: [{ value: { field1: 'my-string' } }],
+  });
+
+  // Producing with custom subject
+  await producer.send<MyMessage>({
+    topic: 'my-topic',
+    subject: 'my-topic-value',
+    messages: [{ value: { field1: 'my-string-2' } }],
+  });
+};
+
+main();
+```
+
 ## Writing backfillers
 
 Sometimes you'll want to write some code to backfill consumption using different data types, or test out consumption code. This package includes a transform stream to allow you to write a node stream -> batch payloads.

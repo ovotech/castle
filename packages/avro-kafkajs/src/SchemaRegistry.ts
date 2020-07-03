@@ -37,7 +37,7 @@ export interface EncodeCache {
 
 export interface DecodeCacheKey {
   subject: string;
-  schema: Schema;
+  schema?: Schema;
 }
 
 export interface DecodeCache {
@@ -51,6 +51,12 @@ export interface SchemaRegistryConfig {
   encodeCache?: EncodeCache;
   decodeCache?: DecodeCache;
 }
+
+export type DecodeItemParams =
+  | { topic: string; schemaType: 'value' | 'key'; schema: Schema }
+  | { subject: string };
+
+export type EncodeParams<T> = { value: T } & DecodeItemParams;
 
 export class DecodeCacheInMemory<KeyType, ValueType> {
   private cache: Array<[KeyType, ValueType]> = [];
@@ -91,6 +97,12 @@ export class SchemaRegistry {
     return await getSubjectVersionSchema(this.uri, subject, version);
   }
 
+  public async getSubjectLastVersionSchema(subject: string): Promise<Schema> {
+    const versions = await getSubjectVersions(this.uri, subject);
+    const latestVersion = versions[versions.length - 1];
+    return await getSubjectVersionSchema(this.uri, subject, latestVersion);
+  }
+
   public async getType(id: number): Promise<Type> {
     const cached = this.encodeCache.get(id);
     if (cached) {
@@ -103,17 +115,22 @@ export class SchemaRegistry {
     }
   }
 
-  public async getDecodeItem(
-    topic: string,
-    schemaType: 'value' | 'key',
-    schema: Schema,
-  ): Promise<DecodeItem> {
-    const cacheKey: DecodeCacheKey = { subject: `${topic}-${schemaType}`, schema };
+  public async getDecodeItem(params: DecodeItemParams): Promise<DecodeItem> {
+    const cacheKey: DecodeCacheKey =
+      'subject' in params
+        ? { subject: params.subject }
+        : { subject: `${params.topic}-${params.schemaType}`, schema: params.schema };
+
     const cached = this.decodeCache.get(cacheKey);
     if (cached) {
       return cached;
     } else {
-      const id = await schemaToId(this.uri, cacheKey.subject, cacheKey.schema);
+      const schema =
+        'subject' in params
+          ? await this.getSubjectLastVersionSchema(params.subject)
+          : params.schema;
+
+      const id = await schemaToId(this.uri, cacheKey.subject, schema);
       const type = Type.forSchema(schema, { registry: {}, ...this.options });
       this.decodeCache.set(cacheKey, { id, type });
       return { id, type };
@@ -132,13 +149,9 @@ export class SchemaRegistry {
     return { type, value };
   }
 
-  public async encode<T = unknown>(
-    topic: string,
-    schemaType: 'value' | 'key',
-    schema: Schema,
-    value: T,
-  ): Promise<Buffer> {
-    const { id, type } = await this.getDecodeItem(topic, schemaType, schema);
+  public async encode<T = unknown>(params: EncodeParams<T>): Promise<Buffer> {
+    const { value, ...decodeOptions } = params;
+    const { id, type } = await this.getDecodeItem(decodeOptions);
     return constructMessage({ id, buffer: type.toBuffer(value) });
   }
 }

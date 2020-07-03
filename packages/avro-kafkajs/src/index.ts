@@ -34,6 +34,7 @@ export {
   AvroProducerRecord,
   AvroTopicMessages,
   AvroProducerBatch,
+  AvroProducerRecordSchema,
   AvroConsumerRun,
   TopicsAlias,
 } from './types';
