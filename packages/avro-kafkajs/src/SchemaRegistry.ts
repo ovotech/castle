@@ -60,10 +60,10 @@ export type EncodeParams<T> = { value: T } & DecodeItemParams;
 
 export class DecodeCacheInMemory<KeyType, ValueType> {
   private cache: Array<[KeyType, ValueType]> = [];
-  get(cacheKey: KeyType): ValueType | undefined {
+  public get(cacheKey: KeyType): ValueType | undefined {
     return this.cache.find((item) => isDeepStrictEqual(item[0], cacheKey))?.[1];
   }
-  set(cacheKey: KeyType, value: ValueType): void {
+  public set(cacheKey: KeyType, value: ValueType): void {
     this.cache.push([cacheKey, value]);
   }
 }

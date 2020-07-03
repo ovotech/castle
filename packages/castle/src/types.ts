@@ -28,13 +28,13 @@ export interface CastleEachBatchPayload<TValue = unknown, TKey = KafkaMessage['k
   producer: AvroProducer;
 }
 
-export type Resolver<TContext extends object = {}> = (ctx: TContext) => Promise<void>;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type Resolver<TContext extends {} = {}> = (ctx: TContext) => Promise<void>;
 
-export type Middleware<TProvide extends object = {}, TRequire extends object = {}> = <
-  TInherit extends object = {}
->(
-  next: Resolver<TProvide & TRequire & TInherit>,
-) => Resolver<TRequire & TInherit>;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type Middleware<TP extends {} = {}, TR extends {} = {}> = <TInherit extends {} = {}>(
+  next: Resolver<TP & TR & TInherit>,
+) => Resolver<TR & TInherit>;
 
 export interface CastleTopicSubscribeEachMessage<TValue, TKey> {
   eachMessage: (ctx: CastleEachMessagePayload<TValue, TKey>) => Promise<void>;

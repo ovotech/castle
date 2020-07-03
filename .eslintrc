@@ -3,8 +3,16 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["plugin:@typescript-eslint/recommended", "prettier", "prettier/@typescript-eslint"],
   "rules": {
+    "no-param-reassign": "error",
+    "@typescript-eslint/no-non-null-assertion": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "args": "after-used", "ignoreRestSiblings": true }
+    ],
+    "@typescript-eslint/explicit-member-accessibility": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/explicit-function-return-type": [
-      1,
+      "error",
       {
         "allowExpressions": true,
         "allowTypedFunctionExpressions": true,

@@ -13,7 +13,7 @@ import { AvroConsumerRun, TopicsAlias } from './types';
 import { toAvroEachMessage, toAvroEachBatch, resolveTopic } from './avro';
 
 export class AvroConsumer {
-  constructor(
+  public constructor(
     public schemaRegistry: SchemaRegistry,
     public consumer: Consumer,
     public topicsAlias: TopicsAlias = {},
@@ -62,7 +62,7 @@ export class AvroConsumer {
   }
 
   public pause(topics: Array<{ topic: string; partitions?: number[] }>): void {
-    return this.consumer.pause(topics.map(topic => resolveTopic(topic, this.topicsAlias)));
+    return this.consumer.pause(topics.map((topic) => resolveTopic(topic, this.topicsAlias)));
   }
 
   public paused(): TopicPartitions[] {
@@ -70,7 +70,7 @@ export class AvroConsumer {
   }
 
   public resume(topics: Array<{ topic: string; partitions?: number[] }>): void {
-    return this.consumer.resume(topics.map(topic => resolveTopic(topic, this.topicsAlias)));
+    return this.consumer.resume(topics.map((topic) => resolveTopic(topic, this.topicsAlias)));
   }
 
   public on(

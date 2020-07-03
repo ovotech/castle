@@ -51,13 +51,13 @@ export const highlight = (text: string, highlight: string): string =>
   text.replace(highlight, chalk.yellow(highlight));
 
 export const table = (rows: string[][]): string => {
-  const columns = rows[0].map((_, index) => rows.map(row => row[index]));
-  const columnLengths = columns.map(column =>
+  const columns = rows[0].map((_, index) => rows.map((row) => row[index]));
+  const columnLengths = columns.map((column) =>
     column.reduce((len, item) => Math.max(len, ansiLength(item)), 0),
   );
 
   return rows
-    .map(row =>
+    .map((row) =>
       row
         .map((item, index) => item + ' '.repeat(columnLengths[index] - ansiLength(item)))
         .join(chalk.gray(' | ')),
@@ -77,25 +77,25 @@ export class Output {
   public exit = true;
   private logger: Logger;
 
-  constructor(logger: Logger, exit = true) {
+  public constructor(logger: Logger, exit = true) {
     this.logger = logger || console;
     this.exit = exit;
   }
 
-  log(line: string): void {
+  public log(line: string): void {
     if (this.type === OutputType.CLI) {
       this.logger.log(line);
     }
   }
 
-  error(line: string, code?: number): void {
+  public error(line: string, code?: number): void {
     this.logger.error(chalk.red(line));
     if (this.exit && code !== undefined) {
       process.exitCode = 1;
     }
   }
 
-  async wrap(json: boolean | undefined, action: () => Promise<void>): Promise<void> {
+  public async wrap(json: boolean | undefined, action: () => Promise<void>): Promise<void> {
     this.type = json ? OutputType.JSON : OutputType.CLI;
 
     try {
@@ -108,13 +108,13 @@ export class Output {
     }
   }
 
-  success(line: string): void {
+  public success(line: string): void {
     if (this.type === OutputType.CLI) {
       this.logger.log(chalk.green(line));
     }
   }
 
-  json(object: unknown): void {
+  public json(object: unknown): void {
     if (this.type === OutputType.JSON) {
       this.logger.log(JSON.stringify(object, null, 2));
     }

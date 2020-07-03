@@ -7,7 +7,7 @@ import { convertType } from '../convert';
 import { fullName } from '../helpers';
 
 export const isWrappedUnion = (type: Schema): type is schema.RecordType[] =>
-  isUnion(type) && type.every(item => isRecordType(item) && type.length > 1);
+  isUnion(type) && type.every((item) => isRecordType(item) && type.length > 1);
 
 export const convertWrappedUnionType: Convert<schema.RecordType[]> = (context, schema) => {
   const map = mapWithContext(context, schema, (itemContext, item) => {
@@ -15,7 +15,7 @@ export const convertWrappedUnionType: Convert<schema.RecordType[]> = (context, s
     return {
       context: converted.context,
       type: Type.TypeLiteral({
-        props: schema.map(schemaItem =>
+        props: schema.map((schemaItem) =>
           Type.Prop({
             name: fullName(context, schemaItem),
             isOptional: schemaItem.name === item.name ? false : true,

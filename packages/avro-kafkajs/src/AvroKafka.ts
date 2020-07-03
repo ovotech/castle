@@ -10,7 +10,7 @@ export interface Config {
 }
 
 export class AvroKafka {
-  constructor(
+  public constructor(
     public schemaRegistry: SchemaRegistry,
     public kafka: Kafka,
     public topicsAlias: TopicsAlias = {},

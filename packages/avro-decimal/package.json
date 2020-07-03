@@ -18,10 +18,10 @@
   "devDependencies": {
     "avsc": "^5.4.21",
     "eslint-config-prettier": "^6.11.0",
-    "jest": "^26.0.1",
+    "jest": "^26.1.0",
     "prettier": "^2.0.5",
-    "ts-jest": "^26.0.0",
-    "ts-node": "^8.10.1"
+    "ts-jest": "^26.1.1",
+    "ts-node": "^8.10.2"
   },
   "peerDependencies": {
     "avsc": "^5.4.18"

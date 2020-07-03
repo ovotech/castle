@@ -58,13 +58,15 @@ export const optionalConsumers = (
 
 export const consumeEachMessage = <
   TValue,
-  TContext extends object = {},
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  TContext extends {} = {},
   TKey = KafkaMessage['key']
 >(
   config: (payload: CastleEachMessagePayload<TValue, TKey> & TContext) => Promise<void>,
 ): ((payload: CastleEachMessagePayload<TValue, TKey> & TContext) => Promise<void>) => config;
 
-export const consumeEachBatch = <TValue, TContext extends object = {}, TKey = KafkaMessage['key']>(
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const consumeEachBatch = <TValue, TContext extends {} = {}, TKey = KafkaMessage['key']>(
   config: (payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>,
 ): ((payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>) => config;
 

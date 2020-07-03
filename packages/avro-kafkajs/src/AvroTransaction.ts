@@ -4,7 +4,7 @@ import { AvroProducerRecord, AvroProducerBatch } from './types';
 import { toProducerRecord, toProducerBatch } from './avro';
 
 export class AvroTransaction {
-  constructor(public schemaRegistry: SchemaRegistry, public transaction: Transaction) {}
+  public constructor(public schemaRegistry: SchemaRegistry, public transaction: Transaction) {}
 
   public async send<T = unknown>(record: AvroProducerRecord<T>): Promise<RecordMetadata[]> {
     return this.transaction.send(await toProducerRecord(this.schemaRegistry, record));

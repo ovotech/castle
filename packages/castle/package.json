@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/castle",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka and avro based event listener",
@@ -8,25 +8,25 @@
   "repository": "git@github.com:ovotech/castle.git",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/jest": "^25.2.3",
+    "@types/jest": "^26.0.3",
     "@types/lodash.chunk": "^4.2.6",
-    "@types/node": "^14.0.5",
+    "@types/node": "^14.0.14",
     "@types/pg": "^7.14.3",
     "@types/uuid": "^8.0.0",
-    "@typescript-eslint/eslint-plugin": "^3.0.2",
-    "@typescript-eslint/parser": "^3.0.2",
-    "eslint": "^7.1.0",
+    "@typescript-eslint/eslint-plugin": "^3.5.0",
+    "@typescript-eslint/parser": "^3.5.0",
+    "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.11.0",
-    "jest": "^26.0.1",
+    "jest": "^26.1.0",
     "pg": "^8.2.1",
     "prettier": "^2.0.5",
-    "slonik": "^22.4.4",
-    "ts-jest": "^26.0.0",
-    "ts-node": "^8.10.1",
-    "ts-retry-promise": "^0.4.0",
-    "typescript": "^3.8.3",
-    "uuid": "^8.1.0",
-    "winston": "^3.2.1"
+    "slonik": "^22.4.11",
+    "ts-jest": "^26.1.1",
+    "ts-node": "^8.10.2",
+    "ts-retry-promise": "^0.5.0",
+    "typescript": "^3.9.6",
+    "uuid": "^8.2.0",
+    "winston": "^3.3.3"
   },
   "scripts": {
     "build": "tsc --declaration",
@@ -40,7 +40,7 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/avro-kafkajs": "^0.5.0",
+    "@ovotech/avro-kafkajs": "^0.5.1",
     "kafkajs": "^1.12.0",
     "lodash.chunk": "^4.2.0"
   }

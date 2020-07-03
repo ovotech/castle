@@ -34,8 +34,8 @@ export class AvroDecimal extends types.LogicalType {
   public precision: number;
   public scale: number;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(schema: any, opts?: unknown) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
+  public constructor(schema: any, opts?: unknown) {
     super(schema, opts);
     this.precision = schema.precision;
     this.scale = schema.scale;
@@ -53,7 +53,7 @@ export class AvroDecimal extends types.LogicalType {
       type.precision === this.precision &&
       type.scale === this.scale
     ) {
-      return x => x;
+      return <T>(x: T): T => x;
     } else {
       return undefined;
     }

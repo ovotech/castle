@@ -7,5 +7,5 @@ export const isEnumType = (type: Schema): type is schema.EnumType =>
 
 export const convertEnumType: Convert<schema.EnumType> = (context, type) => ({
   context,
-  type: Type.Union(type.symbols.map(symbol => Type.Literal(symbol))),
+  type: Type.Union(type.symbols.map((symbol) => Type.Literal(symbol))),
 });
