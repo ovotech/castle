@@ -1,4 +1,4 @@
-import { SchemaRegistry } from './SchemaRegistry';
+import { SchemaRegistry, DecodeItemParams } from './SchemaRegistry';
 import { Schema } from 'avsc';
 import {
   AvroMessage,
@@ -22,28 +22,40 @@ import {
 
 export const encodeMessages = async <T = unknown, KT = unknown>({
   schemaRegistry,
-  schema,
-  keySchema,
-  topic,
   avroMessages,
+  ...params
 }: {
   schemaRegistry: SchemaRegistry;
-  schema: Schema;
-  keySchema?: Schema;
-  topic: string;
   avroMessages: AvroMessage<T, KT>[];
-}): Promise<Message[]> => {
+} & (
+  | { schema: Schema; keySchema?: Schema; topic: string }
+  | { subject: string; keySubject?: string }
+)): Promise<Message[]> => {
   const messages: Message[] = [];
+
+  const keyParams: DecodeItemParams | undefined =
+    'subject' in params
+      ? params.keySubject
+        ? { subject: params.keySubject }
+        : undefined
+      : params.keySchema
+      ? { topic: params.topic, schemaType: 'key', schema: params.keySchema }
+      : undefined;
+
+  const valueParams: DecodeItemParams =
+    'subject' in params
+      ? { subject: params.subject }
+      : { topic: params.topic, schemaType: 'value', schema: params.schema };
 
   for (const message of avroMessages) {
     messages.push({
       ...message,
       key:
-        keySchema && message.key
-          ? await schemaRegistry.encode<KT>(topic, 'key', keySchema, message.key)
+        keyParams && message.key
+          ? await schemaRegistry.encode<KT>({ ...keyParams, value: message.key })
           : // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (message.key as any),
-      value: await schemaRegistry.encode<T>(topic, 'value', schema, message.value),
+      value: await schemaRegistry.encode<T>({ ...valueParams, value: message.value }),
     });
   }
   return messages;
@@ -53,16 +65,10 @@ export const toProducerRecord = async <T = unknown, KT = Message['key']>(
   schemaRegistry: SchemaRegistry,
   record: AvroProducerRecord<T, KT>,
 ): Promise<ProducerRecord> => {
-  const { messages: avroMessages, schema, keySchema, topic, ...rest } = record;
-  const messages = await encodeMessages<T, KT>({
-    schemaRegistry,
-    schema,
-    keySchema,
-    topic,
-    avroMessages,
-  });
+  const { messages: avroMessages, ...rest } = record;
+  const messages = await encodeMessages<T, KT>({ schemaRegistry, avroMessages, ...rest });
 
-  return { ...rest, topic, messages };
+  return { ...rest, messages };
 };
 
 export const toProducerBatch = async (
@@ -72,15 +78,9 @@ export const toProducerBatch = async (
   const topicMessages: TopicMessages[] = [];
   const { topicMessages: avroTopicMessages, ...rest } = record;
   for (const item of avroTopicMessages) {
-    const { messages: avroMessages, schema, keySchema, topic } = item;
-    const messages = await encodeMessages({
-      schemaRegistry,
-      schema,
-      keySchema,
-      topic,
-      avroMessages,
-    });
-    topicMessages.push({ messages, topic });
+    const { messages: avroMessages, ...itemRest } = item;
+    const messages = await encodeMessages({ schemaRegistry, avroMessages, ...itemRest });
+    topicMessages.push({ ...itemRest, messages });
   }
   return { ...rest, topicMessages };
 };
@@ -89,8 +89,8 @@ export const toAvroEachMessage = <T = unknown, KT = KafkaMessage['key']>(
   schemaRegistry: SchemaRegistry,
   eachMessage: AvroEachMessage<T, KT>,
   encodedKey?: boolean,
-): ((payload: EachMessagePayload) => Promise<void>) => {
-  return async (payload) => {
+) => {
+  return async (payload: EachMessagePayload): Promise<void> => {
     const { type, value } = await schemaRegistry.decodeWithType<T>(payload.message.value);
     const key =
       encodedKey && payload.message.key
@@ -108,8 +108,8 @@ export const toAvroEachBatch = <T = unknown, KT = KafkaMessage['key']>(
   schemaRegistry: SchemaRegistry,
   eachBatch: AvroEachBatch<T, KT>,
   encodedKey?: boolean,
-): ((payload: EachBatchPayload) => Promise<void>) => {
-  return async (payload) => {
+) => {
+  return async (payload: EachBatchPayload): Promise<void> => {
     const avroPayload = (payload as unknown) as AvroEachBatchPayload<T, KT>;
     const messages: AvroKafkaMessage<T, KT>[] = [];
     for (const message of payload.batch.messages) {

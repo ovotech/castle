@@ -47,19 +47,19 @@ export interface AvroMessage<T = unknown, KT = Message['key']>
   value: T;
 }
 
-export interface AvroProducerRecord<T = unknown, KT = Message['key']>
-  extends Omit<ProducerRecord, 'messages'> {
-  schema: Schema;
-  keySchema?: Schema;
-  messages: AvroMessage<T, KT>[];
-}
+export type AvroProducerRecordSchema =
+  | { schema: Schema; keySchema?: Schema }
+  | { subject: string; keySubject?: string };
 
-export interface AvroTopicMessages<T = unknown, KT = Message['key']>
-  extends Omit<TopicMessages, 'messages'> {
-  schema: Schema;
-  keySchema?: Schema;
-  messages: AvroMessage<T, KT>[];
-}
+export type AvroProducerRecord<T = unknown, KT = Message['key']> = Omit<
+  ProducerRecord,
+  'messages'
+> & { messages: AvroMessage<T, KT>[] } & AvroProducerRecordSchema;
+
+export type AvroTopicMessages<T = unknown, KT = Message['key']> = Omit<
+  TopicMessages,
+  'messages'
+> & { messages: AvroMessage<T, KT>[] } & AvroProducerRecordSchema;
 
 export interface AvroProducerBatch extends Omit<ProducerBatch, 'topicMessages'> {
   topicMessages: AvroTopicMessages<unknown, unknown>[];

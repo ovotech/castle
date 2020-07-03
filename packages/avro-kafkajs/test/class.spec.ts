@@ -5,6 +5,7 @@ import {
   AvroConsumer,
   AvroEachMessagePayload,
   AvroBatch,
+  AvroMessage,
 } from '../src';
 import { Kafka, logLevel, Admin, CompressionTypes } from 'kafkajs';
 import { retry } from 'ts-retry-promise';
@@ -67,7 +68,6 @@ const keySchema: schema.RecordType = {
 };
 
 const TOPIC_ALIAS = 'topic-alias';
-const realTopicName = `dev_avroKafkajs_${uuid.v4()}`;
 
 describe('Class', () => {
   let producer: AvroProducer;
@@ -75,10 +75,12 @@ describe('Class', () => {
   let admin: Admin;
   let schemaRegistryApi: AxiosInstance;
   let groupId: string;
+  let realTopicName: string;
 
   beforeEach(async () => {
     const schemaRegistry = new SchemaRegistry({ uri: 'http://localhost:8081' });
     const kafka = new Kafka({ brokers: ['localhost:29092'], logLevel: logLevel.NOTHING });
+    realTopicName = `dev_avroKafkajs_${uuid.v4()}`;
 
     const avroKafka = new AvroKafka(schemaRegistry, kafka, { [TOPIC_ALIAS]: realTopicName });
     groupId = uuid.v4();
@@ -458,6 +460,113 @@ describe('Class', () => {
                 value: { intField: null, stringField: 'test4' },
               }),
             ],
+          }),
+        );
+      },
+      { delay: 1000, retries: 4 },
+    );
+  });
+
+  it('Should produce avro messages with custom subject', async () => {
+    jest.setTimeout(12000);
+    const consumed: AvroMessage<MessageType>[] = [];
+
+    await consumer.subscribe({ topic: TOPIC_ALIAS });
+    await consumer.run<MessageType>({
+      eachMessage: async (payload) => {
+        consumed.push(payload.message);
+      },
+    });
+
+    // Produce normally to create the subject
+    await producer.send<MessageType>({
+      topic: TOPIC_ALIAS,
+      schema,
+      messages: [{ value: { stringField: '1', intField: null } }],
+    });
+
+    // Use the subject directly to produce the messages
+    await producer.send<MessageType>({
+      topic: TOPIC_ALIAS,
+      subject: `${realTopicName}-value`,
+      messages: [
+        { value: { stringField: '2', intField: null } },
+        { value: { stringField: '3', intField: null } },
+      ],
+    });
+
+    await retry(
+      async () => {
+        expect(consumed).toHaveLength(3);
+
+        expect(consumed).toContainEqual(
+          expect.objectContaining({ value: { stringField: '1', intField: null }, schema }),
+        );
+        expect(consumed).toContainEqual(
+          expect.objectContaining({ value: { stringField: '2', intField: null }, schema }),
+        );
+        expect(consumed).toContainEqual(
+          expect.objectContaining({ value: { stringField: '3', intField: null }, schema }),
+        );
+      },
+      { delay: 1000, retries: 4 },
+    );
+  });
+
+  it('Should produce avro messages with custom subject for key and value', async () => {
+    jest.setTimeout(12000);
+    const consumed: AvroMessage<MessageType, KeyType>[] = [];
+
+    await consumer.subscribe({ topic: TOPIC_ALIAS });
+    await consumer.run<MessageType, KeyType>({
+      encodedKey: true,
+      eachMessage: async (payload) => {
+        consumed.push(payload.message);
+      },
+    });
+
+    // Produce normally to create the subject
+    await producer.send<MessageType, KeyType>({
+      topic: TOPIC_ALIAS,
+      schema,
+      keySchema,
+      messages: [{ value: { stringField: '1', intField: null }, key: { id: 1, section: 'first' } }],
+    });
+
+    // Use the subject directly to produce the messages
+    await producer.send<MessageType, KeyType>({
+      topic: TOPIC_ALIAS,
+      subject: `${realTopicName}-value`,
+      keySubject: `${realTopicName}-key`,
+      messages: [
+        { value: { stringField: '2', intField: null }, key: { id: 2, section: 'first' } },
+        { value: { stringField: '3', intField: null }, key: { id: 3, section: 'second' } },
+      ],
+    });
+
+    await retry(
+      async () => {
+        expect(consumed).toHaveLength(3);
+
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            value: { stringField: '1', intField: null },
+            key: { id: 1, section: 'first' },
+            schema,
+          }),
+        );
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            value: { stringField: '2', intField: null },
+            key: { id: 2, section: 'first' },
+            schema,
+          }),
+        );
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            value: { stringField: '3', intField: null },
+            key: { id: 3, section: 'second' },
+            schema,
           }),
         );
       },

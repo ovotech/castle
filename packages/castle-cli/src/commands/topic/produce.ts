@@ -1,9 +1,8 @@
 import * as commander from 'commander';
-import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
+import { SchemaRegistry, AvroKafka, AvroProducerRecord } from '@ovotech/avro-kafkajs';
 import { loadConfigFile } from '../../config';
 import { Output } from '../../output';
 import { Kafka } from 'kafkajs';
-import { AvroProducerRecord } from '@ovotech/avro-kafkajs/dist/types';
 import {
   Record,
   String,
@@ -14,6 +13,7 @@ import {
   Union,
   Dictionary,
   Partial,
+  Undefined,
 } from 'runtypes';
 import { readFileSync } from 'fs';
 import { Type, Schema } from 'avsc';
@@ -30,7 +30,8 @@ const TypeSchema = Unknown.withConstraint<Schema>((item: unknown) => {
 
 const ProduceFileType = Record({
   topic: String,
-  schema: TypeSchema,
+  timeout: Number.Or(Undefined),
+  compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)).Or(Undefined),
   messages: Array(
     Record({ value: Unknown }).And(
       Partial({
@@ -42,11 +43,9 @@ const ProduceFileType = Record({
     ),
   ),
 }).And(
-  Partial({
-    timeout: Number,
-    keySchema: TypeSchema,
-    compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)),
-  }),
+  Record({ schema: TypeSchema, keySchema: TypeSchema.Or(Undefined) }).Or(
+    Record({ subject: String, keySubject: String.Or(Undefined) }),
+  ),
 );
 
 const loadAvroProducerRecordFile = (file: string): AvroProducerRecord => {
@@ -85,6 +84,12 @@ Example produce file:
   },
   "messages": [{"partition": 0, "value": { "field1": "test1" }}]
 }
+Example produce with schema registry subject specified:
+{
+  "topic": "my-topic",
+  "subject": "my-topic-value",
+  "messages": [{"partition": 0, "value": { "field1": "test1" }}]
+}
 `,
     )
     .option('-C, --config <configFile>', 'config file with connection deails')
@@ -98,14 +103,14 @@ Example produce file:
       await output.wrap(false, async () => {
         const config = await loadConfigFile({ file: configFile, verbose, output });
 
-        const { messages, schema, keySchema, topic } = loadAvroProducerRecordFile(file);
+        const { messages, ...params } = loadAvroProducerRecordFile(file);
 
         const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
         const kafka = new Kafka(config.kafka);
         const avroKafka = new AvroKafka(schemaRegistry, kafka);
 
         output.log(
-          `Produce "${messages.length}" messages for ${topic} in ${config.kafka.brokers.join(
+          `Produce "${messages.length}" messages for ${params.topic} in ${config.kafka.brokers.join(
             ', ',
           )}`,
         );
@@ -113,7 +118,7 @@ Example produce file:
         await producer.connect();
 
         try {
-          await producer.send({ messages, schema, keySchema, topic });
+          await producer.send({ ...params, messages });
           output.success('Success');
         } finally {
           producer.disconnect();
