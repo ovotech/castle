@@ -1423,10 +1423,10 @@
   dependencies:
     node-fetch "^2.6.0"
 
-"@ovotech/ts-compose@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@ovotech/ts-compose/-/ts-compose-0.12.0.tgz#237aeb702bef4a0a616e02975f2bae8cb2491235"
-  integrity sha512-8hkpfia1C4wBvA1Z4lh/qkOItn0iBfp9L0nh+zbY6SdZhlpG485sBVcyNgdQW/LXIi3Sjk8RvD/PzDA/6oqTXg==
+"@ovotech/ts-compose@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@ovotech/ts-compose/-/ts-compose-0.14.0.tgz#f197ac46c97491d739a0b059992356dd082ca199"
+  integrity sha512-6GqFqab6vU5yzlhp/HNqm4+Yec0+7KIOfeT2/gEJpEeydbwwTDdTsS4oDgk19ODiMH2xzWOiBY/EsXnGvsPCPw==
   dependencies:
     typescript "^3.9.3"
 
