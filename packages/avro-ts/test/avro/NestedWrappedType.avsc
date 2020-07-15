@@ -1,0 +1,46 @@
+{
+  "type": "record",
+  "name": "Event",
+  "namespace": "com.example.avro",
+  "fields": [
+    {
+      "name": "field",
+      "type": [
+        {
+          "type": "record",
+          "name": "FieldTypeA",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "name": "nested",
+              "type": {
+                "name": "NestedFieldType",
+                "type": "record",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "FieldTypeB",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            }
+          ]
+        },
+        "com.example.avro.NestedFieldType"
+      ]
+    }
+  ]
+}

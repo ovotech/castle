@@ -623,6 +623,45 @@ export namespace ComAvroExample {
 "
 `;
 
+exports[`Avro ts test Should convert NestedWrappedType.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type Event = ComExampleAvro.Event;
+
+export namespace ComExampleAvro {
+    export const NestedFieldTypeName = \\"com.example.avro.NestedFieldType\\";
+    export interface NestedFieldType {
+        id: string;
+    }
+    export const FieldTypeAName = \\"com.example.avro.FieldTypeA\\";
+    export interface FieldTypeA {
+        id: string;
+        nested: ComExampleAvro.NestedFieldType;
+    }
+    export const FieldTypeBName = \\"com.example.avro.FieldTypeB\\";
+    export interface FieldTypeB {
+        id: string;
+    }
+    export const EventName = \\"com.example.avro.Event\\";
+    export interface Event {
+        field: {
+            \\"com.example.avro.FieldTypeA\\": ComExampleAvro.FieldTypeA;
+            \\"com.example.avro.FieldTypeB\\"?: never;
+            \\"com.example.avro.undefined\\"?: never;
+        } | {
+            \\"com.example.avro.FieldTypeA\\"?: never;
+            \\"com.example.avro.FieldTypeB\\": ComExampleAvro.FieldTypeB;
+            \\"com.example.avro.undefined\\"?: never;
+        } | {
+            \\"com.example.avro.FieldTypeA\\"?: never;
+            \\"com.example.avro.FieldTypeB\\"?: never;
+            \\"com.example.avro.undefined\\": ComExampleAvro.NestedFieldType;
+        };
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert RecordWithDefault.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 

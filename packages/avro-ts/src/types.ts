@@ -10,6 +10,7 @@ export type CustomLogicalType =
 export interface Context extends DocumentContext {
   logicalTypes?: { [key: string]: string | CustomLogicalType };
   namespace?: string;
+  refs?: { [key: string]: Schema };
 }
 
 export type Convert<TSchema = Schema, TType = ts.TypeNode> = (
