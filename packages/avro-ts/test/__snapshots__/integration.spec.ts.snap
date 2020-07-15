@@ -111,6 +111,147 @@ export namespace UkCoBoostpowerSupportKafkaMessages {
 "
 `;
 
+exports[`Avro ts test Should convert CommsCommunicationUpdateV1.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { Moment } from \\"moment\\";
+
+export type CommunicationUpdate = ComOvoenergyKafkaComms.CommunicationUpdate;
+
+export namespace ComOvoenergyKafkaCommonEvent {
+    export const EventMetadataName = \\"com.ovoenergy.kafka.common.event.EventMetadata\\";
+    export interface EventMetadata {
+        eventId: string;
+        traceToken: string;
+        createdAt: Moment;
+    }
+}
+
+export namespace ComOvoenergyKafkaComms {
+    export const TemplateManifestName = \\"com.ovoenergy.kafka.comms.TemplateManifest\\";
+    export interface TemplateManifest {
+        id: string;
+        version: string;
+    }
+    export const TemplateName = \\"com.ovoenergy.kafka.comms.Template\\";
+    export interface Template {
+        manifest: ComOvoenergyKafkaComms.TemplateManifest;
+        name: string;
+        commType: string;
+    }
+    export const PostalAddressName = \\"com.ovoenergy.kafka.comms.PostalAddress\\";
+    export interface PostalAddress {
+        contactName: null | string;
+        company: null | string;
+        line1: string;
+        line2: null | string;
+        town: string;
+        county: null | string;
+        postcode: string;
+        country: null | string;
+    }
+    export const FailureName = \\"com.ovoenergy.kafka.comms.Failure\\";
+    export interface Failure {
+        at: Moment;
+        code: string;
+        reason: string;
+    }
+    export const AttachmentName = \\"com.ovoenergy.kafka.comms.Attachment\\";
+    export interface Attachment {
+        uri: string;
+        fileName: string;
+    }
+    export const SpecialRequirementsName = \\"com.ovoenergy.kafka.comms.SpecialRequirements\\";
+    export interface SpecialRequirements {
+        preferences: string[];
+    }
+    export const CommunicationName = \\"com.ovoenergy.kafka.comms.Communication\\";
+    export interface Communication {
+        id: string;
+        traceToken: string;
+        brand: string;
+        template: ComOvoenergyKafkaComms.Template;
+        status: string;
+        description: string;
+        source: string;
+        isCanary: boolean;
+        triggeredAt: Moment;
+        scheduledAt: null | Moment;
+        orchestratedAt: null | Moment;
+        composedAt: null | Moment;
+        issuedForDeliveryAt: null | Moment;
+        deliveredAt: null | Moment;
+        expireAt: null | Moment;
+        deliverTo: {
+            \\"DeliverTo.Customer\\": DeliverTo.Customer;
+            \\"com.ovoenergy.kafka.comms.undefined\\"?: never;
+        } | {
+            \\"DeliverTo.Customer\\"?: never;
+            \\"com.ovoenergy.kafka.comms.undefined\\": DeliverTo.ContactDetails;
+        };
+        recipient: null | ComOvoenergyKafkaCommsRecipient.Email | ComOvoenergyKafkaCommsRecipient.Phone | ComOvoenergyKafkaCommsRecipient.Postal;
+        channel: null | string;
+        failure: null | ComOvoenergyKafkaComms.Failure;
+        content: null | ComOvoenergyKafkaCommsContent.Email | ComOvoenergyKafkaCommsContent.Sms | ComOvoenergyKafkaCommsContent.Print;
+        attachments: ComOvoenergyKafkaComms.Attachment[];
+        specialRequirements: null | ComOvoenergyKafkaComms.SpecialRequirements;
+    }
+    export const CommunicationUpdateName = \\"com.ovoenergy.kafka.comms.CommunicationUpdate\\";
+    export interface CommunicationUpdate {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        communication: ComOvoenergyKafkaComms.Communication;
+    }
+}
+
+export namespace DeliverTo {
+    export const ContactDetailsName = \\"DeliverTo.ContactDetails\\";
+    export interface ContactDetails {
+        emailAddress: null | string;
+        phoneNumber: null | string;
+        postalAddress: null | ComOvoenergyKafkaComms.PostalAddress;
+    }
+    export const CustomerName = \\"DeliverTo.Customer\\";
+    export interface Customer {
+        profileId: string;
+        contactDetails: null | DeliverTo.ContactDetails;
+    }
+}
+
+export namespace ComOvoenergyKafkaCommsRecipient {
+    export const EmailName = \\"com.ovoenergy.kafka.comms.Recipient.Email\\";
+    export interface Email {
+        emailAddress: string;
+    }
+    export const PhoneName = \\"com.ovoenergy.kafka.comms.Recipient.Phone\\";
+    export interface Phone {
+        phoneNumber: string;
+    }
+    export const PostalName = \\"com.ovoenergy.kafka.comms.Recipient.Postal\\";
+    export interface Postal {
+        postalAddress: ComOvoenergyKafkaComms.PostalAddress;
+    }
+}
+
+export namespace ComOvoenergyKafkaCommsContent {
+    export const EmailName = \\"com.ovoenergy.kafka.comms.Content.Email\\";
+    export interface Email {
+        sender: string;
+        subject: string;
+        body: string;
+        textBody: null | string;
+    }
+    export const SmsName = \\"com.ovoenergy.kafka.comms.Content.Sms\\";
+    export interface Sms {
+        body: string;
+    }
+    export const PrintName = \\"com.ovoenergy.kafka.comms.Content.Print\\";
+    export interface Print {
+        body: string;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert ComplexRecord.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 

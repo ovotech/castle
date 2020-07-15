@@ -5,9 +5,10 @@ import { isUnion } from './union';
 import { isRecordType } from './record';
 import { convertType } from '../convert';
 import { fullName } from '../helpers';
+import { isPrimitiveType } from './primitive';
 
 export const isWrappedUnion = (type: Schema): type is schema.RecordType[] =>
-  isUnion(type) && type.every((item) => isRecordType(item) && type.length > 1);
+  isUnion(type) && type.every((item) => (isRecordType(item) || !isPrimitiveType(item))  && type.length > 1);
 
 export const convertWrappedUnionType: Convert<schema.RecordType[]> = (context, schema) => {
   const map = mapWithContext(context, schema, (itemContext, item) => {
