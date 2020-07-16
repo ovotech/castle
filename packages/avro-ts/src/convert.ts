@@ -12,15 +12,13 @@ import { isPrimitiveType, convertPrimitiveType } from './types/primitive';
 import { isFixedType, convertFixedType } from './types/fixed';
 import { withHeader } from '@ovotech/ts-compose/dist/document';
 import * as ts from 'typescript';
+import { fullName } from './helpers';
 
 export const firstUpperCase = (name: string): string =>
   name ? name[0].toUpperCase() + name.slice(1) : name;
 
 export const convertNamespace = (namespace: string): string =>
-  namespace
-    .split('.')
-    .map(firstUpperCase)
-    .join('');
+  namespace.split('.').map(firstUpperCase).join('');
 
 export const nameParts = (fullName: string): [string] | [string, string] => {
   const parts = fullName.split('.');
@@ -29,8 +27,30 @@ export const nameParts = (fullName: string): [string] | [string, string] => {
     : [parts[0]];
 };
 
+export const collectRefs = (type: Schema, context: Context): Context => {
+  if (isUnion(type)) {
+    return type.reduce((all, item) => collectRefs(item, all), context);
+  } else if (isArrayType(type)) {
+    return collectRefs(type.items, context);
+  } else if (isMapType(type)) {
+    return collectRefs(type.values, context);
+  } else if (isRecordType(type)) {
+    return type.fields.reduce(
+      (all, item) =>
+        collectRefs(item.type, {
+          ...all,
+          namespace: type.namespace ?? all.namespace,
+          refs: { ...all.refs, [fullName(all, type)]: type },
+        }),
+      context,
+    );
+  } else {
+    return context;
+  }
+};
+
 export const convertType: Convert = (context, type) => {
-  if (isWrappedUnion(type)) {
+  if (isWrappedUnion(type, context)) {
     return convertWrappedUnionType(context, type);
   } else if (isUnion(type)) {
     return convertUnionType(context, type);
@@ -63,7 +83,8 @@ export const convertType: Convert = (context, type) => {
 };
 
 export const toTypeScript = (schema: Schema, initial: Context = {}): string => {
-  const { context, type } = convertType(initial, schema);
+  const contextWithRefs = collectRefs(schema, initial);
+  const { context, type } = convertType(contextWithRefs, schema);
 
   const contextWithHeader = context.namespaces
     ? withHeader(context, '/* eslint-disable @typescript-eslint/no-namespace */')

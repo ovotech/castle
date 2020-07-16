@@ -1,13 +1,19 @@
 import { schema, Schema } from 'avsc';
-import { Convert } from '../types';
+import { Convert, Context } from '../types';
 import { Type, mapWithContext, document } from '@ovotech/ts-compose';
 import { isUnion } from './union';
 import { isRecordType } from './record';
 import { convertType } from '../convert';
 import { fullName } from '../helpers';
 
-export const isWrappedUnion = (type: Schema): type is schema.RecordType[] =>
-  isUnion(type) && type.every((item) => isRecordType(item) && type.length > 1);
+export const isWrappedUnion = (type: Schema, context: Context): type is schema.RecordType[] =>
+  isUnion(type) &&
+  type.length > 1 &&
+  type.every((item) =>
+    typeof item === 'string' && context.refs?.[item]
+      ? isRecordType(context.refs?.[item])
+      : isRecordType(item),
+  );
 
 export const convertWrappedUnionType: Convert<schema.RecordType[]> = (context, schema) => {
   const map = mapWithContext(context, schema, (itemContext, item) => {
