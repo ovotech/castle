@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-ts-cli",
   "description": "A cli to convert avro schemas into typescript interfaces",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",

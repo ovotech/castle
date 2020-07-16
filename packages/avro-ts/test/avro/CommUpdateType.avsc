@@ -1,0 +1,513 @@
+{
+  "type": "record",
+  "name": "CommunicationUpdate",
+  "namespace": "com.example.kafka.comms",
+  "fields": [
+    {
+      "name": "metadata",
+      "type": {
+        "type": "record",
+        "name": "EventMetadata",
+        "namespace": "com.example.kafka.common.event",
+        "fields": [
+          {
+            "name": "eventId",
+            "type": "string"
+          },
+          {
+            "name": "traceToken",
+            "type": "string"
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "communication",
+      "type": {
+        "type": "record",
+        "name": "Communication",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "traceToken",
+            "type": "string"
+          },
+          {
+            "name": "brand",
+            "type": "string"
+          },
+          {
+            "name": "template",
+            "type": {
+              "type": "record",
+              "name": "Template",
+              "fields": [
+                {
+                  "name": "manifest",
+                  "type": {
+                    "type": "record",
+                    "name": "TemplateManifest",
+                    "fields": [
+                      {
+                        "name": "id",
+                        "type": "string"
+                      },
+                      {
+                        "name": "version",
+                        "type": "string"
+                      }
+                    ],
+                    "aliases": [
+                      "com.example.kafka.comms.event.TemplateManifest",
+                      "com.example.comms.model.TemplateManifest"
+                    ]
+                  }
+                },
+                {
+                  "name": "name",
+                  "type": "string"
+                },
+                {
+                  "name": "commType",
+                  "type": "string"
+                }
+              ],
+              "aliases": [
+                "com.example.kafka.comms.event.Template"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "type": "string"
+          },
+          {
+            "name": "isCanary",
+            "type": "boolean"
+          },
+          {
+            "name": "triggeredAt",
+            "type": {
+              "type": "long",
+              "logicalType": "timestamp-millis"
+            }
+          },
+          {
+            "name": "scheduledAt",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "orchestratedAt",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "composedAt",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "issuedForDeliveryAt",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "deliveredAt",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "expireAt",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "deliverTo",
+            "type": [
+              {
+                "type": "record",
+                "name": "Customer",
+                "namespace": "DeliverTo",
+                "fields": [
+                  {
+                    "name": "profileId",
+                    "type": "string",
+                    "aliases": [
+                      "customerId"
+                    ]
+                  },
+                  {
+                    "name": "contactDetails",
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "ContactDetails",
+                        "fields": [
+                          {
+                            "name": "emailAddress",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null
+                          },
+                          {
+                            "name": "phoneNumber",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null
+                          },
+                          {
+                            "name": "postalAddress",
+                            "type": [
+                              "null",
+                              {
+                                "type": "record",
+                                "name": "PostalAddress",
+                                "namespace": "com.example.kafka.comms",
+                                "fields": [
+                                  {
+                                    "name": "contactName",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null
+                                  },
+                                  {
+                                    "name": "company",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null
+                                  },
+                                  {
+                                    "name": "line1",
+                                    "type": "string"
+                                  },
+                                  {
+                                    "name": "line2",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null
+                                  },
+                                  {
+                                    "name": "town",
+                                    "type": "string"
+                                  },
+                                  {
+                                    "name": "county",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null
+                                  },
+                                  {
+                                    "name": "postcode",
+                                    "type": "string"
+                                  },
+                                  {
+                                    "name": "country",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null
+                                  }
+                                ],
+                                "aliases": [
+                                  "com.example.kafka.comms.event.PostalAddress"
+                                ]
+                              }
+                            ],
+                            "default": null
+                          }
+                        ],
+                        "aliases": [
+                          "com.example.kafka.comms.event.DeliverTo.ContactDetails"
+                        ]
+                      }
+                    ],
+                    "default": null
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.DeliverTo.Customer"
+                ]
+              },
+              "DeliverTo.ContactDetails"
+            ]
+          },
+          {
+            "name": "recipient",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "Email",
+                "namespace": "com.example.kafka.comms.Recipient",
+                "fields": [
+                  {
+                    "name": "emailAddress",
+                    "type": "string"
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Recipient.Email"
+                ]
+              },
+              {
+                "type": "record",
+                "name": "Phone",
+                "namespace": "com.example.kafka.comms.Recipient",
+                "fields": [
+                  {
+                    "name": "phoneNumber",
+                    "type": "string"
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Recipient.Phone"
+                ]
+              },
+              {
+                "type": "record",
+                "name": "Postal",
+                "namespace": "com.example.kafka.comms.Recipient",
+                "fields": [
+                  {
+                    "name": "postalAddress",
+                    "type": "com.example.kafka.comms.PostalAddress"
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Recipient.Postal"
+                ]
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "channel",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "failure",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "Failure",
+                "fields": [
+                  {
+                    "name": "at",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "code",
+                    "type": "string"
+                  },
+                  {
+                    "name": "reason",
+                    "type": "string"
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Failure"
+                ]
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "content",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "Email",
+                "namespace": "com.example.kafka.comms.Content",
+                "fields": [
+                  {
+                    "name": "sender",
+                    "type": "string"
+                  },
+                  {
+                    "name": "subject",
+                    "type": "string"
+                  },
+                  {
+                    "name": "body",
+                    "type": "string"
+                  },
+                  {
+                    "name": "textBody",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Content.Email"
+                ]
+              },
+              {
+                "type": "record",
+                "name": "Sms",
+                "namespace": "com.example.kafka.comms.Content",
+                "fields": [
+                  {
+                    "name": "body",
+                    "type": "string"
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Content.Sms"
+                ]
+              },
+              {
+                "type": "record",
+                "name": "Print",
+                "namespace": "com.example.kafka.comms.Content",
+                "fields": [
+                  {
+                    "name": "body",
+                    "type": "string"
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Content.Print"
+                ]
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "attachments",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "record",
+                "name": "Attachment",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string"
+                  },
+                  {
+                    "name": "fileName",
+                    "type": "string"
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.Attachment"
+                ]
+              }
+            },
+            "default": []
+          },
+          {
+            "name": "specialRequirements",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "SpecialRequirements",
+                "fields": [
+                  {
+                    "name": "preferences",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    }
+                  }
+                ],
+                "aliases": [
+                  "com.example.kafka.comms.event.SpecialRequirements"
+                ]
+              }
+            ],
+            "default": null
+          }
+        ],
+        "aliases": [
+          "com.example.kafka.comms.event.Communication"
+        ]
+      }
+    }
+  ],
+  "aliases": [
+    "com.example.kafka.comms.snapshot.CommunicationUpdate"
+  ]
+}

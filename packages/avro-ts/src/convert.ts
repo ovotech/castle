@@ -40,7 +40,10 @@ export const collectRefs = (type: Schema, context: Context): Context => {
         collectRefs(item.type, {
           ...all,
           namespace: type.namespace ?? all.namespace,
-          refs: { ...all.refs, [fullName(all, type)]: type },
+          refs: {
+            ...all.refs,
+            [fullName(all, type)]: { ...type, namespace: type.namespace ?? all.namespace },
+          },
         }),
       context,
     );
