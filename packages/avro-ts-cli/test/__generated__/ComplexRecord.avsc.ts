@@ -18,8 +18,10 @@ export namespace ComExampleAvro {
         address: string;
         /**
          * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
          */
-        verified: boolean;
+        verified?: boolean;
         /**
          * Timestamp (milliseconds since epoch) when the email address was added to the account.
          */

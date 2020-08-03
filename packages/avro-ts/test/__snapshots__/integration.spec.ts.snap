@@ -141,14 +141,29 @@ export namespace ComExampleKafkaComms {
     }
     export const PostalAddressName = \\"com.example.kafka.comms.PostalAddress\\";
     export interface PostalAddress {
-        contactName: null | string;
-        company: null | string;
+        /**
+         * Default: null
+         */
+        contactName?: null | string;
+        /**
+         * Default: null
+         */
+        company?: null | string;
         line1: string;
-        line2: null | string;
+        /**
+         * Default: null
+         */
+        line2?: null | string;
         town: string;
-        county: null | string;
+        /**
+         * Default: null
+         */
+        county?: null | string;
         postcode: string;
-        country: null | string;
+        /**
+         * Default: null
+         */
+        country?: null | string;
     }
     export const FailureName = \\"com.example.kafka.comms.Failure\\";
     export interface Failure {
@@ -176,12 +191,30 @@ export namespace ComExampleKafkaComms {
         source: string;
         isCanary: boolean;
         triggeredAt: Moment;
-        scheduledAt: null | Moment;
-        orchestratedAt: null | Moment;
-        composedAt: null | Moment;
-        issuedForDeliveryAt: null | Moment;
-        deliveredAt: null | Moment;
-        expireAt: null | Moment;
+        /**
+         * Default: null
+         */
+        scheduledAt?: null | Moment;
+        /**
+         * Default: null
+         */
+        orchestratedAt?: null | Moment;
+        /**
+         * Default: null
+         */
+        composedAt?: null | Moment;
+        /**
+         * Default: null
+         */
+        issuedForDeliveryAt?: null | Moment;
+        /**
+         * Default: null
+         */
+        deliveredAt?: null | Moment;
+        /**
+         * Default: null
+         */
+        expireAt?: null | Moment;
         deliverTo: {
             \\"DeliverTo.Customer\\": DeliverTo.Customer;
             \\"DeliverTo.ContactDetails\\"?: never;
@@ -189,12 +222,30 @@ export namespace ComExampleKafkaComms {
             \\"DeliverTo.Customer\\"?: never;
             \\"DeliverTo.ContactDetails\\": DeliverTo.ContactDetails;
         };
-        recipient: null | ComExampleKafkaCommsRecipient.Email | ComExampleKafkaCommsRecipient.Phone | ComExampleKafkaCommsRecipient.Postal;
-        channel: null | string;
-        failure: null | ComExampleKafkaComms.Failure;
-        content: null | ComExampleKafkaCommsContent.Email | ComExampleKafkaCommsContent.Sms | ComExampleKafkaCommsContent.Print;
-        attachments: ComExampleKafkaComms.Attachment[];
-        specialRequirements: null | ComExampleKafkaComms.SpecialRequirements;
+        /**
+         * Default: null
+         */
+        recipient?: null | ComExampleKafkaCommsRecipient.Email | ComExampleKafkaCommsRecipient.Phone | ComExampleKafkaCommsRecipient.Postal;
+        /**
+         * Default: null
+         */
+        channel?: null | string;
+        /**
+         * Default: null
+         */
+        failure?: null | ComExampleKafkaComms.Failure;
+        /**
+         * Default: null
+         */
+        content?: null | ComExampleKafkaCommsContent.Email | ComExampleKafkaCommsContent.Sms | ComExampleKafkaCommsContent.Print;
+        /**
+         * Default: []
+         */
+        attachments?: ComExampleKafkaComms.Attachment[];
+        /**
+         * Default: null
+         */
+        specialRequirements?: null | ComExampleKafkaComms.SpecialRequirements;
     }
     export const CommunicationUpdateName = \\"com.example.kafka.comms.CommunicationUpdate\\";
     export interface CommunicationUpdate {
@@ -206,14 +257,26 @@ export namespace ComExampleKafkaComms {
 export namespace DeliverTo {
     export const ContactDetailsName = \\"DeliverTo.ContactDetails\\";
     export interface ContactDetails {
-        emailAddress: null | string;
-        phoneNumber: null | string;
-        postalAddress: null | ComExampleKafkaComms.PostalAddress;
+        /**
+         * Default: null
+         */
+        emailAddress?: null | string;
+        /**
+         * Default: null
+         */
+        phoneNumber?: null | string;
+        /**
+         * Default: null
+         */
+        postalAddress?: null | ComExampleKafkaComms.PostalAddress;
     }
     export const CustomerName = \\"DeliverTo.Customer\\";
     export interface Customer {
         profileId: string;
-        contactDetails: null | DeliverTo.ContactDetails;
+        /**
+         * Default: null
+         */
+        contactDetails?: null | DeliverTo.ContactDetails;
     }
 }
 
@@ -238,7 +301,10 @@ export namespace ComExampleKafkaCommsContent {
         sender: string;
         subject: string;
         body: string;
-        textBody: null | string;
+        /**
+         * Default: null
+         */
+        textBody?: null | string;
     }
     export const SmsName = \\"com.example.kafka.comms.Content.Sms\\";
     export interface Sms {
@@ -273,8 +339,10 @@ export namespace ComExampleAvro {
         address: string;
         /**
          * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
          */
-        verified: boolean;
+        verified?: boolean;
         /**
          * Timestamp (milliseconds since epoch) when the email address was added to the account.
          */
@@ -818,7 +886,36 @@ export namespace ComExampleAvro {
     }
     export const RecordWithDefaultName = \\"com.example.avro.RecordWithDefault\\";
     export interface RecordWithDefault {
-        pleaseNoNamespace: null | ComExampleAvro.NoNeedForNamespace;
+        /**
+         * Default: null
+         */
+        pleaseNoNamespace?: null | ComExampleAvro.NoNeedForNamespace;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithDefaults.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type CreateUser = MyNamespaceMessages.CreateUser;
+
+export namespace MyNamespaceMessages {
+    export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
+    export interface CreateUser {
+        userId: string;
+        /**
+         * Default: \\"John\\"
+         */
+        firstname?: string | null;
+        /**
+         * Default: null
+         */
+        lastname?: null | string;
+        /**
+         * Default: \\"john.doe@example.com\\"
+         */
+        email?: string;
     }
 }
 "
@@ -879,8 +976,10 @@ export namespace ComExampleAvro {
         address: string;
         /**
          * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
          */
-        verified: boolean;
+        verified?: boolean;
         /**
          * Timestamp (milliseconds since epoch) when the email address was added to the account.
          */
@@ -1048,7 +1147,10 @@ export namespace ComExampleAvro {
          * Timestamp (milliseconds since epoch) when the user signed up
          */
         signupDate: number;
-        unionType: null | string;
+        /**
+         * Default: null
+         */
+        unionType?: null | string;
     }
 }
 "
@@ -1129,20 +1231,53 @@ export type TradeCollection = ComExampleAvro.TradeCollection;
 export namespace ComExampleAvro {
     export const TradeName = \\"com.example.avro.Trade\\";
     export interface Trade {
-        id: string;
-        price: number;
-        amount: number;
-        datetime: string;
-        timestamp: number;
-        type: null | (\\"Market\\" | \\"Limit\\");
-        side: null | (\\"Buy\\" | \\"Sell\\");
+        /**
+         * Default: \\"\\"
+         */
+        id?: string;
+        /**
+         * Default: 0
+         */
+        price?: number;
+        /**
+         * Default: 0
+         */
+        amount?: number;
+        /**
+         * Default: \\"\\"
+         */
+        datetime?: string;
+        /**
+         * Default: 0
+         */
+        timestamp?: number;
+        /**
+         * Default: null
+         */
+        type?: null | (\\"Market\\" | \\"Limit\\");
+        /**
+         * Default: null
+         */
+        side?: null | (\\"Buy\\" | \\"Sell\\");
     }
     export const TradeCollectionName = \\"com.example.avro.TradeCollection\\";
     export interface TradeCollection {
-        producerId: string;
-        exchange: string;
-        market: string;
-        trades: ComExampleAvro.Trade[];
+        /**
+         * Default: \\"\\"
+         */
+        producerId?: string;
+        /**
+         * Default: \\"\\"
+         */
+        exchange?: string;
+        /**
+         * Default: \\"\\"
+         */
+        market?: string;
+        /**
+         * Default: []
+         */
+        trades?: ComExampleAvro.Trade[];
     }
 }
 "
@@ -1165,8 +1300,10 @@ export namespace ComExampleAvro {
         address: string;
         /**
          * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
          */
-        verified: boolean;
+        verified?: boolean;
         /**
          * Timestamp (milliseconds since epoch) when the email address was added to the account.
          */

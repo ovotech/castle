@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "name": "CreateUser",
+  "namespace": "my.namespace.messages",
+  "fields": [
+    {
+      "name": "userId",
+      "type": "string",
+      "logicalType": "uuid"
+    },
+    {
+      "name": "firstname",
+      "type": ["string", "null"],
+      "default": "John"
+    },
+    {
+      "name": "lastname",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "default": "john.doe@example.com"
+    }
+  ]
+}
