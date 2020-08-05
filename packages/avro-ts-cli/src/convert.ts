@@ -1,6 +1,7 @@
 import * as commander from 'commander';
-import { toTypeScript } from '@ovotech/avro-ts';
-import { join, basename } from 'path';
+import { toTypeScript, toExternalContext } from '@ovotech/avro-ts';
+import { Schema } from 'avsc';
+import { join, basename, relative, dirname } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 import * as chalk from 'chalk';
 import { table } from './output';
@@ -77,7 +78,7 @@ Example:
     )
     .action(
       (
-        input: string[],
+        files: string[],
         {
           logicalType,
           logicalTypeImport,
@@ -86,7 +87,7 @@ Example:
           outputDir,
         }: Options,
       ) => {
-        if (input.length === 0) {
+        if (files.length === 0) {
           logger.log(chalk.red('No files specified to convert'));
         } else {
           logger.log('Converting Avro to TypeScript');
@@ -109,9 +110,32 @@ Example:
             );
             logger.log('');
           }
-          const result = input.map((file) => {
-            const avroSchema = JSON.parse(String(readFileSync(file)));
-            const ts = toTypeScript(avroSchema, { logicalTypes });
+
+          const schemas: { [key: string]: Schema } = files.reduce(
+            (all, file) => ({ ...all, [file]: JSON.parse(readFileSync(file, 'utf-8')) }),
+            {},
+          );
+
+          const allExternal = Object.entries(schemas).reduce(
+            (acc, [file, schema]) => ({
+              ...acc,
+              [file]: toExternalContext(schema),
+            }),
+            {},
+          );
+
+          const result = Object.entries(schemas).map(([file, schema]) => {
+            const external = Object.entries(allExternal).reduce(
+              (all, [externalFile, externalSchema]) => {
+                return {
+                  ...all,
+                  [`./${relative(dirname(file), externalFile)}`]: externalSchema,
+                };
+              },
+              {},
+            );
+
+            const ts = toTypeScript(schema, { logicalTypes, external });
             const outputFile = outputDir ? join(outputDir, `${basename(file)}.ts`) : `${file}.ts`;
             writeFileSync(outputFile, ts);
             const shortFile = file.replace(process.cwd(), '.');

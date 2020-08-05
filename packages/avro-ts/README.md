@@ -226,6 +226,29 @@ const gasEvent: Event = {
 };
 ```
 
+## External references
+
+AvroTs supports external references to schemas in other files. In order to do that you'll need to convert the external schemas first, and then pass them as "external" in the initial context. This can be used as a building blocks to process multiple schemas at once.
+
+> [examples/external.ts](examples/external.ts)
+
+```typescript
+import { toTypeScript, toExternalContext } from '@ovotech/avro-ts';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+const createUserSchema = JSON.parse(
+  readFileSync(join(__dirname, 'external-CreateUser.json'), 'utf-8'),
+);
+const addressSchema = JSON.parse(readFileSync(join(__dirname, 'external-Address.json'), 'utf-8'));
+
+const addressContext = toExternalContext(addressSchema);
+
+const ts = toTypeScript(createUserSchema, { external: { './external-Address': addressContext } });
+
+console.log(ts);
+```
+
 ## Running the tests
 
 Then you can run the tests with:

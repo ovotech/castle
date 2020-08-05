@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "Address",
+  "namespace": "my.namespace.data",
+  "fields": [
+    {
+      "name": "street",
+      "type": "string"
+    },
+    {
+      "name": "zipcode",
+      "type": "string"
+    },
+    {
+      "name": "country",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "UpdateAddress",
+  "namespace": "my.namespace.messages",
+  "fields": [
+    {
+      "name": "userId",
+      "type": "string",
+      "logicalType": "uuid"
+    },
+    {
+      "name": "address",
+      "type": "my.namespace.data.Address"
+    }
+  ]
+}
