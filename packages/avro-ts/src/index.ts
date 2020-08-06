@@ -1,2 +1,2 @@
-export { toTypeScript, convertType } from './convert';
+export { toTypeScript, convertType, toExternalContext } from './convert';
 export { Context, CustomLogicalType } from './types';

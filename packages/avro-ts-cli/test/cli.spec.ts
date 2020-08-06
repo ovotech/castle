@@ -24,6 +24,7 @@ class Logger {
 const logger = new Logger();
 const generatedDir = join(__dirname, '__generated__');
 const avroDir = join(__dirname, 'avro');
+const externalReferencesDir = join(__dirname, 'external-references');
 
 describe('Cli', () => {
   beforeEach(() => {
@@ -103,5 +104,25 @@ describe('Cli', () => {
     expect(logger.std).toMatchSnapshot();
     expect(file1).toMatchSnapshot();
     expect(file2).toMatchSnapshot();
+  });
+
+  it('Should convert multiple files with external references', async () => {
+    const input1 = join(externalReferencesDir, 'Address.avsc');
+    const input2 = join(externalReferencesDir, 'CreateUser.avsc');
+    const input3 = join(externalReferencesDir, 'Message.avsc');
+    const input4 = join(externalReferencesDir, 'UpdateAddress.avsc');
+    const input = `cmd avro-ts ${input1} ${input2} ${input3} ${input4}`;
+    convert(logger).parse(input.split(' '));
+
+    const file1 = readFileSync(join(externalReferencesDir, 'Address.avsc.ts'), 'utf8');
+    const file2 = readFileSync(join(externalReferencesDir, 'CreateUser.avsc.ts'), 'utf8');
+    const file3 = readFileSync(join(externalReferencesDir, 'Message.avsc.ts'), 'utf8');
+    const file4 = readFileSync(join(externalReferencesDir, 'UpdateAddress.avsc.ts'), 'utf8');
+
+    expect(logger.std).toMatchSnapshot();
+    expect(file1).toMatchSnapshot();
+    expect(file2).toMatchSnapshot();
+    expect(file3).toMatchSnapshot();
+    expect(file4).toMatchSnapshot();
   });
 });

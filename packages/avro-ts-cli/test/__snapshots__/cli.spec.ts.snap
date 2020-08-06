@@ -1424,6 +1424,94 @@ export namespace UkCoBoostpowerSupportKafkaMessages {
 "
 `;
 
+exports[`Cli Should convert multiple files with external references 1`] = `
+"Converting Avro to TypeScript
+
+Avro Schema                                   | TypeScript File                                 
+./test/external-references/Address.avsc       | ./test/external-references/Address.avsc.ts      
+./test/external-references/CreateUser.avsc    | ./test/external-references/CreateUser.avsc.ts   
+./test/external-references/Message.avsc       | ./test/external-references/Message.avsc.ts      
+./test/external-references/UpdateAddress.avsc | ./test/external-references/UpdateAddress.avsc.ts
+"
+`;
+
+exports[`Cli Should convert multiple files with external references 2`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type Address = MyNamespaceData.Address;
+
+export namespace MyNamespaceData {
+    export const AddressName = \\"my.namespace.data.Address\\";
+    export interface Address {
+        street: string;
+        zipcode: string;
+        country: string;
+    }
+}
+"
+`;
+
+exports[`Cli Should convert multiple files with external references 3`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc\\";
+
+export type CreateUser = MyNamespaceMessages.CreateUser;
+
+export namespace MyNamespaceMessages {
+    export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
+    export interface CreateUser {
+        userId: string;
+        name: string;
+        address: MyNamespaceDataAddress.Address;
+    }
+}
+"
+`;
+
+exports[`Cli Should convert multiple files with external references 4`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { MyNamespaceMessages as MyNamespaceMessagesCreateUser } from \\"./CreateUser.avsc\\";
+
+import { MyNamespaceMessages as MyNamespaceMessagesUpdateAddress } from \\"./UpdateAddress.avsc\\";
+
+export type Message = MyNamespace.Message;
+
+export namespace MyNamespace {
+    export const MessageName = \\"my.namespace.Message\\";
+    export interface Message {
+        type: \\"CreateUser\\" | \\"UpdateAddress\\";
+        /**
+         * Default: null
+         */
+        CreateUser?: null | MyNamespaceMessagesCreateUser.CreateUser;
+        /**
+         * Default: null
+         */
+        UpdateAddress?: null | MyNamespaceMessagesUpdateAddress.UpdateAddress;
+    }
+}
+"
+`;
+
+exports[`Cli Should convert multiple files with external references 5`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc\\";
+
+export type UpdateAddress = MyNamespaceMessages.UpdateAddress;
+
+export namespace MyNamespaceMessages {
+    export const UpdateAddressName = \\"my.namespace.messages.UpdateAddress\\";
+    export interface UpdateAddress {
+        userId: string;
+        address: MyNamespaceDataAddress.Address;
+    }
+}
+"
+`;
+
 exports[`Cli Should convert single file 1`] = `
 "Converting Avro to TypeScript
 

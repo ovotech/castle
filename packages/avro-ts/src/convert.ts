@@ -10,7 +10,7 @@ import { isMapType, convertMapType } from './types/map';
 import { isEnumType, convertEnumType } from './types/enum';
 import { isPrimitiveType, convertPrimitiveType } from './types/primitive';
 import { isFixedType, convertFixedType } from './types/fixed';
-import { withHeader } from '@ovotech/ts-compose/dist/document';
+import { withHeader, withImports } from '@ovotech/ts-compose/dist/document';
 import * as ts from 'typescript';
 import { fullName } from './helpers';
 
@@ -75,6 +75,21 @@ export const convertType: Convert = (context, type) => {
     const [name, nameNamespace] = nameParts(type);
     const namespace = nameNamespace ?? context.namespace;
 
+    if (namespace && context.external && !context.refs?.[type]) {
+      for (const module in context.external) {
+        if (context.external[module][type]) {
+          const externalNamespace = convertNamespace(namespace);
+          const alias = `${externalNamespace}${firstUpperCase(name)}`;
+          const externalContext = withImports(context, {
+            named: [{ name: convertNamespace(namespace), as: alias }],
+            module,
+          });
+          const ref = Type.Referance([alias, firstUpperCase(name)]);
+          return document(externalContext, ref);
+        }
+      }
+    }
+
     const ref = namespace
       ? Type.Referance([convertNamespace(namespace), firstUpperCase(name)])
       : Type.Referance(firstUpperCase(name));
@@ -99,4 +114,13 @@ export const toTypeScript = (schema: Schema, initial: Context = {}): string => {
       : 'AvroType';
 
   return printDocument(document(contextWithHeader, Type.Alias({ name, isExport: true, type })));
+};
+
+export const toExternalContext = (
+  schema: Schema,
+  initial: Context = {},
+): { [key: string]: Schema } => {
+  const contextWithRefs = collectRefs(schema, initial);
+  const { context } = convertType(contextWithRefs, schema);
+  return context.refs ?? {};
 };
