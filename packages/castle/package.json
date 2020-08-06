@@ -1,11 +1,12 @@
 {
   "name": "@ovotech/castle",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka and avro based event listener",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "repository": "git@github.com:ovotech/castle.git",
+  "homepage": "https://github.com/ovotech/castle/tree/master/packages/castle#readme",
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/jest": "^26.0.3",
@@ -40,7 +41,7 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/avro-kafkajs": "^0.5.1",
+    "@ovotech/avro-kafkajs": "^0.5.2",
     "kafkajs": "^1.12.0",
     "lodash.chunk": "^4.2.0"
   }

@@ -1,12 +1,14 @@
 {
   "name": "@ovotech/avro-epoch-days",
   "description": "A logical type representing Date as epoch days",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
+  "repository": "git@github.com:ovotech/castle.git",
+  "homepage": "https://github.com/ovotech/castle/tree/master/packages/avro-epoch-days#readme",
   "scripts": {
     "test": "jest --runInBand",
     "lint:prettier": "prettier --list-different {src,test}/**/*.ts",

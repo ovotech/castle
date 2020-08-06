@@ -1,11 +1,11 @@
-# Avro Date
+# Avro Timestamp Millis
 
 A Logical type for representing a date stored as the number of milliseconds since epoch
 
 ### Using
 
 ```bash
-yarn add @ovotech/avro-epoch-days
+yarn add @ovotech/avro-timestamp-millis
 ```
 
 And then you can use `AvroEpochDays` for a logicalType of a field.
