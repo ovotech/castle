@@ -6,7 +6,7 @@ import { convertType, convertNamespace, firstUpperCase } from '../convert';
 export const isRecordType = (type: Schema): type is schema.RecordType =>
   typeof type === 'object' && 'type' in type && type.type === 'record';
 
-export const withDefault = (def: any, doc: string | undefined): string | undefined => {
+export const withDefault = (def: unknown, doc: string | undefined): string | undefined => {
   if (def === undefined) {
     return doc;
   }
@@ -31,7 +31,7 @@ export const convertRecordType: Convert<schema.RecordType> = (context, schema) =
           name,
           type: converted.type,
           jsDoc: withDefault(def, doc),
-          isOptional: def !== undefined,
+          isOptional: converted.context.defaultsAsOptional && def !== undefined,
         }),
       );
     },

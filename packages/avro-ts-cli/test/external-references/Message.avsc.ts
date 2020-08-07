@@ -13,10 +13,10 @@ export namespace MyNamespace {
         /**
          * Default: null
          */
-        CreateUser?: null | MyNamespaceMessagesCreateUser.CreateUser;
+        CreateUser: null | MyNamespaceMessagesCreateUser.CreateUser;
         /**
          * Default: null
          */
-        UpdateAddress?: null | MyNamespaceMessagesUpdateAddress.UpdateAddress;
+        UpdateAddress: null | MyNamespaceMessagesUpdateAddress.UpdateAddress;
     }
 }

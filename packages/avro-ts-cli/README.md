@@ -18,11 +18,8 @@ avro-ts avro-dir/*.json --logical-type date=string
 
 Options:
 
-- `-J, --json` - output as json
-- `-C, --config <configFile>` - config file with connection deails
-- `-v, --verbose` - Output logs for kafka, four levels: error, warn, info, debug. use flag multiple times to increase level
 - `-h, --help` - output usage information
-
+- `-e, --defaults-as-optional` - Fields with defaults as optional
 - `-O, --output-dir <outputDir>` - Directory to write typescript files to
 - `--logical-type <logicalType>` - Logical type, example: date=string (default: {})
 - `--logical-type-import <logicalType>` - Logical type import custom module, example: date=Decimal:decimal.js (default: {})
@@ -65,8 +62,8 @@ THis would output this file. Notice that the type of `createdAt` is not `int` bu
 export type AvroType = Event;
 
 export interface Event {
-    id: number;
-    createdAt: number;
+  id: number;
+  createdAt: number;
 }
 ```
 
@@ -98,9 +95,9 @@ avro-ts examples/event-2.json --logical-type-import decimal=Decimal:decimal.js
 export type AvroType = Event;
 
 export interface Event {
-    id: number;
-    decimalValue: number;
-    anotherDecimal: number;
+  id: number;
+  decimalValue: number;
+  anotherDecimal: number;
 }
 ```
 

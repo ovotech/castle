@@ -111,7 +111,325 @@ export namespace UkCoBoostpowerSupportKafkaMessages {
 "
 `;
 
+exports[`Avro ts test Should convert BalanceAdjustment.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { Moment } from \\"moment\\";
+
+export type BalanceAdjustment = UkCoBoostpowerSupportKafkaMessages.BalanceAdjustment;
+
+export namespace ComOvoenergyKafkaCommonEvent {
+    export const ConfigName = \\"com.ovoenergy.kafka.common.event.Config\\";
+    export interface Config {
+        tokenId: string;
+    }
+    export const ConfigExtendedName = \\"com.ovoenergy.kafka.common.event.ConfigExtended\\";
+    export interface ConfigExtended {
+        tokenId: string;
+        extensionId: string;
+    }
+    export const EventMetadataName = \\"com.ovoenergy.kafka.common.event.EventMetadata\\";
+    /**
+     * Metadata, to be used in each event class
+     */
+    export interface EventMetadata {
+        /**
+         * A globally unique ID for this Kafka message
+         */
+        eventId: string;
+        /**
+         * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+         */
+        traceToken: string;
+        /**
+         * A timestamp for when the event was created (in epoch millis)
+         */
+        createdAt: Moment;
+        config: {
+            \\"com.ovoenergy.kafka.common.event.Config\\": ComOvoenergyKafkaCommonEvent.Config;
+            \\"com.ovoenergy.kafka.common.event.ConfigExtended\\"?: never;
+        } | {
+            \\"com.ovoenergy.kafka.common.event.Config\\"?: never;
+            \\"com.ovoenergy.kafka.common.event.ConfigExtended\\": ComOvoenergyKafkaCommonEvent.ConfigExtended;
+        };
+    }
+}
+
+export namespace UkCoBoostpowerSupportKafkaMessages {
+    export const BalanceAdjustmentRequestName = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\";
+    /**
+     * Balance Adjustment request has been sent
+     */
+    export interface BalanceAdjustmentRequest {
+        /**
+         * A unique balance adjustment job id. Will correspond with the jobId of BalanceAdjustmentResponse
+         */
+        jobId: string;
+        /**
+         * Unique identifier for the customer. Gentrack Account ID. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * Meter Serial Number of the meter having its balance adjusted
+         */
+        msn: string;
+        /**
+         * A Meter Point Administration Number (Electricity) or Meter Point Reference Number (Gas). It is expected that the specified meter supplies this Supply Point.
+         */
+        mpxn: string;
+        /**
+         * Type of fuel of the meter
+         */
+        fuel: \\"Gas\\" | \\"Electricity\\";
+        /**
+         * The amount the balance was adjusted with, in thousands of a penny
+         */
+        amount: number;
+    }
+    export const BalanceAdjustmentResponseName = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\";
+    /**
+     * Balance Adjustment Completion
+     */
+    export interface BalanceAdjustmentResponse {
+        /**
+         * A unique adjustment job id. Will correspond with the jobId S2BalanceAdjustmentRequest
+         */
+        jobId: string;
+        /**
+         * The status of the balance adjustment when its completed
+         */
+        status: \\"Error\\" | \\"Success\\";
+        /**
+         * The resulting the balance after the adjustemt, in thousands of a penny
+         */
+        balance: number;
+    }
+    export const BalanceAdjustmentName = \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustment\\";
+    /**
+     * A balance adjustment request and response events
+     */
+    export interface BalanceAdjustment {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        event: {
+            \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\": UkCoBoostpowerSupportKafkaMessages.BalanceAdjustmentRequest;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\"?: never;
+        } | {
+            \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentRequest\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceAdjustmentResponse\\": UkCoBoostpowerSupportKafkaMessages.BalanceAdjustmentResponse;
+        };
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert CommUpdateType.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { Moment } from \\"moment\\";
+
+export type CommunicationUpdate = ComExampleKafkaComms.CommunicationUpdate;
+
+export namespace ComExampleKafkaCommonEvent {
+    export const EventMetadataName = \\"com.example.kafka.common.event.EventMetadata\\";
+    export interface EventMetadata {
+        eventId: string;
+        traceToken: string;
+        createdAt: Moment;
+    }
+}
+
+export namespace ComExampleKafkaComms {
+    export const TemplateManifestName = \\"com.example.kafka.comms.TemplateManifest\\";
+    export interface TemplateManifest {
+        id: string;
+        version: string;
+    }
+    export const TemplateName = \\"com.example.kafka.comms.Template\\";
+    export interface Template {
+        manifest: ComExampleKafkaComms.TemplateManifest;
+        name: string;
+        commType: string;
+    }
+    export const PostalAddressName = \\"com.example.kafka.comms.PostalAddress\\";
+    export interface PostalAddress {
+        /**
+         * Default: null
+         */
+        contactName: null | string;
+        /**
+         * Default: null
+         */
+        company: null | string;
+        line1: string;
+        /**
+         * Default: null
+         */
+        line2: null | string;
+        town: string;
+        /**
+         * Default: null
+         */
+        county: null | string;
+        postcode: string;
+        /**
+         * Default: null
+         */
+        country: null | string;
+    }
+    export const FailureName = \\"com.example.kafka.comms.Failure\\";
+    export interface Failure {
+        at: Moment;
+        code: string;
+        reason: string;
+    }
+    export const AttachmentName = \\"com.example.kafka.comms.Attachment\\";
+    export interface Attachment {
+        uri: string;
+        fileName: string;
+    }
+    export const SpecialRequirementsName = \\"com.example.kafka.comms.SpecialRequirements\\";
+    export interface SpecialRequirements {
+        preferences: string[];
+    }
+    export const CommunicationName = \\"com.example.kafka.comms.Communication\\";
+    export interface Communication {
+        id: string;
+        traceToken: string;
+        brand: string;
+        template: ComExampleKafkaComms.Template;
+        status: string;
+        description: string;
+        source: string;
+        isCanary: boolean;
+        triggeredAt: Moment;
+        /**
+         * Default: null
+         */
+        scheduledAt: null | Moment;
+        /**
+         * Default: null
+         */
+        orchestratedAt: null | Moment;
+        /**
+         * Default: null
+         */
+        composedAt: null | Moment;
+        /**
+         * Default: null
+         */
+        issuedForDeliveryAt: null | Moment;
+        /**
+         * Default: null
+         */
+        deliveredAt: null | Moment;
+        /**
+         * Default: null
+         */
+        expireAt: null | Moment;
+        deliverTo: {
+            \\"DeliverTo.Customer\\": DeliverTo.Customer;
+            \\"DeliverTo.ContactDetails\\"?: never;
+        } | {
+            \\"DeliverTo.Customer\\"?: never;
+            \\"DeliverTo.ContactDetails\\": DeliverTo.ContactDetails;
+        };
+        /**
+         * Default: null
+         */
+        recipient: null | ComExampleKafkaCommsRecipient.Email | ComExampleKafkaCommsRecipient.Phone | ComExampleKafkaCommsRecipient.Postal;
+        /**
+         * Default: null
+         */
+        channel: null | string;
+        /**
+         * Default: null
+         */
+        failure: null | ComExampleKafkaComms.Failure;
+        /**
+         * Default: null
+         */
+        content: null | ComExampleKafkaCommsContent.Email | ComExampleKafkaCommsContent.Sms | ComExampleKafkaCommsContent.Print;
+        /**
+         * Default: []
+         */
+        attachments: ComExampleKafkaComms.Attachment[];
+        /**
+         * Default: null
+         */
+        specialRequirements: null | ComExampleKafkaComms.SpecialRequirements;
+    }
+    export const CommunicationUpdateName = \\"com.example.kafka.comms.CommunicationUpdate\\";
+    export interface CommunicationUpdate {
+        metadata: ComExampleKafkaCommonEvent.EventMetadata;
+        communication: ComExampleKafkaComms.Communication;
+    }
+}
+
+export namespace DeliverTo {
+    export const ContactDetailsName = \\"DeliverTo.ContactDetails\\";
+    export interface ContactDetails {
+        /**
+         * Default: null
+         */
+        emailAddress: null | string;
+        /**
+         * Default: null
+         */
+        phoneNumber: null | string;
+        /**
+         * Default: null
+         */
+        postalAddress: null | ComExampleKafkaComms.PostalAddress;
+    }
+    export const CustomerName = \\"DeliverTo.Customer\\";
+    export interface Customer {
+        profileId: string;
+        /**
+         * Default: null
+         */
+        contactDetails: null | DeliverTo.ContactDetails;
+    }
+}
+
+export namespace ComExampleKafkaCommsRecipient {
+    export const EmailName = \\"com.example.kafka.comms.Recipient.Email\\";
+    export interface Email {
+        emailAddress: string;
+    }
+    export const PhoneName = \\"com.example.kafka.comms.Recipient.Phone\\";
+    export interface Phone {
+        phoneNumber: string;
+    }
+    export const PostalName = \\"com.example.kafka.comms.Recipient.Postal\\";
+    export interface Postal {
+        postalAddress: ComExampleKafkaComms.PostalAddress;
+    }
+}
+
+export namespace ComExampleKafkaCommsContent {
+    export const EmailName = \\"com.example.kafka.comms.Content.Email\\";
+    export interface Email {
+        sender: string;
+        subject: string;
+        body: string;
+        /**
+         * Default: null
+         */
+        textBody: null | string;
+    }
+    export const SmsName = \\"com.example.kafka.comms.Content.Sms\\";
+    export interface Sms {
+        body: string;
+    }
+    export const PrintName = \\"com.example.kafka.comms.Content.Print\\";
+    export interface Print {
+        body: string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert CommUpdateType.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 import { Moment } from \\"moment\\";
@@ -342,6 +660,75 @@ export namespace ComExampleAvro {
          *
          * Default: false
          */
+        verified: boolean;
+        /**
+         * Timestamp (milliseconds since epoch) when the email address was added to the account.
+         */
+        dateAdded: number;
+    }
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+        mapField: {
+            [index: string]: ComExampleAvro.Foo;
+        };
+        /**
+         * All email addresses on the user's account
+         */
+        emailAddresses: ComExampleAvro.EmailAddress[];
+        /**
+         * Indicator of whether this authorization is currently active, or has been revoked
+         */
+        status: \\"ACTIVE\\" | \\"INACTIVE\\";
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert ComplexRecord.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const FooName = \\"com.example.avro.Foo\\";
+    export interface Foo {
+        label: string;
+    }
+    export const EmailAddressName = \\"com.example.avro.EmailAddress\\";
+    /**
+     * Stores details about an email address that a user has associated with their account.
+     */
+    export interface EmailAddress {
+        /**
+         * The email address, e.g. \`foo@example.com\`
+         */
+        address: string;
+        /**
+         * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
+         */
         verified?: boolean;
         /**
          * Timestamp (milliseconds since epoch) when the email address was added to the account.
@@ -388,6 +775,279 @@ export namespace ComExampleAvro {
 `;
 
 exports[`Avro ts test Should convert ComplexUnionLogicalTypes.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { Moment } from \\"moment\\";
+
+export type AccountMigrationEvent = UkCoBoostpowerSupportKafkaMessages.AccountMigrationEvent;
+
+export namespace ComOvoenergyKafkaCommonEvent {
+    export const EventMetadataName = \\"com.ovoenergy.kafka.common.event.EventMetadata\\";
+    /**
+     * Metadata, to be used in each event class
+     */
+    export interface EventMetadata {
+        /**
+         * A globally unique ID for this Kafka message
+         */
+        eventId: string;
+        /**
+         * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+         */
+        traceToken: string;
+        /**
+         * A timestamp for when the event was created (in epoch millis)
+         */
+        createdAt: Moment;
+    }
+}
+
+export namespace UkCoBoostpowerSupportKafkaMessages {
+    export const AccountMigrationCancelledEventName = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\";
+    /**
+     * Triggered by Migration Service. Before T2 signals that a siemens account migration has been cancelled. Migration is about to be restarted for the same account that means a new AccountMigrationScheduledEvent with a new flow id will be sent.Consumers should not react on this in normal case.
+     */
+    export interface AccountMigrationCancelledEvent {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        /**
+         * Globally unique identifier for the enrollment
+         */
+        enrollmentId: string;
+        /**
+         * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * The unique national reference for Meter Point Administration Number
+         */
+        mpan: string;
+        /**
+         * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+         */
+        effectiveEnrollmentDate: string;
+        /**
+         * The time when the migration was cancelled (in epoch millis)
+         */
+        cancelledAt: Moment;
+    }
+    export const AccountMigrationCompletedEventName = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\";
+    /**
+     * Triggered by SMILE. After SMILE processed the AccountMigrationValidatedEvent and switched over to Billy from Siemens they trigger this event to inform consumers like BIT CSA portal and Salesforce to do the necessary steps for the switchover
+     */
+    export interface AccountMigrationCompletedEvent {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        /**
+         * Globally unique identifier for the enrollment
+         */
+        enrollmentId: string;
+        /**
+         * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+         */
+        effectiveEnrollmentDate: string;
+        /**
+         * The time when the migration was completed (in epoch millis)
+         */
+        completedAt: Moment;
+    }
+    export const AccountMigrationRollBackInitiatedEventName = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\";
+    /**
+     * Triggered by Migration Service. After T2 it signals that a siemens account migration roll back was initiated. SMILE should change the data master system for the account from Billy to Siemens and inform other system about the result.
+     */
+    export interface AccountMigrationRollBackInitiatedEvent {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        /**
+         * Globally unique identifier for the enrollment
+         */
+        enrollmentId: string;
+        /**
+         * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+         */
+        effectiveEnrollmentDate: string;
+        /**
+         * The time when the migration rollback was initiated (in epoch millis)
+         */
+        rollBackInitiatedAt: Moment;
+    }
+    export const AccountMigrationRolledBackEventName = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\";
+    /**
+     * Triggered by SMILE. As the response to the AccountMigrationRollBackInitiatedEvent, SMILE indicates that mastering system for account data has been restored to be Siemens.As an action to this Billy, BIT CSA portal and Salesforce can do the necessary steps to clean up internal data and switch over to use Siemens data.
+     */
+    export interface AccountMigrationRolledBackEvent {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        /**
+         * Globally unique identifier for the enrollment
+         */
+        enrollmentId: string;
+        /**
+         * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+         */
+        effectiveEnrollmentDate: string;
+        /**
+         * The time when the migration was rolled back (in epoch millis)
+         */
+        rolledBackAt: Moment;
+    }
+    export const AccountMigrationScheduledEventName = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\";
+    /**
+     * Triggered by Migration Service. At T-2 it signals that a siemens account migration has been scheduled for T0 (effectiveEnrollmentDate).Consumers should do the necessary steps like removing primary card functionality in PAYG account service. If consumers see a new AccountMigrationScheduledEvent with a new flow id then they have to update their internal state with the new flow id since every subsequent message in the migration flow will use the same id
+     */
+    export interface AccountMigrationScheduledEvent {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        /**
+         * Globally unique identifier for the enrollment
+         */
+        enrollmentId: string;
+        /**
+         * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * The unique national reference for Meter Point Administration Number
+         */
+        mpan: string;
+        /**
+         * The date when the customer came on supply with Boost (in epoch days)
+         */
+        supplyStartDate: string;
+        /**
+         * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+         */
+        effectiveEnrollmentDate: string;
+        /**
+         * The time when the migration was scheduled (in epoch millis)
+         */
+        scheduledAt: Moment;
+    }
+    export const AccountMigrationValidatedEventName = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\";
+    /**
+     * Triggered by Balance Service. At T2 it signals that a siemens balance and transaction history was migrated to the new balance platform and the validation was successful. Billy is ready to be the source for balance and transaction history data. SMILE should change the data master system for the account from Siemens to Billy and inform other system about the result
+     */
+    export interface AccountMigrationValidatedEvent {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        /**
+         * Globally unique identifier for the enrollment
+         */
+        enrollmentId: string;
+        /**
+         * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+         */
+        effectiveEnrollmentDate: string;
+        /**
+         * The time when the migrated balance and transactions were validated (in epoch millis)
+         */
+        validatedAt: Moment;
+    }
+    export const BalanceRetrievedMigrationEventName = \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\";
+    /**
+     * Triggered by Migration Service. At T1 signals that a siemens balance and transaction history is available for Billy. Contains details.
+     */
+    export interface BalanceRetrievedMigrationEvent {
+        metadata: ComOvoenergyKafkaCommonEvent.EventMetadata;
+        /**
+         * Globally unique identifier for the enrollment
+         */
+        enrollmentId: string;
+        /**
+         * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+         */
+        accountId: string;
+        /**
+         * The unique national reference for Meter Point Administration Number
+         */
+        mpan: string;
+        /**
+         * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+         */
+        effectiveEnrollmentDate: string;
+        /**
+         * The time when the balance and transaction history was fetched (in epoch millis)
+         */
+        retrievedAt: Moment;
+    }
+    export const AccountMigrationEventName = \\"uk.co.boostpower.support.kafka.messages.AccountMigrationEvent\\";
+    /**
+     * Account migration related events. It describes several flows: 1. Happy path: AccountMigrationScheduledEvent -> BalanceRetrievedMigrationEvent -> AccountMigrationValidatedEvent -> AccountMigrationCompletedEvent 2. Cancel where the migration is about the be restarted: AccountMigrationScheduledEvent -> BalanceRetrievedMigrationEvent -> AccountMigrationCancelledEvent -> Start from the beginning, AccountMigrationScheduledEvent -> AccountMigrationCancelledEvent -> Start from the beginning 3. Rollback: AccountMigrationScheduledEvent -> BalanceRetrievedMigrationEvent -> AccountMigrationValidatedEvent -> AccountMigrationCompletedEvent -> AccountMigrationRollBackInitiatedEvent -> AccountMigrationRolledBackEvent -> Start from the beginning AccountMigrationScheduledEvent generates a flow id which is used in every subsequent migration message to be grouped together
+     */
+    export interface AccountMigrationEvent {
+        event: {
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\": UkCoBoostpowerSupportKafkaMessages.AccountMigrationCancelledEvent;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+        } | {
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\": UkCoBoostpowerSupportKafkaMessages.AccountMigrationCompletedEvent;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+        } | {
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\": UkCoBoostpowerSupportKafkaMessages.AccountMigrationRollBackInitiatedEvent;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+        } | {
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\": UkCoBoostpowerSupportKafkaMessages.AccountMigrationRolledBackEvent;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+        } | {
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\": UkCoBoostpowerSupportKafkaMessages.AccountMigrationScheduledEvent;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+        } | {
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\": UkCoBoostpowerSupportKafkaMessages.AccountMigrationValidatedEvent;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\"?: never;
+        } | {
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCancelledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationCompletedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRollBackInitiatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationRolledBackEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationScheduledEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.AccountMigrationValidatedEvent\\"?: never;
+            \\"uk.co.boostpower.support.kafka.messages.BalanceRetrievedMigrationEvent\\": UkCoBoostpowerSupportKafkaMessages.BalanceRetrievedMigrationEvent;
+        };
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert ComplexUnionLogicalTypes.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 import { Moment } from \\"moment\\";
@@ -789,7 +1449,179 @@ export namespace MbrSplitM03 {
 "
 `;
 
+exports[`Avro ts test Should convert M03.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type M03 = MbrSplitM03.M03;
+
+export namespace MbrSplitM03M03 {
+    export const ItemsName = \\"mbr.split.m03.m03.Items\\";
+    export interface Items {
+        SHIPPER_REFERENCE: string;
+        SEND_REASON_CODE: string;
+        ACTUAL_READ_DATE: string;
+        METER_SERIAL_NUMBER: string;
+        METER_POINT_REFERENCE: string;
+        PRIME_METER_POINT_REFERENCE: string;
+        BILLING_INDICATOR: string;
+        READ_SEQUENCE: string;
+        READ_REASON_CODE: string;
+        READ_TYPE: string;
+        METER_READING: string;
+        NUMBER_OF_DIALS_OR_DIGITS: string;
+        CORRECTOR_UNCORRECTED_READING: string;
+        NUMBER_OF_DIALS_UNCORRECTED: string;
+        CORRECTOR_CORRECTED_READING: string;
+        NUMBER_OF_DIALS_CORRECTED: string;
+        OVERRIDE_VOLUME: string;
+        OVERRIDE_VOLUME_UNITS: string;
+        OVERRIDE_REASON: string;
+        BYPASS_STATUS: string;
+        COLLAR_STATUS: string;
+        CAPPED_STATUS: string;
+        CORRECTOR_STATUS: string;
+        NOTE_CODE_1: string;
+        NOTE_CODE_2: string;
+        NOTE_CODE_3: string;
+        NOTE_CODE_4: string;
+        NOTE_CODE_5: string;
+        METRIC_IMPERIAL_INDICATOR: string;
+        METER_CORRECTION_FACTOR: string;
+        CORRECTOR_CORRECTION_FACTOR: string;
+        READING_FACTOR: string;
+        METER_THROUGH_ZEROS_COUNT: string;
+        CORRECTOR_THROUGH_ZEROS_COUNT: string;
+        METERING_SET_REFERENCE_NUMBER: string;
+        CONFIRMATION_REFERENCE_NUMBER: string;
+        NON_CYCLIC_TOLERANCE: string;
+        METER_PULSE_VALUE: string;
+        METER_MANUFACTURER_ORG_ID: string;
+        METER_LOCATION_DESCRIPTION: string;
+        METER_LOCATION_CODE: string;
+        METER_MODEL: string;
+        CORRECTOR_SERIAL_NUMBER: string;
+        METER_MECHANISM: string;
+        CORRECTED_READING_UNITS: string;
+    }
+}
+
+export namespace MetaV1 {
+    export const MetaV1Name = \\"metaV1.metaV1\\";
+    export interface MetaV1 {
+        eventId: string;
+        createdAt: number;
+        traceToken: string;
+        /**
+         * The url of the parsed Avro Data file from which the record was extracted.
+         */
+        sourcePath: string;
+        /**
+         * The md5Hash of the parsed Avro Data file from which the record was extracted.
+         */
+        md5Hash: string;
+        /**
+         * The url of the original raw flow file.
+         */
+        rawSourcePath: string;
+        /**
+         * The md5Hash of the original raw flow file.
+         */
+        rawSourceMd5Hash: string;
+    }
+}
+
+export namespace MbrSplitA00 {
+    export const ItemsName = \\"mbr.split.a00.Items\\";
+    export interface Items {
+        Organisation_ID: string;
+        flowName: string;
+        Creation_Date: string;
+        Creation_Time: string;
+        Generation_Number: string;
+    }
+}
+
+export namespace MbrSplit {
+    export const A00Name = \\"mbr.split.A00\\";
+    export interface A00 {
+        groupName: string;
+        items: MbrSplitA00.Items;
+    }
+    export const Z99Name = \\"mbr.split.Z99\\";
+    export interface Z99 {
+        groupName: string;
+        items: MbrSplitZ99.Items;
+    }
+}
+
+export namespace MbrSplitZ99 {
+    export const ItemsName = \\"mbr.split.z99.Items\\";
+    export interface Items {
+        Record_Count: string;
+    }
+}
+
+export namespace MbrSplitM03 {
+    export const M03Name = \\"mbr.split.m03.M03\\";
+    export interface M03 {
+        groupName: string;
+        items: MbrSplitM03M03.Items;
+        /**
+         * the Id of this record. Each record gets assigned a unique Id.
+         */
+        recordId: string;
+        metadata: MetaV1.MetaV1;
+        header: MbrSplit.A00;
+        footer: MbrSplit.Z99;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert NestedRecordNamespace.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type NestRecordEvent = ComAvroExample.NestRecordEvent;
+
+export namespace ComAvroExample {
+    export const Level2RecordName = \\"com.avro.example.Level2Record\\";
+    export interface Level2Record {
+        id: string;
+    }
+    export const Level2SiblingName = \\"com.avro.example.Level2Sibling\\";
+    export interface Level2Sibling {
+        id: string;
+    }
+    export const Level1RecordName = \\"com.avro.example.Level1Record\\";
+    export interface Level1Record {
+        id: string;
+        child: {
+            \\"com.avro.example.Level2Record\\": ComAvroExample.Level2Record;
+            \\"com.avro.example.Level2Sibling\\"?: never;
+        } | {
+            \\"com.avro.example.Level2Record\\"?: never;
+            \\"com.avro.example.Level2Sibling\\": ComAvroExample.Level2Sibling;
+        };
+    }
+    export const Level1SiblingName = \\"com.avro.example.Level1Sibling\\";
+    export interface Level1Sibling {
+        id: string;
+    }
+    export const NestRecordEventName = \\"com.avro.example.NestRecordEvent\\";
+    export interface NestRecordEvent {
+        event: {
+            \\"com.avro.example.Level1Record\\": ComAvroExample.Level1Record;
+            \\"com.avro.example.Level1Sibling\\"?: never;
+        } | {
+            \\"com.avro.example.Level1Record\\"?: never;
+            \\"com.avro.example.Level1Sibling\\": ComAvroExample.Level1Sibling;
+        };
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert NestedRecordNamespace.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type NestRecordEvent = ComAvroExample.NestRecordEvent;
@@ -871,7 +1703,70 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert NestedWrappedType.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type Event = ComExampleAvro.Event;
+
+export namespace ComExampleAvro {
+    export const NestedFieldTypeName = \\"com.example.avro.NestedFieldType\\";
+    export interface NestedFieldType {
+        id: string;
+    }
+    export const FieldTypeAName = \\"com.example.avro.FieldTypeA\\";
+    export interface FieldTypeA {
+        id: string;
+        nested: ComExampleAvro.NestedFieldType;
+    }
+    export const FieldTypeBName = \\"com.example.avro.FieldTypeB\\";
+    export interface FieldTypeB {
+        id: string;
+    }
+    export const EventName = \\"com.example.avro.Event\\";
+    export interface Event {
+        field: {
+            \\"com.example.avro.FieldTypeA\\": ComExampleAvro.FieldTypeA;
+            \\"com.example.avro.FieldTypeB\\"?: never;
+            \\"com.example.avro.NestedFieldType\\"?: never;
+        } | {
+            \\"com.example.avro.FieldTypeA\\"?: never;
+            \\"com.example.avro.FieldTypeB\\": ComExampleAvro.FieldTypeB;
+            \\"com.example.avro.NestedFieldType\\"?: never;
+        } | {
+            \\"com.example.avro.FieldTypeA\\"?: never;
+            \\"com.example.avro.FieldTypeB\\"?: never;
+            \\"com.example.avro.NestedFieldType\\": ComExampleAvro.NestedFieldType;
+        };
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert RecordWithDefault.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordWithDefault = ComExampleAvro.RecordWithDefault;
+
+export namespace ComExampleAvro {
+    export const NoNeedForNamespaceName = \\"com.example.avro.NoNeedForNamespace\\";
+    export interface NoNeedForNamespace {
+        /**
+         * A fictitious id
+         */
+        id: string;
+    }
+    export const RecordWithDefaultName = \\"com.example.avro.RecordWithDefault\\";
+    export interface RecordWithDefault {
+        /**
+         * Default: null
+         */
+        pleaseNoNamespace: null | ComExampleAvro.NoNeedForNamespace;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithDefault.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type RecordWithDefault = ComExampleAvro.RecordWithDefault;
@@ -896,6 +1791,32 @@ export namespace ComExampleAvro {
 `;
 
 exports[`Avro ts test Should convert RecordWithDefaults.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type CreateUser = MyNamespaceMessages.CreateUser;
+
+export namespace MyNamespaceMessages {
+    export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
+    export interface CreateUser {
+        userId: string;
+        /**
+         * Default: \\"John\\"
+         */
+        firstname: string | null;
+        /**
+         * Default: null
+         */
+        lastname: null | string;
+        /**
+         * Default: \\"john.doe@example.com\\"
+         */
+        email: string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithDefaults.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type CreateUser = MyNamespaceMessages.CreateUser;
@@ -959,7 +1880,103 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert RecordWithEnum.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+        /**
+         * Indicator of whether this authorization is currently active, or has been revoked
+         */
+        status: \\"ACTIVE\\" | \\"INACTIVE\\";
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert RecordWithInterface.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const EmailAddressName = \\"com.example.avro.EmailAddress\\";
+    /**
+     * Stores details about an email address that a user has associated with their account.
+     */
+    export interface EmailAddress {
+        /**
+         * The email address, e.g. \`foo@example.com\`
+         */
+        address: string;
+        /**
+         * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
+         */
+        verified: boolean;
+        /**
+         * Timestamp (milliseconds since epoch) when the email address was added to the account.
+         */
+        dateAdded: number;
+    }
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+        /**
+         * All email addresses on the user's account
+         */
+        emailAddresses: ComExampleAvro.EmailAddress[];
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithInterface.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type User = ComExampleAvro.User;
@@ -1045,7 +2062,67 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { Moment } from \\"moment\\";
+
+export type Event = ComExampleAvro.Event;
+
+export namespace ComExampleAvro {
+    export const EventName = \\"com.example.avro.Event\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface Event {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * A timestamp for when the event was created (in epoch millis)
+         */
+        createdAt: Moment;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { Decimal } from \\"decimal.js\\";
+
+export type Event = ComExampleAvro.Event;
+
+export namespace ComExampleAvro {
+    export const EventName = \\"com.example.avro.Event\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface Event {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * A Decimal that we need a library for
+         */
+        decimalValue: Decimal;
+        /**
+         * Another decimal to make sure we don't add the import more than once
+         */
+        anotherDecimal: Decimal;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 import { Decimal } from \\"decimal.js\\";
@@ -1118,7 +2195,86 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert RecordWithMap.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const FooName = \\"com.example.avro.Foo\\";
+    export interface Foo {
+        label: string;
+    }
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+        mapField: {
+            [index: string]: ComExampleAvro.Foo;
+        };
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert RecordWithUnion.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+        /**
+         * Default: null
+         */
+        unionType: null | string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithUnion.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type User = ComExampleAvro.User;
@@ -1190,6 +2346,40 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert SimpleRecord.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert TopLevelUnion.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
@@ -1223,7 +2413,100 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert TopLevelUnion.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type AvroType = {
+    \\"com.example.avro.Cancelled\\": ComExampleAvro.Cancelled;
+    \\"com.example.avro.Creation\\"?: never;
+} | {
+    \\"com.example.avro.Cancelled\\"?: never;
+    \\"com.example.avro.Creation\\": ComExampleAvro.Creation;
+};
+
+export namespace ComExampleAvroEvent {
+    export const EventMetadataName = \\"com.example.avro.event.EventMetadata\\";
+    export interface EventMetadata {
+        eventId: string;
+    }
+}
+
+export namespace ComExampleAvro {
+    export const CancelledName = \\"com.example.avro.Cancelled\\";
+    export interface Cancelled {
+        metadata: ComExampleAvroEvent.EventMetadata;
+        CancellationId: string;
+    }
+    export const CreationName = \\"com.example.avro.Creation\\";
+    export interface Creation {
+        metadata: ComExampleAvroEvent.EventMetadata;
+        creationId: string;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert TradeCollection.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type TradeCollection = ComExampleAvro.TradeCollection;
+
+export namespace ComExampleAvro {
+    export const TradeName = \\"com.example.avro.Trade\\";
+    export interface Trade {
+        /**
+         * Default: \\"\\"
+         */
+        id: string;
+        /**
+         * Default: 0
+         */
+        price: number;
+        /**
+         * Default: 0
+         */
+        amount: number;
+        /**
+         * Default: \\"\\"
+         */
+        datetime: string;
+        /**
+         * Default: 0
+         */
+        timestamp: number;
+        /**
+         * Default: null
+         */
+        type: null | (\\"Market\\" | \\"Limit\\");
+        /**
+         * Default: null
+         */
+        side: null | (\\"Buy\\" | \\"Sell\\");
+    }
+    export const TradeCollectionName = \\"com.example.avro.TradeCollection\\";
+    export interface TradeCollection {
+        /**
+         * Default: \\"\\"
+         */
+        producerId: string;
+        /**
+         * Default: \\"\\"
+         */
+        exchange: string;
+        /**
+         * Default: \\"\\"
+         */
+        market: string;
+        /**
+         * Default: []
+         */
+        trades: ComExampleAvro.Trade[];
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert TradeCollection.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type TradeCollection = ComExampleAvro.TradeCollection;
@@ -1284,6 +2567,132 @@ export namespace ComExampleAvro {
 `;
 
 exports[`Avro ts test Should convert User.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const EmailAddressName = \\"com.example.avro.EmailAddress\\";
+    /**
+     * Stores details about an email address that a user has associated with their account.
+     */
+    export interface EmailAddress {
+        /**
+         * The email address, e.g. \`foo@example.com\`
+         */
+        address: string;
+        /**
+         * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
+         */
+        verified: boolean;
+        /**
+         * Timestamp (milliseconds since epoch) when the email address was added to the account.
+         */
+        dateAdded: number;
+        /**
+         * Timestamp (milliseconds since epoch) when an email sent to this address last bounced. Reset to null when the address no longer bounces.
+         */
+        dateBounced: null | number;
+    }
+    export const TwitterAccountName = \\"com.example.avro.TwitterAccount\\";
+    /**
+     * Stores access credentials for one Twitter account, as granted to us by the user by OAuth.
+     */
+    export interface TwitterAccount {
+        /**
+         * Indicator of whether this authorization is currently active, or has been revoked
+         */
+        status: \\"PENDING\\" | \\"ACTIVE\\" | \\"DENIED\\" | \\"EXPIRED\\" | \\"REVOKED\\";
+        /**
+         * Twitter's numeric ID for this user
+         */
+        userId: number;
+        /**
+         * The twitter username for this account (can be changed by the user)
+         */
+        screenName: string;
+        /**
+         * The OAuth token for this Twitter account
+         */
+        oauthToken: string;
+        /**
+         * The OAuth secret, used for signing requests on behalf of this Twitter account. \`null\` whilst the OAuth flow is not yet complete.
+         */
+        oauthTokenSecret: null | string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user last authorized this Twitter account
+         */
+        dateAuthorized: number;
+    }
+    export const ToDoItemName = \\"com.example.avro.ToDoItem\\";
+    /**
+     * A record is one node in a To-Do item tree (every record can contain nested sub-records).
+     */
+    export interface ToDoItem {
+        /**
+         * User-selected state for this item (e.g. whether or not it is marked as done)
+         */
+        status: \\"HIDDEN\\" | \\"ACTIONABLE\\" | \\"DONE\\" | \\"ARCHIVED\\" | \\"DELETED\\";
+        /**
+         * One-line summary of the item
+         */
+        title: string;
+        /**
+         * Detailed description (may contain HTML markup)
+         */
+        description: null | string;
+        /**
+         * Timestamp (milliseconds since epoch) at which the item should go from \`HIDDEN\` to \`ACTIONABLE\` status
+         */
+        snoozeDate: null | number;
+        /**
+         * List of children of this to-do tree node
+         */
+        subItems: ComExampleAvro.ToDoItem[];
+    }
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+        /**
+         * All email addresses on the user's account
+         */
+        emailAddresses: ComExampleAvro.EmailAddress[];
+        /**
+         * All Twitter accounts that the user has OAuthed
+         */
+        twitterAccounts: ComExampleAvro.TwitterAccount[];
+        /**
+         * The top-level items in the user's to-do list
+         */
+        toDoItems: ComExampleAvro.ToDoItem[];
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert User.avsc successfully with default as optional 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type User = ComExampleAvro.User;
