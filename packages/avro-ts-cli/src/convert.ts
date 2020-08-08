@@ -13,6 +13,7 @@ interface Options {
   logicalTypeImportAll?: { [key: string]: { allAs: string; module: string } };
   logicalTypeImportDefault?: { [key: string]: { defaultAs: string; module: string } };
   outputDir?: string;
+  defaultsAsOptional?: boolean;
 }
 
 export const convert = (logger: { log: (msg: string) => void } = console): commander.Command =>
@@ -20,8 +21,9 @@ export const convert = (logger: { log: (msg: string) => void } = console): comma
     .createCommand('avro-ts')
     .arguments('[input...]')
     .option('-O, --output-dir <outputDir>', 'Directory to write typescript files to')
+    .option('-e, --defaults-as-optional', 'Fields with defaults as optional')
     .option(
-      '--logical-type <logicalType>',
+      '-l, --logical-type <logicalType>',
       'Logical type, example: date=string',
       (curr: string, prev: Options['logicalType']) => {
         const [logicalType, type] = curr.split('=');
@@ -30,7 +32,7 @@ export const convert = (logger: { log: (msg: string) => void } = console): comma
       {},
     )
     .option(
-      '--logical-type-import <logicalType>',
+      '-i, --logical-type-import <logicalType>',
       'Logical type import custom module, example: date=Decimal:decimal.js',
       (curr: string, prev: Options['logicalTypeImport']) => {
         const [logicalType, typeString] = curr.split('=');
@@ -40,7 +42,7 @@ export const convert = (logger: { log: (msg: string) => void } = console): comma
       {},
     )
     .option(
-      '--logical-type-import-all <logicalType>',
+      '-a, --logical-type-import-all <logicalType>',
       'Logical type import custom module as *, example: date=Decimal:decimal.js',
       (curr: string, prev: Options['logicalTypeImportAll']) => {
         const [logicalType, typeString] = curr.split('=');
@@ -50,7 +52,7 @@ export const convert = (logger: { log: (msg: string) => void } = console): comma
       {},
     )
     .option(
-      '--logical-type-import-default <logicalType>',
+      '-d, --logical-type-import-default <logicalType>',
       'Logical type import custom module as default, example: date=Decimal:decimal.js',
       (curr: string, prev: Options['logicalTypeImportDefault']) => {
         const [logicalType, typeString] = curr.split('=');
@@ -70,6 +72,7 @@ Example:
   avro-ts avro-schema.avsc
   avro-ts avro/*.avsc
   avro-ts avro/*.avsc --output-dir other/dir
+  avro-ts avro/*.avsc --defaults-as-optional
   avro-ts avro/*.avsc --logical-type date=string --logical-type datetime=string
   avro-ts avro/*.avsc --logical-type-import decimal=Decimal:decimal.js
   avro-ts avro/*.avsc --logical-type-import-default decimal=Decimal:decimal.js
@@ -85,6 +88,7 @@ Example:
           logicalTypeImportAll,
           logicalTypeImportDefault,
           outputDir,
+          defaultsAsOptional,
         }: Options,
       ) => {
         if (files.length === 0) {
@@ -119,7 +123,7 @@ Example:
           const allExternal = Object.entries(schemas).reduce(
             (acc, [file, schema]) => ({
               ...acc,
-              [file]: toExternalContext(schema),
+              [file]: toExternalContext(schema, { logicalTypes, defaultsAsOptional }),
             }),
             {},
           );
@@ -135,7 +139,7 @@ Example:
               {},
             );
 
-            const ts = toTypeScript(schema, { logicalTypes, external });
+            const ts = toTypeScript(schema, { logicalTypes, external, defaultsAsOptional });
             const outputFile = outputDir ? join(outputDir, `${basename(file)}.ts`) : `${file}.ts`;
             writeFileSync(outputFile, ts);
             const shortFile = file.replace(process.cwd(), '.');

@@ -226,6 +226,32 @@ const gasEvent: Event = {
 };
 ```
 
+## Defaults as optional
+
+If you are creating avro objects, that have defaults in their schema, then by definition they are optional. It is not possible to express those default values in TypeScript so that one interface works for both creating and reading objects with default values. That's why we provide a flag to specify that we want the values that have defaults to be optional.
+
+You can generate 2 sets of types - one for consuming one for producing avro objects this way.
+
+> [examples/defaults-as-optional.ts](examples/defaults-as-optional.ts)
+
+```typescript
+import { toTypeScript } from '@ovotech/avro-ts';
+import { Schema } from 'avsc';
+
+const avro: Schema = {
+  type: 'record',
+  name: 'User',
+  fields: [
+    { name: 'id', type: 'int' },
+    { name: 'username', type: 'string', default: 'Simon' },
+  ],
+};
+
+const ts = toTypeScript(avro, { defaultsAsOptional: true });
+
+console.log(ts);
+```
+
 ## External references
 
 AvroTs supports external references to schemas in other files. In order to do that you'll need to convert the external schemas first, and then pass them as "external" in the initial context. This can be used as a building blocks to process multiple schemas at once.

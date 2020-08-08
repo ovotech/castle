@@ -125,4 +125,18 @@ describe('Cli', () => {
     expect(file3).toMatchSnapshot();
     expect(file4).toMatchSnapshot();
   });
+
+  it('Should convert with defaults as optional', async () => {
+    const input1 = join(avroDir, 'ComplexRecord.avsc');
+    const input2 = join(avroDir, 'ComplexUnionLogicalTypes.avsc');
+    const input = `cmd avro-ts ${input1} ${input2} --defaults-as-optional`;
+    convert(logger).parse(input.split(' '));
+
+    const file1 = readFileSync(join(avroDir, 'ComplexRecord.avsc.ts'), 'utf8');
+    const file2 = readFileSync(join(avroDir, 'ComplexUnionLogicalTypes.avsc.ts'), 'utf8');
+
+    expect(logger.std).toMatchSnapshot();
+    expect(file1).toMatchSnapshot();
+    expect(file2).toMatchSnapshot();
+  });
 });
