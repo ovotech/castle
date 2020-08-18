@@ -95,6 +95,12 @@ export interface CastleConfig {
   consumers?: CastleConsumerConfig[];
 }
 
+export interface CastleParts {
+  kafka: AvroKafka;
+  producer: AvroProducer;
+  consumers: CastleConsumer[];
+}
+
 export interface CastleService {
   connect(): Promise<void>;
   disconnect(): Promise<void>;

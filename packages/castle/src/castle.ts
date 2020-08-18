@@ -1,4 +1,4 @@
-import { Kafka, KafkaMessage, ProducerRecord } from 'kafkajs';
+import { Kafka, KafkaMessage, ProducerRecord, ProducerConfig } from 'kafkajs';
 import {
   AvroConsumerRun,
   AvroKafka,
@@ -17,6 +17,7 @@ import {
   CastleEachBatchPayload,
   FinalCastleConsumerConfig,
   OptionalCastleConsumerConfig,
+  CastleParts,
 } from './types';
 import { withEachSizedBatch } from './each-sized-batch';
 
@@ -70,27 +71,46 @@ export const consumeEachBatch = <TValue, TContext extends {} = {}, TKey = KafkaM
   config: (payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>,
 ): ((payload: CastleEachBatchPayload<TValue, TKey> & TContext) => Promise<void>) => config;
 
-export const createCastle = (config: CastleConfig): Castle => {
-  const servicesStatus = new Map<AvroConsumer | AvroProducer, boolean>();
-
+export const createKafka = (config: CastleConfig): AvroKafka => {
   const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
-  const kafka = new AvroKafka(schemaRegistry, new Kafka(config.kafka), config.topicsAlias);
+  return new AvroKafka(schemaRegistry, new Kafka(config.kafka), config.topicsAlias);
+};
 
-  const producer = kafka.producer(config.producer);
+export const createProducer = (kafka: AvroKafka, config?: ProducerConfig): AvroProducer =>
+  kafka.producer(config);
+
+export const createConsumers = (
+  kafka: AvroKafka,
+  config: CastleConsumerConfig[],
+): CastleConsumer[] =>
+  config.map((consumerConfig) => {
+    const finalConfig = toFinalCastleConsumerConfig(consumerConfig);
+    const instance = kafka.consumer(finalConfig);
+    return { instance, config: finalConfig };
+  });
+
+export const toCastleParts = (config: CastleConfig): CastleParts => {
+  const kafka = createKafka(config);
+  return {
+    kafka,
+    producer: createProducer(kafka, config.producer),
+    consumers: createConsumers(kafka, config.consumers ?? []),
+  };
+};
+
+export const createCastleFromParts = (parts: CastleParts): Castle => {
+  const servicesStatus = new Map<AvroConsumer | AvroProducer, boolean>();
+  const { producer, consumers, kafka } = parts;
   servicesStatus.set(producer, false);
   producer.on('producer.connect', () => servicesStatus.set(producer, true));
   producer.on('producer.disconnect', () => servicesStatus.set(producer, false));
   producer.on('producer.network.request', () => servicesStatus.set(producer, true));
 
-  const consumers: CastleConsumer[] = (config.consumers || []).map((config) => {
-    const finalConfig = toFinalCastleConsumerConfig(config);
-    const instance = kafka.consumer(finalConfig);
-    servicesStatus.set(instance, false);
-    instance.on('consumer.connect', () => servicesStatus.set(instance, true));
-    instance.on('consumer.disconnect', () => servicesStatus.set(instance, false));
-
-    return { instance, config: finalConfig };
-  });
+  for (const consumer of consumers) {
+    servicesStatus.set(consumer.instance, false);
+    consumer.instance.on('consumer.connect', () => servicesStatus.set(consumer.instance, true));
+    consumer.instance.on('consumer.disconnect', () => servicesStatus.set(consumer.instance, false));
+  }
 
   const run = async (): Promise<void> => {
     await Promise.all(
@@ -115,3 +135,6 @@ export const createCastle = (config: CastleConfig): Castle => {
     },
   };
 };
+
+export const createCastle = (config: CastleConfig): Castle =>
+  createCastleFromParts(toCastleParts(config));

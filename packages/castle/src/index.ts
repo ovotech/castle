@@ -4,6 +4,10 @@ export {
   consumeEachMessage,
   consumeEachBatch,
   optionalConsumers,
+  createKafka,
+  createProducer,
+  createConsumers,
+  createCastleFromParts,
 } from './castle';
 export {
   CastleEachMessagePayload,
