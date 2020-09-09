@@ -1,9 +1,10 @@
-import { schema, Schema } from 'avsc';
+import { schema as avroSchema, Schema } from 'avsc';
 import { Convert } from '../types';
-import { Type, document, mapWithContext, withIdentifier, Node } from '@ovotech/ts-compose';
-import { convertType, convertNamespace, firstUpperCase } from '../convert';
+import { Type, document, mapWithContext } from '@ovotech/ts-compose';
+import { convertType } from '../convert';
+import { firstUpperCase, namedType } from '../helpers';
 
-export const isRecordType = (type: Schema): type is schema.RecordType =>
+export const isRecordType = (type: Schema): type is avroSchema.RecordType =>
   typeof type === 'object' && 'type' in type && type.type === 'record';
 
 export const withDefault = (def: unknown, doc: string | undefined): string | undefined => {
@@ -16,7 +17,7 @@ export const withDefault = (def: unknown, doc: string | undefined): string | und
   return doc === undefined ? defDoc : `${doc}\n\n${defDoc}`;
 };
 
-export const convertRecordType: Convert<schema.RecordType> = (context, schema) => {
+export const convertRecordType: Convert<avroSchema.RecordType> = (context, schema) => {
   const namespace = schema.namespace ?? context.namespace;
 
   const fields = mapWithContext(
@@ -37,10 +38,6 @@ export const convertRecordType: Convert<schema.RecordType> = (context, schema) =
     },
   );
 
-  const name = firstUpperCase(schema.name);
-  const namespaceName = namespace ? convertNamespace(namespace) : undefined;
-  const fullName = namespaceName ? [namespaceName, name] : name;
-
   const record = Type.Interface({
     name: firstUpperCase(schema.name),
     props: fields.items,
@@ -48,17 +45,5 @@ export const convertRecordType: Convert<schema.RecordType> = (context, schema) =
     jsDoc: schema.doc,
   });
 
-  const contextWithRef = namespace
-    ? withIdentifier(
-        fields.context,
-        Node.Const({
-          name: `${name}Name`,
-          isExport: true,
-          value: `${namespace}.${schema.name}`,
-        }),
-        namespaceName,
-      )
-    : fields.context;
-
-  return document(withIdentifier(contextWithRef, record, namespaceName), Type.Referance(fullName));
+  return namedType(record, fields.context, schema, namespace);
 };

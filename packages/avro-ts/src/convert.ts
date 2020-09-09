@@ -1,4 +1,4 @@
-import { Schema } from 'avsc';
+import { Schema, schema } from 'avsc';
 import { document, Type, printDocument } from '@ovotech/ts-compose';
 import { Convert, Context } from './types';
 import { isWrappedUnion, convertWrappedUnionType } from './types/wrapped-union';
@@ -11,21 +11,17 @@ import { isEnumType, convertEnumType } from './types/enum';
 import { isPrimitiveType, convertPrimitiveType } from './types/primitive';
 import { isFixedType, convertFixedType } from './types/fixed';
 import { withHeader, withImports } from '@ovotech/ts-compose/dist/document';
+import { fullName, firstUpperCase, nameParts, convertNamespace } from './helpers';
 import * as ts from 'typescript';
-import { fullName } from './helpers';
 
-export const firstUpperCase = (name: string): string =>
-  name ? name[0].toUpperCase() + name.slice(1) : name;
-
-export const convertNamespace = (namespace: string): string =>
-  namespace.split('.').map(firstUpperCase).join('');
-
-export const nameParts = (fullName: string): [string] | [string, string] => {
-  const parts = fullName.split('.');
-  return parts.length > 1
-    ? [parts.slice(parts.length - 1)[0], parts.slice(0, parts.length - 1).join('.')]
-    : [parts[0]];
-};
+export const addRef = (type: schema.RecordType | schema.EnumType, context: Context): Context => ({
+  ...context,
+  namespace: type.namespace ?? context.namespace,
+  refs: {
+    ...context.refs,
+    [fullName(context, type)]: { ...type, namespace: type.namespace ?? context.namespace },
+  },
+});
 
 export const collectRefs = (type: Schema, context: Context): Context => {
   if (isUnion(type)) {
@@ -34,19 +30,10 @@ export const collectRefs = (type: Schema, context: Context): Context => {
     return collectRefs(type.items, context);
   } else if (isMapType(type)) {
     return collectRefs(type.values, context);
+  } else if (isEnumType(type)) {
+    return addRef(type, context);
   } else if (isRecordType(type)) {
-    return type.fields.reduce(
-      (all, item) =>
-        collectRefs(item.type, {
-          ...all,
-          namespace: type.namespace ?? all.namespace,
-          refs: {
-            ...all.refs,
-            [fullName(all, type)]: { ...type, namespace: type.namespace ?? all.namespace },
-          },
-        }),
-      context,
-    );
+    return type.fields.reduce((all, item) => collectRefs(item.type, all), addRef(type, context));
   } else {
     return context;
   }

@@ -7,9 +7,11 @@ import { MyNamespaceMessages as MyNamespaceMessagesUpdateAddress } from "./Updat
 export type Message = MyNamespace.Message;
 
 export namespace MyNamespace {
+    export const MessageTypeName = "my.namespace.MessageType";
+    export type MessageType = "CreateUser" | "UpdateAddress";
     export const MessageName = "my.namespace.Message";
     export interface Message {
-        type: "CreateUser" | "UpdateAddress";
+        type: MyNamespace.MessageType;
         /**
          * Default: null
          */

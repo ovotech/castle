@@ -31,7 +31,7 @@ describe('Avro ts test', () => {
         { external },
       );
       writeFileSync(join(__dirname, '__generated__', file + '.external.ts'), ts);
-      expect(ts).toMatchSnapshot();
+      expect(ts).toMatchSnapshot(file);
     }
   });
 });

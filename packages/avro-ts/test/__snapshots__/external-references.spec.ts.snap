@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Avro ts test Should convert %s successfully 1`] = `
+exports[`Avro ts test Should convert %s successfully: Address.avsc 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 export type Address = MyNamespaceData.Address;
@@ -16,7 +16,38 @@ export namespace MyNamespaceData {
 "
 `;
 
-exports[`Avro ts test Should convert %s successfully 2`] = `
+exports[`Avro ts test Should convert %s successfully: AvroJobStatus.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type AvroJobStatus = ComZenatonJobManagerData.AvroJobStatus;
+
+export namespace ComZenatonJobManagerData {
+    export const AvroJobStatusName = \\"com.zenaton.jobManager.data.AvroJobStatus\\";
+    export type AvroJobStatus = \\"RUNNING_OK\\" | \\"RUNNING_WARNING\\" | \\"RUNNING_ERROR\\" | \\"TERMINATED_COMPLETED\\" | \\"TERMINATED_CANCELED\\";
+}
+"
+`;
+
+exports[`Avro ts test Should convert %s successfully: AvroJobStatusUpdated.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { ComZenatonJobManagerData as ComZenatonJobManagerDataAvroJobStatus } from \\"./AvroJobStatus.avsc.external\\";
+
+export type AvroJobStatusUpdated = ComZenatonJobManagerMessages.AvroJobStatusUpdated;
+
+export namespace ComZenatonJobManagerMessages {
+    export const AvroJobStatusUpdatedName = \\"com.zenaton.jobManager.messages.AvroJobStatusUpdated\\";
+    export interface AvroJobStatusUpdated {
+        jobId: string;
+        jobName: string;
+        oldStatus: null | ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
+        newStatus: ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert %s successfully: CreateUser.avsc 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
@@ -34,7 +65,7 @@ export namespace MyNamespaceMessages {
 "
 `;
 
-exports[`Avro ts test Should convert %s successfully 3`] = `
+exports[`Avro ts test Should convert %s successfully: Message.avsc 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 import { MyNamespaceMessages as MyNamespaceMessagesCreateUser } from \\"./CreateUser.avsc.external\\";
@@ -44,9 +75,11 @@ import { MyNamespaceMessages as MyNamespaceMessagesUpdateAddress } from \\"./Upd
 export type Message = MyNamespace.Message;
 
 export namespace MyNamespace {
+    export const MessageTypeName = \\"my.namespace.MessageType\\";
+    export type MessageType = \\"CreateUser\\" | \\"UpdateAddress\\";
     export const MessageName = \\"my.namespace.Message\\";
     export interface Message {
-        type: \\"CreateUser\\" | \\"UpdateAddress\\";
+        type: MyNamespace.MessageType;
         /**
          * Default: null
          */
@@ -60,7 +93,7 @@ export namespace MyNamespace {
 "
 `;
 
-exports[`Avro ts test Should convert %s successfully 4`] = `
+exports[`Avro ts test Should convert %s successfully: UpdateAddress.avsc 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
 import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
