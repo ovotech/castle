@@ -71,7 +71,7 @@ const toAvroBatch = <TValue, TKey>(
   resolveOffset: () => {},
   heartbeat: () => Promise.resolve(),
   commitOffsetsIfNecessary: () => Promise.resolve(),
-  uncommittedOffsets: () => Promise.resolve({ topics: [] }),
+  uncommittedOffsets: () => ({ topics: [] }),
   isRunning: () => true,
   isStale: () => false,
 });

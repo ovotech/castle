@@ -108,9 +108,11 @@ describe('Functions', () => {
     await consumer.run({
       partitionsConsumedConcurrently: 2,
       eachMessage: async (payload) => {
-        const value = await schemaRegistry.decode<MessageType>(payload.message.value);
-        const key = await schemaRegistry.decode<KeyType>(payload.message.key);
-        consumed.push({ value, key, partition: payload.partition });
+        if (payload.message.value) {
+          const value = await schemaRegistry.decode<MessageType>(payload.message.value);
+          const key = await schemaRegistry.decode<KeyType>(payload.message.key);
+          consumed.push({ value, key, partition: payload.partition });
+        }
       },
     });
 

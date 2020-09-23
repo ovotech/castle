@@ -20,14 +20,14 @@
     "build:docs": "build-docs README.md"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.10",
-    "@types/node": "^14.6.0",
-    "avsc": "^5.4.21",
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.11.2",
+    "avsc": "^5.4.22",
     "eslint-config-prettier": "^6.11.0",
     "jest": "^26.4.2",
-    "moment": "^2.27.0",
-    "prettier": "^2.1.1",
-    "ts-jest": "^26.3.0",
+    "moment": "^2.29.0",
+    "prettier": "^2.1.2",
+    "ts-jest": "^26.4.0",
     "ts-node": "^9.0.0"
   },
   "jest": {
