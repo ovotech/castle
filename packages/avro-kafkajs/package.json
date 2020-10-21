@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/avro-kafkajs",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A wrapper around Kafkajs to transparently use Schema Registry for producing and consuming messages with avro schemas.",
@@ -11,6 +11,7 @@
   "devDependencies": {
     "@ovotech/build-docs": "^0.1.0",
     "@types/jest": "^26.0.14",
+    "@types/long": "^4.0.1",
     "@types/node": "^14.11.2",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
@@ -44,6 +45,7 @@
   },
   "dependencies": {
     "@ovotech/schema-registry-api": "^1.0.7",
-    "avsc": "^5.4.22"
+    "avsc": "^5.4.22",
+    "long": "^4.0.0"
   }
 }
