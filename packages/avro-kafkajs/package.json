@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@ovotech/schema-registry-api": "^1.0.7",
-    "avsc": "^5.4.22"
+    "avsc": "^5.4.22",
+    "long": "^4.0.0"
   }
 }
