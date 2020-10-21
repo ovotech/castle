@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/castle-cli",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka avro cli",
@@ -39,7 +39,7 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/avro-kafkajs": "^0.5.4",
+    "@ovotech/avro-kafkajs": "^0.5.5",
     "ansi-regex": "^5.0.0",
     "chalk": "^4.1.0",
     "commander": "^6.1.0",
