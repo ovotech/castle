@@ -6,7 +6,7 @@ import { devider, table, header, Output } from '../../output';
 import { Kafka } from 'kafkajs';
 import * as uuid from 'uuid';
 import * as Long from 'long';
-import { AvroKafkaMessage, AvroBatch, AvroProducerRecord } from '@ovotech/avro-kafkajs/dist/types';
+import { AvroKafkaMessage, AvroBatch } from '@ovotech/avro-kafkajs/dist/types';
 import { getPartitionProgress, isPartitionProgressFinished } from '../../helpers';
 
 const toMessageOutput = (
@@ -91,7 +91,7 @@ Example:
           await Promise.all([consumer.connect(), admin.connect()]);
 
           try {
-            let jsonResult: AvroProducerRecord;
+            let jsonResult: any;
 
             await consumer.subscribe({ topic, fromBeginning: !tail });
             const partitionsProgress = await getPartitionProgress(admin, topic, groupId);

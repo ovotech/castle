@@ -55,7 +55,7 @@ export const defaultPayload: BlaiseDefaults = {
 
 const buildBlaise = <T = unknown>(defaults = defaultPayload): Blaise<T> => {
   const blaise = <T1 = T>(
-    newDefaults?: DeepPartial<BlaiseDefaults>,
+    newDefaults?: DeepPartial<BlaiseDefaults<T>>,
   ): Blaise<T1> => {
     if (newDefaults?.avro?.seed) {
       newDefaults.generator = Seeded<T>(newDefaults.avro.seed);
