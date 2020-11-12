@@ -5,7 +5,7 @@ import {
   AvroConsumer,
   AvroEachMessagePayload,
   AvroBatch,
-  AvroMessage,
+  AvroKafkaMessage,
 } from '../src';
 import { Kafka, logLevel, Admin, CompressionTypes } from 'kafkajs';
 import { retry } from 'ts-retry-promise';
@@ -469,7 +469,7 @@ describe('Class', () => {
 
   it('Should produce avro messages with custom subject', async () => {
     jest.setTimeout(12000);
-    const consumed: AvroMessage<MessageType>[] = [];
+    const consumed: AvroKafkaMessage<MessageType>[] = [];
 
     await consumer.subscribe({ topic: TOPIC_ALIAS });
     await consumer.run<MessageType>({
@@ -515,7 +515,7 @@ describe('Class', () => {
 
   it('Should produce avro messages with custom subject for key and value', async () => {
     jest.setTimeout(12000);
-    const consumed: AvroMessage<MessageType, KeyType>[] = [];
+    const consumed: AvroKafkaMessage<MessageType, KeyType>[] = [];
 
     await consumer.subscribe({ topic: TOPIC_ALIAS });
     await consumer.run<MessageType, KeyType>({

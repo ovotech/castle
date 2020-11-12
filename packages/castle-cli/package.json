@@ -39,7 +39,7 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/avro-kafkajs": "^0.5.5",
+    "@ovotech/avro-kafkajs": "^0.6.0",
     "ansi-regex": "^5.0.0",
     "chalk": "^4.1.0",
     "commander": "^6.1.0",

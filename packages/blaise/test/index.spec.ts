@@ -146,13 +146,13 @@ describe('Blaise', () => {
           'value.onion.gimmeAString.val',
           expect.any(String),
         );
-        expect(
-          union
-            .pickUnion<{ onion: { gimmeAnInt: { val: number } } }>([
-              'gimmeAnInt',
-            ])
-            .message().value.onion.gimmeAnInt.val,
-        ).toEqual(expect.any(Number));
+        const value = union
+          .pickUnion<{ onion: { gimmeAnInt: { val: number } } }>(['gimmeAnInt'])
+          .message().value;
+
+        expect(value ? value.onion.gimmeAnInt.val : null).toEqual(
+          expect.any(Number),
+        );
       });
     });
 

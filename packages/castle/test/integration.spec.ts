@@ -47,15 +47,19 @@ const sendEvent2 = produce<Event2>({ topic: topic2, schema: Event2Schema });
 const sendEvent3 = produce<Event2>({ topic: topic3, schema: Event2Schema });
 const eachEvent1 = consumeEachMessage<Event1, LoggingContext>(
   async ({ message, partition, logger }) => {
-    data[partition].push(message.value.field1);
-    logger.log('info', message.value.field1);
+    if (message.value) {
+      data[partition].push(message.value.field1);
+      logger.log('info', message.value.field1);
+    }
   },
 );
 
 const eachEvent2 = consumeEachBatch<Event2, LoggingContext>(async ({ batch, logger }) => {
   for (const msg of batch.messages) {
-    data[batch.partition].push(msg.value.field2);
-    logger.log('info', msg.value.field2);
+    if (msg.value) {
+      data[batch.partition].push(msg.value.field2);
+      logger.log('info', msg.value.field2);
+    }
   }
 });
 
