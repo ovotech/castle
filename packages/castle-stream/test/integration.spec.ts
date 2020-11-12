@@ -47,8 +47,10 @@ const logCreator = toLogCreator(myLogger);
 const data: string[] = [];
 
 const eachEvent1 = consumeEachMessage<Event1, LoggingContext>(async ({ message, logger }) => {
-  data.push(message.value.field1);
-  logger.log('info', message.value.field1);
+  if (message.value) {
+    data.push(message.value.field1);
+    logger.log('info', message.value.field1);
+  }
 });
 
 const castle = createCastle({
@@ -68,7 +70,7 @@ const event2Consumer1: CastleStreamConsumerConfig<string, Event2, null> = {
       topic: topic1,
       schema: Event1Schema,
       messages: messages.map((message) => ({
-        value: { field1: `new-${message.value.field2}` },
+        value: { field1: `new-${message.value?.field2}` },
       })),
     });
   },
@@ -82,7 +84,7 @@ const event2Consumer2: CastleStreamConsumerConfig<string, Event2, null> = {
     producer.send({
       topic: topic1,
       schema: Event1Schema,
-      messages: [{ value: { field1: `new-${message.value.field2}` } }],
+      messages: [{ value: { field1: `new-${message.value?.field2}` } }],
     });
   },
 };
