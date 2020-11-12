@@ -36,9 +36,9 @@ export type AvroEachBatch<T = unknown, KT = KafkaMessage['key']> = (
 
 export interface AvroKafkaMessage<T = unknown, KT = KafkaMessage['key']>
   extends Omit<KafkaMessage, 'value' | 'key'> {
-  schema: Schema;
+  schema: Schema | null;
   key: KT;
-  value: T;
+  value: T | null;
 }
 
 export interface AvroMessage<T = unknown, KT = Message['key']>

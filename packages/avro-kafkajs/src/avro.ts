@@ -103,6 +103,11 @@ export const toAvroEachMessage = <T = unknown, KT = KafkaMessage['key']>(
         ...payload,
         message: { ...payload.message, key: key as KT, value, schema: type.schema() },
       });
+    } else {
+      return eachMessage({
+        ...payload,
+        message: { ...payload.message, key: key as KT, value: null, schema: null },
+      });
     }
   };
 };
@@ -116,14 +121,18 @@ export const toAvroEachBatch = <T = unknown, KT = KafkaMessage['key']>(
     const avroPayload = (payload as unknown) as AvroEachBatchPayload<T, KT>;
     const messages: AvroKafkaMessage<T, KT>[] = [];
     for (const message of payload.batch.messages) {
-      if (message.value) {
+      const key =
+        encodedKey && message.key ? await schemaRegistry.decode<KT>(message.key) : message.key;
+
+      if (message.value !== null) {
         const { value, type } = await schemaRegistry.decodeWithType<T>(message.value);
-        const key =
-          encodedKey && message.key ? await schemaRegistry.decode<KT>(message.key) : message.key;
 
         messages.push({ ...message, key: key as KT, value, schema: type.schema() });
+      } else {
+        messages.push({ ...message, key: key as KT, value: null, schema: null });
       }
     }
+
     avroPayload.batch.messages = messages;
     return eachBatch(avroPayload);
   };
