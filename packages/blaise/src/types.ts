@@ -1,4 +1,4 @@
-import { AvroKafkaMessage } from '@ovotech/avro-kafkajs/dist/types';
+import { AvroKafkaMessage } from '@ovotech/avro-kafkajs';
 import { Options as AvroOptions, AvroMock } from '@ovotech/avro-mock-generator';
 import {
   CastleEachBatchPayload,

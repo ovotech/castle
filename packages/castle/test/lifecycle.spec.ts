@@ -24,19 +24,20 @@ const castle = createCastle({
 });
 
 describe('Integration', () => {
-  afterEach(async () => {
-    await castle.stop();
-  });
-
   it('Should have lifecycle events', async () => {
-    expect(castle.isRunning()).toBe(false);
-    await castle.start();
-    expect(castle.isRunning()).toBe(true);
-    await castle.stop();
-    expect(castle.isRunning()).toBe(false);
-    await sendEvent1(castle.producer, [{ value: { field1: 'test3' } }]);
-    expect(castle.isRunning()).toBe(true);
-    await castle.stop();
-    expect(castle.isRunning()).toBe(false);
+    try {
+      expect(castle.isRunning()).toBe(false);
+      await castle.start();
+      expect(castle.isRunning()).toBe(true);
+      await castle.stop();
+      expect(castle.isRunning()).toBe(false);
+      await castle.start();
+      await sendEvent1(castle.producer, [{ value: { field1: 'test3' } }]);
+      expect(castle.isRunning()).toBe(true);
+      await castle.stop();
+      expect(castle.isRunning()).toBe(false);
+    } finally {
+      await castle.stop();
+    }
   });
 });

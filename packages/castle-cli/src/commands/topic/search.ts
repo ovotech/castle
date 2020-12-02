@@ -1,6 +1,6 @@
 import * as commander from 'commander';
 import { loadConfigFile } from '../../config';
-import { Kafka, ResourceTypes, DescribeConfigResponse } from 'kafkajs';
+import { Kafka, ConfigResourceTypes, DescribeConfigResponse } from 'kafkajs';
 import { highlight, table, header, Output } from '../../output';
 
 interface Options {
@@ -9,7 +9,7 @@ interface Options {
   verbose?: 1 | 2 | 3 | 4;
 }
 
-const getConfigValue = <T>(
+const getConfigValue = (
   resouce: DescribeConfigResponse['resources'][0] | undefined,
   configName: string,
 ): string | undefined =>
@@ -56,7 +56,10 @@ Example:
 
           const resources = topics.length
             ? await admin.describeConfigs({
-                resources: topics.map((topic) => ({ type: ResourceTypes.TOPIC, name: topic.name })),
+                resources: topics.map((topic) => ({
+                  type: ConfigResourceTypes.TOPIC,
+                  name: topic.name,
+                })),
                 includeSynonyms: false,
               })
             : { resources: [] };

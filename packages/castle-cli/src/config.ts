@@ -39,12 +39,7 @@ export const ConfigType = Record({
         passphrase: String,
       }),
       sasl: Record({
-        mechanism: Union(
-          Literal('plain'),
-          Literal('scram-sha-256'),
-          Literal('scram-sha-512'),
-          Literal('aws'),
-        ),
+        mechanism: Union(Literal('scram-sha-512')),
         username: String,
         password: String,
       }),
@@ -79,7 +74,7 @@ const logLevelOption = (verbose?: 1 | 2 | 3 | 4): logLevel => logLevels[verbose 
 
 const logCreatorOption = (output: Output = new Output(console)): logCreator => {
   return () => {
-    return entry => {
+    return (entry) => {
       if (entry.level === logLevel.ERROR) {
         output.error(logLine(entry.level, entry.log));
       } else {
@@ -114,7 +109,7 @@ export const loadConfigFile = async ({
   }
 
   const locations = [file, join('.castle-cli', file), join(configsDir, file)];
-  const location = locations.find(location => existsSync(location));
+  const location = locations.find((location) => existsSync(location));
 
   if (!location) {
     throw new Error(

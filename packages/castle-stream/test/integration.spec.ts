@@ -8,7 +8,6 @@ import {
 } from '@ovotech/castle';
 import * as uuid from 'uuid';
 import { Schema } from 'avsc';
-import { Admin } from 'kafkajs';
 import { ObjectReadableMock } from 'stream-mock';
 import { retry } from 'ts-retry-promise';
 import { createCastleStream } from '../src';
@@ -53,14 +52,6 @@ const eachEvent1 = consumeEachMessage<Event1, LoggingContext>(async ({ message, 
   }
 });
 
-const castle = createCastle({
-  schemaRegistry: { uri: 'http://localhost:8081' },
-  kafka: { brokers: ['localhost:29092'], logCreator },
-  consumers: [
-    { topic: topic1, fromBeginning: true, groupId: groupId1, eachMessage: logging(eachEvent1) },
-  ],
-});
-
 const event2Consumer1: CastleStreamConsumerConfig<string, Event2, null> = {
   topic: topic2,
   source: new ObjectReadableMock(['test1', 'test2', 'test3']),
@@ -89,47 +80,52 @@ const event2Consumer2: CastleStreamConsumerConfig<string, Event2, null> = {
   },
 };
 
-const castleStream = createCastleStream({
-  schemaRegistry: { uri: 'http://localhost:8081' },
-  kafka: { brokers: ['localhost:29092'], logCreator },
-  consumers: [event2Consumer1, event2Consumer2],
-});
-
-let admin: Admin;
-
 describe('Integration', () => {
-  beforeEach(async () => {
-    admin = castle.kafka.admin();
-    await admin.connect();
-    await admin.createTopics({ topics: [{ topic: topic1 }, { topic: topic2 }] });
-    await castle.start();
-    await castleStream.start();
-  });
-
-  afterEach(async () => {
-    await admin.disconnect();
-    await castle.stop();
-    await castleStream.stop();
-  });
-
   it('Should process response', async () => {
     jest.setTimeout(15000);
 
-    await retry(
-      async () => {
-        expect(castle.isRunning()).toBe(true);
-        expect(castleStream.isRunning()).toBe(true);
-        expect(data).toEqual(
-          expect.arrayContaining([
-            'new-test1',
-            'new-test2',
-            'new-test3',
-            'new-test-other-1',
-            'new-test-other-2',
-          ]),
-        );
-      },
-      { delay: 1000, retries: 3 },
-    );
+    const castle = createCastle({
+      schemaRegistry: { uri: 'http://localhost:8081' },
+      kafka: { brokers: ['localhost:29092'], logCreator },
+      consumers: [
+        { topic: topic1, fromBeginning: true, groupId: groupId1, eachMessage: logging(eachEvent1) },
+      ],
+    });
+
+    const castleStream = createCastleStream({
+      schemaRegistry: { uri: 'http://localhost:8081' },
+      kafka: { brokers: ['localhost:29092'], logCreator },
+      consumers: [event2Consumer1, event2Consumer2],
+    });
+
+    const admin = castle.kafka.admin();
+
+    try {
+      await admin.connect();
+      await admin.createTopics({ topics: [{ topic: topic1 }, { topic: topic2 }] });
+      await castle.start();
+      await castleStream.start();
+
+      await retry(
+        async () => {
+          expect(castle.isRunning()).toBe(true);
+          expect(castleStream.isRunning()).toBe(true);
+          expect(data).toEqual(
+            expect.arrayContaining([
+              'new-test1',
+              'new-test2',
+              'new-test3',
+              'new-test-other-1',
+              'new-test-other-2',
+            ]),
+          );
+        },
+        { delay: 1000, retries: 3 },
+      );
+    } finally {
+      await admin.disconnect();
+      await castle.stop();
+      await castleStream.stop();
+    }
   });
 });
