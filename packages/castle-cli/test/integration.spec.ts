@@ -3,7 +3,7 @@ import * as ansiRegex from 'ansi-regex';
 import * as uuid from 'uuid';
 import { Output, castle } from '../src';
 import { AvroKafka, SchemaRegistry } from '@ovotech/avro-kafkajs';
-import { Kafka, logLevel, ResourceTypes } from 'kafkajs';
+import { Kafka, logLevel, ConfigResourceTypes } from 'kafkajs';
 import { join } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 
@@ -40,267 +40,270 @@ const admin = kafka.admin();
 const consumer = kafka.consumer({ groupId: uuid.v4() });
 
 describe('Integration', () => {
-  beforeEach(() => Promise.all([admin.connect(), consumer.connect()]));
-  afterEach(() => Promise.all([admin.disconnect(), consumer.disconnect()]));
-
   it('Should process', async () => {
     jest.setTimeout(100000);
 
-    // Config set
-    // ================================================
-    const configSet1 = `node castle config set ${config} --schema-registry http://localhost:8081 --kafka-broker localhost:29092`;
-    await castle(output).parseAsync(configSet1.split(' '));
+    await Promise.all([admin.connect(), consumer.connect()]);
 
-    expect(logger.std).toContain(`Setting config "${config}"`);
-    expect(logger.std).toContain(`Success`);
-    logger.clear();
+    try {
+      // Config set
+      // ================================================
+      const configSet1 = `node castle config set ${config} --schema-registry http://localhost:8081 --kafka-broker localhost:29092`;
+      await castle(output).parseAsync(configSet1.split(' '));
 
-    // Config search
-    // ================================================
-    const configSearch1 = `node castle config search ${config}`;
-    await castle(output).parseAsync(configSearch1.split(' '));
+      expect(logger.std).toContain(`Setting config "${config}"`);
+      expect(logger.std).toContain(`Success`);
+      logger.clear();
 
-    expect(logger.std).toContain(`Searching for config "${config}"`);
-    expect(logger.std).toContain(
-      `${config} | Kafka: localhost:29092  SchemaRegistry: http://localhost:8081`,
-    );
-    logger.clear();
+      // Config search
+      // ================================================
+      const configSearch1 = `node castle config search ${config}`;
+      await castle(output).parseAsync(configSearch1.split(' '));
 
-    // Config remove
-    // ================================================
-    const configRemove1 = `node castle config remove ${config}`;
-    await castle(output).parseAsync(configRemove1.split(' '));
+      expect(logger.std).toContain(`Searching for config "${config}"`);
+      expect(logger.std).toContain(
+        `${config} | Kafka: localhost:29092  SchemaRegistry: http://localhost:8081`,
+      );
+      logger.clear();
 
-    expect(logger.std).toContain(`Removing config "${config}"`);
-    expect(logger.std).toContain('Success');
-    logger.clear();
+      // Config remove
+      // ================================================
+      const configRemove1 = `node castle config remove ${config}`;
+      await castle(output).parseAsync(configRemove1.split(' '));
 
-    // Create small topic
-    // ================================================
-    const createTopic1 = `node castle topic create ${topic1}`;
-    await castle(output).parseAsync(createTopic1.split(' '));
+      expect(logger.std).toContain(`Removing config "${config}"`);
+      expect(logger.std).toContain('Success');
+      logger.clear();
 
-    expect(logger.std).toContain(`Creating topic "${topic1}"`);
-    expect(logger.std).toContain(`Number of partitions | 1`);
-    expect(logger.std).toContain(`Replication factor   | 1`);
-    expect(logger.std).toContain(`Complete`);
-    logger.clear();
+      // Create small topic
+      // ================================================
+      const createTopic1 = `node castle topic create ${topic1}`;
+      await castle(output).parseAsync(createTopic1.split(' '));
 
-    // Create big topic
-    // ================================================
-    const createTopic2 = `node castle topic create ${topic2} --num-partitions 3 --config-entry file.delete.delay.ms=40000`;
-    await castle(output).parseAsync(createTopic2.split(' '));
+      expect(logger.std).toContain(`Creating topic "${topic1}"`);
+      expect(logger.std).toContain(`Number of partitions | 1`);
+      expect(logger.std).toContain(`Replication factor   | 1`);
+      expect(logger.std).toContain(`Complete`);
+      logger.clear();
 
-    expect(logger.std).toContain(`Creating topic "${topic2}"`);
-    expect(logger.std).toContain(`Number of partitions | 3`);
-    expect(logger.std).toContain(`Replication factor   | 1`);
-    expect(logger.std).toContain(`file.delete.delay.ms | 40000`);
-    expect(logger.std).toContain(`Complete`);
-    logger.clear();
+      // Create big topic
+      // ================================================
+      const createTopic2 = `node castle topic create ${topic2} --num-partitions 3 --config-entry file.delete.delay.ms=40000`;
+      await castle(output).parseAsync(createTopic2.split(' '));
 
-    // Check topics actually created
-    // ================================================
-    const metadata = await admin.fetchTopicMetadata({ topics: [topic1, topic2] });
+      expect(logger.std).toContain(`Creating topic "${topic2}"`);
+      expect(logger.std).toContain(`Number of partitions | 3`);
+      expect(logger.std).toContain(`Replication factor   | 1`);
+      expect(logger.std).toContain(`file.delete.delay.ms | 40000`);
+      expect(logger.std).toContain(`Complete`);
+      logger.clear();
 
-    expect(metadata.topics).toContainEqual({
-      name: topic1,
-      partitions: [expect.any(Object)],
-    });
+      // Check topics actually created
+      // ================================================
+      const metadata = await admin.fetchTopicMetadata({ topics: [topic1, topic2] });
 
-    expect(metadata.topics).toContainEqual({
-      name: topic2,
-      partitions: [expect.any(Object), expect.any(Object), expect.any(Object)],
-    });
+      expect(metadata.topics).toContainEqual({
+        name: topic1,
+        partitions: [expect.any(Object)],
+      });
 
-    // Check topic-info for big topic
-    // ================================================
-    const topicInfo2 = `node castle topic show ${topic2}`;
-    await castle(output).parseAsync(topicInfo2.split(' '));
+      expect(metadata.topics).toContainEqual({
+        name: topic2,
+        partitions: [expect.any(Object), expect.any(Object), expect.any(Object)],
+      });
 
-    expect(logger.std).toContain(`Topic "${topic2}"`);
-    expect(logger.std).toContain(`file.delete.delay.ms                    | 40000`);
-    logger.clear();
+      // Check topic-info for big topic
+      // ================================================
+      const topicInfo2 = `node castle topic show ${topic2}`;
+      await castle(output).parseAsync(topicInfo2.split(' '));
 
-    // Check topic-update works for big topic
-    // ================================================
-    const topicUpdate2 = `node castle topic update ${topic2} --config-entry file.delete.delay.ms=50000`;
-    await castle(output).parseAsync(topicUpdate2.split(' '));
+      expect(logger.std).toContain(`Topic "${topic2}"`);
+      expect(logger.std).toContain(`file.delete.delay.ms                    | 40000`);
+      logger.clear();
 
-    expect(logger.std).toContain(`Updating topic "${topic2}"`);
-    expect(logger.std).toContain(`file.delete.delay.ms | 50000`);
-    expect(logger.std).toContain(`Complete`);
-    logger.clear();
+      // Check topic-update works for big topic
+      // ================================================
+      const topicUpdate2 = `node castle topic update ${topic2} --config-entry file.delete.delay.ms=50000`;
+      await castle(output).parseAsync(topicUpdate2.split(' '));
 
-    // Check config was updated
-    // ================================================
-    const configs = await admin.describeConfigs({
-      includeSynonyms: false,
-      resources: [{ type: ResourceTypes.TOPIC, name: topic2 }],
-    });
+      expect(logger.std).toContain(`Updating topic "${topic2}"`);
+      expect(logger.std).toContain(`file.delete.delay.ms | 50000`);
+      expect(logger.std).toContain(`Complete`);
+      logger.clear();
 
-    expect(configs.resources[0].configEntries).toContainEqual(
-      expect.objectContaining({
-        configName: 'file.delete.delay.ms',
-        configValue: '50000',
-      }),
-    );
+      // Check config was updated
+      // ================================================
+      const configs = await admin.describeConfigs({
+        includeSynonyms: false,
+        resources: [{ type: ConfigResourceTypes.TOPIC, name: topic2 }],
+      });
 
-    // Check topics
-    // ================================================
-    const topics = `node castle topic search ${topic2}`;
-    await castle(output).parseAsync(topics.split(' '));
+      expect(configs.resources[0].configEntries).toContainEqual(
+        expect.objectContaining({
+          configName: 'file.delete.delay.ms',
+          configValue: '50000',
+        }),
+      );
 
-    expect(logger.std).toContain(`Topics containing "${topic2}"`);
-    expect(logger.std).toContain(`${topic2} | 3          | 168 Hours         | delete`);
-    logger.clear();
+      // Check topics
+      // ================================================
+      const topics = `node castle topic search ${topic2}`;
+      await castle(output).parseAsync(topics.split(' '));
 
-    // Produce Ad-Hoc Messages
-    // ================================================
+      expect(logger.std).toContain(`Topics containing "${topic2}"`);
+      expect(logger.std).toContain(`${topic2} | 3          | 168 Hours         | delete`);
+      logger.clear();
 
-    const topicMessages: unknown[] = [];
-    await consumer.subscribe({ topic: topic1 });
-    await consumer.subscribe({ topic: topic2 });
-    await consumer.run({
-      eachMessage: async ({ message }) => {
-        topicMessages.push(message);
-      },
-    });
+      // Produce Ad-Hoc Messages
+      // ================================================
 
-    const schemaFile = join(__dirname, 'schema1.json');
-    const keySchemaFile = join(__dirname, 'schema2.json');
-    const produceMessage1 = `node castle topic message ${topic1} --schema-file ${schemaFile} --key-schema-file ${keySchemaFile} --message {"field1":"other"} --key {"id":11}`;
-    await castle(output).parseAsync(produceMessage1.split(' '));
+      const topicMessages: unknown[] = [];
+      await consumer.subscribe({ topic: topic1 });
+      await consumer.subscribe({ topic: topic2 });
+      await consumer.run({
+        eachMessage: async ({ message }) => {
+          topicMessages.push(message);
+        },
+      });
 
-    expect(logger.std).toContain(`Produce message in "${topic1}"`);
-    expect(logger.std).toContain(`Success`);
-    logger.clear();
+      const schemaFile = join(__dirname, 'schema1.json');
+      const keySchemaFile = join(__dirname, 'schema2.json');
+      const produceMessage1 = `node castle topic message ${topic1} --schema-file ${schemaFile} --key-schema-file ${keySchemaFile} --message {"field1":"other"} --key {"id":11}`;
+      await castle(output).parseAsync(produceMessage1.split(' '));
 
-    await retry(
-      async () => {
-        expect(topicMessages).toContainEqual(
-          expect.objectContaining({ value: { field1: 'other' } }),
-        );
-      },
-      { retries: 4, delay: 1000 },
-    );
+      expect(logger.std).toContain(`Produce message in "${topic1}"`);
+      expect(logger.std).toContain(`Success`);
+      logger.clear();
 
-    // Produce Messages
-    // ================================================
+      await retry(
+        async () => {
+          expect(topicMessages).toContainEqual(
+            expect.objectContaining({ value: { field1: 'other' } }),
+          );
+        },
+        { retries: 4, delay: 1000 },
+      );
 
-    const produceTemplate = JSON.parse(
-      readFileSync(join(__dirname, 'produce-template.json'), 'utf8'),
-    );
-    const produceFile = join(__dirname, '__generated__', 'produce-file.json');
-    writeFileSync(produceFile, JSON.stringify({ ...produceTemplate, topic: topic2 }));
+      // Produce Messages
+      // ================================================
 
-    const produce2 = `node castle topic produce ${produceFile}`;
-    await castle(output).parseAsync(produce2.split(' '));
+      const produceTemplate = JSON.parse(
+        readFileSync(join(__dirname, 'produce-template.json'), 'utf8'),
+      );
+      const produceFile = join(__dirname, '__generated__', 'produce-file.json');
+      writeFileSync(produceFile, JSON.stringify({ ...produceTemplate, topic: topic2 }));
 
-    expect(logger.std).toContain(`Produce "10" messages for ${topic2}`);
-    expect(logger.std).toContain('Success');
-    logger.clear();
+      const produce2 = `node castle topic produce ${produceFile}`;
+      await castle(output).parseAsync(produce2.split(' '));
 
-    await retry(
-      async () => {
-        expect(topicMessages).toHaveLength(11);
-      },
-      { retries: 4, delay: 1000 },
-    );
+      expect(logger.std).toContain(`Produce "10" messages for ${topic2}`);
+      expect(logger.std).toContain('Success');
+      logger.clear();
 
-    await consumer.stop();
-    consumer.disconnect();
+      await retry(
+        async () => {
+          expect(topicMessages).toHaveLength(11);
+        },
+        { retries: 4, delay: 1000 },
+      );
 
-    // Schema Search
-    // ================================================
+      await consumer.stop();
+      consumer.disconnect();
 
-    const schemaSearch2 = `node castle schema search ${topic2}`;
-    await castle(output).parseAsync(schemaSearch2.split(' '));
+      // Schema Search
+      // ================================================
 
-    expect(logger.std).toContain(`Searching for schemas "${topic2}"`);
-    logger.clear();
+      const schemaSearch2 = `node castle schema search ${topic2}`;
+      await castle(output).parseAsync(schemaSearch2.split(' '));
 
-    // Schema
-    // ================================================
+      expect(logger.std).toContain(`Searching for schemas "${topic2}"`);
+      logger.clear();
 
-    const schema2 = `node castle schema show ${topic2}-value --depth 8`;
-    await castle(output).parseAsync(schema2.split(' '));
+      // Schema
+      // ================================================
 
-    expect(logger.std).toContain(`Showing schema "${topic2}-value"`);
-    expect(logger.std).toContain('Version 01');
-    expect(logger.std).toContain("type: 'record'");
-    expect(logger.std).toContain("name: 'Event'");
-    expect(logger.std).toContain("fields: [ { name: 'field1', type: 'string' } ]");
-    logger.clear();
+      const schema2 = `node castle schema show ${topic2}-value --depth 8`;
+      await castle(output).parseAsync(schema2.split(' '));
 
-    // Consume With Key
-    // ================================================
+      expect(logger.std).toContain(`Showing schema "${topic2}-value"`);
+      expect(logger.std).toContain('Version 01');
+      expect(logger.std).toContain("type: 'record'");
+      expect(logger.std).toContain("name: 'Event'");
+      expect(logger.std).toContain("fields: [ { name: 'field1', type: 'string' } ]");
+      logger.clear();
 
-    const consume1 = `node castle topic consume ${topic1} --group-id ${groupId} --encoded-key`;
-    await castle(output).parseAsync(consume1.split(' '));
+      // Consume With Key
+      // ================================================
 
-    expect(logger.std).toContain(`Consume "${topic1}"`);
-    expect(logger.std).toContain('Key { id: 11 }');
-    expect(logger.std).toContain("Event { field1: 'other' }");
-    expect(logger.std).toContain('Success');
+      const consume1 = `node castle topic consume ${topic1} --group-id ${groupId} --encoded-key`;
+      await castle(output).parseAsync(consume1.split(' '));
 
-    logger.clear();
+      expect(logger.std).toContain(`Consume "${topic1}"`);
+      expect(logger.std).toContain('Key { id: 11 }');
+      expect(logger.std).toContain("Event { field1: 'other' }");
+      expect(logger.std).toContain('Success');
 
-    // Consume
-    // ================================================
+      logger.clear();
 
-    const consume2 = `node castle topic consume ${topic2} --group-id ${groupId}`;
-    await castle(output).parseAsync(consume2.split(' '));
+      // Consume
+      // ================================================
 
-    expect(logger.std).toContain(`Consume "${topic2}"`);
-    expect(logger.std).toContain('Partition 0 - Offsets 0...2 (100%)');
-    expect(logger.std).toContain("Event { field1: 'test1' }");
-    expect(logger.std).toContain("Event { field1: 'test4' }");
-    expect(logger.std).toContain("Event { field1: 'test5' }");
-    expect(logger.std).toContain('Partition 1 - Offsets 0...3 (100%)');
-    expect(logger.std).toContain("Event { field1: 'test2' }");
-    expect(logger.std).toContain("Event { field1: 'test6' }");
-    expect(logger.std).toContain("Event { field1: 'test7' }");
-    expect(logger.std).toContain("Event { field1: 'test8' }");
-    expect(logger.std).toContain('Partition 2 - Offsets 0...2 (100%)');
-    expect(logger.std).toContain("Event { field1: 'test3' }");
-    expect(logger.std).toContain("Event { field1: 'test10' }");
-    expect(logger.std).toContain("Event { field1: 'test11' }");
-    expect(logger.std).toContain('Success');
+      const consume2 = `node castle topic consume ${topic2} --group-id ${groupId}`;
+      await castle(output).parseAsync(consume2.split(' '));
 
-    logger.clear();
+      expect(logger.std).toContain(`Consume "${topic2}"`);
+      expect(logger.std).toContain('Partition 0 - Offsets 0...2 (100%)');
+      expect(logger.std).toContain("Event { field1: 'test1' }");
+      expect(logger.std).toContain("Event { field1: 'test4' }");
+      expect(logger.std).toContain("Event { field1: 'test5' }");
+      expect(logger.std).toContain('Partition 1 - Offsets 0...3 (100%)');
+      expect(logger.std).toContain("Event { field1: 'test2' }");
+      expect(logger.std).toContain("Event { field1: 'test6' }");
+      expect(logger.std).toContain("Event { field1: 'test7' }");
+      expect(logger.std).toContain("Event { field1: 'test8' }");
+      expect(logger.std).toContain('Partition 2 - Offsets 0...2 (100%)');
+      expect(logger.std).toContain("Event { field1: 'test3' }");
+      expect(logger.std).toContain("Event { field1: 'test10' }");
+      expect(logger.std).toContain("Event { field1: 'test11' }");
+      expect(logger.std).toContain('Success');
 
-    // Group Show
-    // ================================================
+      logger.clear();
 
-    const groupShow = `node castle group show ${groupId} ${topic2}`;
-    await castle(output).parseAsync(groupShow.split(' '));
+      // Group Show
+      // ================================================
 
-    expect(logger.std).toContain(`Consumer group "${groupId}"`);
-    expect(logger.std).toContain('Partition | Offset | Group Offset | Lag | Metadata');
-    expect(logger.std).toContain('0         | 3      | 3            | 0   |');
-    expect(logger.std).toContain('1         | 4      | 4            | 0   |');
-    expect(logger.std).toContain('2         | 3      | 3            | 0   |');
+      const groupShow = `node castle group show ${groupId} ${topic2}`;
+      await castle(output).parseAsync(groupShow.split(' '));
 
-    logger.clear();
+      expect(logger.std).toContain(`Consumer group "${groupId}"`);
+      expect(logger.std).toContain('Partition | Offset | Group Offset | Lag | Metadata');
+      expect(logger.std).toContain('0         | 3      | 3            | 0   |');
+      expect(logger.std).toContain('1         | 4      | 4            | 0   |');
+      expect(logger.std).toContain('2         | 3      | 3            | 0   |');
 
-    // Group Update Reset Offsets
-    // ================================================
+      logger.clear();
 
-    const groupUpdate1 = `node castle group update ${groupId} ${topic2} --reset-offsets latest`;
-    await castle(output).parseAsync(groupUpdate1.split(' '));
+      // Group Update Reset Offsets
+      // ================================================
 
-    expect(logger.std).toContain(`Success. Topic ${topic2} offsets reset to latest`);
-    logger.clear();
+      const groupUpdate1 = `node castle group update ${groupId} ${topic2} --reset-offsets latest`;
+      await castle(output).parseAsync(groupUpdate1.split(' '));
 
-    // Group Update Set Offsets
-    // ================================================
+      expect(logger.std).toContain(`Success. Topic ${topic2} offsets reset to latest`);
+      logger.clear();
 
-    const groupUpdate2 = `node castle group update ${groupId} ${topic2} --set-offset 0=2 --set-offset 1=2`;
-    await castle(output).parseAsync(groupUpdate2.split(' '));
+      // Group Update Set Offsets
+      // ================================================
 
-    expect(logger.std).toContain(`Success. Topic ${topic2} offsets set`);
-    expect(logger.std).toContain(`Partition | Offset`);
-    expect(logger.std).toContain(`0         | 2`);
-    expect(logger.std).toContain(`1         | 2`);
+      const groupUpdate2 = `node castle group update ${groupId} ${topic2} --set-offset 0=2 --set-offset 1=2`;
+      await castle(output).parseAsync(groupUpdate2.split(' '));
+
+      expect(logger.std).toContain(`Success. Topic ${topic2} offsets set`);
+      expect(logger.std).toContain(`Partition | Offset`);
+      expect(logger.std).toContain(`0         | 2`);
+      expect(logger.std).toContain(`1         | 2`);
+    } finally {
+      await Promise.all([admin.disconnect(), consumer.disconnect()]);
+    }
   });
 });
