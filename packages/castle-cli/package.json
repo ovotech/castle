@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/castle-cli",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A kafka avro cli",
@@ -9,20 +9,20 @@
   "homepage": "https://github.com/ovotech/castle/tree/master/packages/castle-cli#readme",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/jest": "^26.0.14",
+    "@types/jest": "^26.0.16",
     "@types/long": "^4.0.1",
-    "@types/node": "^14.11.2",
+    "@types/node": "^14.14.10",
     "@types/uuid": "^8.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.2.0",
-    "@typescript-eslint/parser": "^4.2.0",
-    "eslint": "^7.9.0",
-    "eslint-config-prettier": "^6.11.0",
-    "jest": "^26.4.2",
-    "prettier": "^2.1.2",
-    "ts-jest": "^26.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.4.4",
     "ts-node": "^9.0.0",
-    "ts-retry-promise": "^0.5.0",
-    "typescript": "^4.0.2"
+    "ts-retry-promise": "^0.6.0",
+    "typescript": "^4.1.2"
   },
   "bin": {
     "castle": "./scripts/castle"
@@ -39,13 +39,13 @@
     "preset": "../../jest.json"
   },
   "dependencies": {
-    "@ovotech/avro-kafkajs": "^0.6.0",
+    "@ovotech/avro-kafkajs": "^0.6.1",
     "ansi-regex": "^5.0.0",
     "chalk": "^4.1.0",
-    "commander": "^6.1.0",
-    "kafkajs": "^1.14.0",
+    "commander": "^6.2.0",
+    "kafkajs": "^1.15.0",
     "long": "^4.0.0",
     "runtypes": "^5.0.1",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.1"
   }
 }

@@ -1,12 +1,11 @@
 import * as commander from 'commander';
-import { SchemaRegistry, AvroKafka } from '@ovotech/avro-kafkajs';
+import { SchemaRegistry, AvroKafka, AvroKafkaMessage, AvroBatch } from '@ovotech/avro-kafkajs';
 import { inspect } from 'util';
 import { loadConfigFile } from '../../config';
 import { devider, table, header, Output } from '../../output';
 import { Kafka } from 'kafkajs';
 import * as uuid from 'uuid';
 import * as Long from 'long';
-import { AvroKafkaMessage, AvroBatch } from '@ovotech/avro-kafkajs/dist/types';
 import { getPartitionProgress, isPartitionProgressFinished } from '../../helpers';
 
 const toMessageOutput = (
@@ -78,10 +77,7 @@ Example:
         await output.wrap(json, async () => {
           const config = await loadConfigFile({ file: configFile, verbose, output });
           const schemaRegistry = new SchemaRegistry(config.schemaRegistry);
-          const kafka = new Kafka({
-            clientId: 'castle-cli',
-            ...config.kafka,
-          });
+          const kafka = new Kafka({ clientId: 'castle-cli', ...config.kafka });
           const avroKafka = new AvroKafka(schemaRegistry, kafka);
 
           output.log(header('Consume', topic, config));
@@ -168,7 +164,7 @@ Example:
                       consumer.pause([{ topic }]);
                       setTimeout(async () => {
                         await consumer.disconnect();
-                        resolve();
+                        resolve(undefined);
                       }, 10);
                     }
                   },
