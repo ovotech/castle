@@ -51,6 +51,7 @@ main();
 ```
 
 You can connect to multiple topics, each of which is will have its own independent consumer group.
+You can also pass SSL and SASL authentication, as well as authenticating the schema registry.
 More about castle package in [packages/castle/README.md](packages/castle/README.md)
 
 ## Command line usage
