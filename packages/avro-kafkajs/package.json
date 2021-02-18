@@ -6,7 +6,7 @@
   "description": "A wrapper around Kafkajs to transparently use Schema Registry for producing and consuming messages with avro schemas.",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "repository": "git@github.com:ovotech/castle.git",
-  "homepage": "https://github.com/ovotech/castle/tree/master/packages/avro-kafkajs#readme",
+  "homepage": "https://github.com/ovotech/castle/tree/main/packages/avro-kafkajs#readme",
   "license": "Apache-2.0",
   "devDependencies": {
     "@ovotech/build-docs": "^0.1.0",

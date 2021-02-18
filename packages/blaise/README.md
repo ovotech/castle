@@ -13,7 +13,7 @@ Calling `blaise()` returns a new version of blaise, preloaded with the provided 
 > [examples/chain.ts](examples/chain.ts)
 
 ```typescript
-import blaise from '@ovotech/blaise'
+import blaise from '@ovotech/blaise';
 
 const withAvro = blaise({ avro: { schema } });
 const coffee = withAvro({ avro: { pickUnion: ['coffee'] } });
@@ -28,7 +28,7 @@ tea.getDefault(); // { avro: { schema, pickUnion: ['tea']}}
 > [examples/avro-message.ts](examples/avro-message.ts)
 
 ```typescript
-import blaise from '@ovotech/blaise'
+import blaise from '@ovotech/blaise';
 
 const schema: avsc.RecordType = {
   type: 'record',
@@ -37,7 +37,6 @@ const schema: avsc.RecordType = {
 };
 type MyType = { anInt: number };
 blaise<MyType>({ avro: { schema } }).message(); // {topic: '', {anInt: 32}, [...]}
-
 ```
 
 You can also override the message, either as part of the default or when calling the function
@@ -45,7 +44,7 @@ You can also override the message, either as part of the default or when calling
 > [examples/avro-message-override.ts](examples/avro-message-override.ts)
 
 ```typescript
-import blaise from '@ovotech/blaise'
+import blaise from '@ovotech/blaise';
 
 const schema: avsc.RecordType = {
   // [...]
@@ -55,7 +54,6 @@ const brewCoffee = blaise({
   message: { value: { type: 'coffee' } },
 });
 brewCoffee.message({ value: { with: 'milk' } }); // {offset: 13, value {type: 'coffee', with: 'milk'}, [...]}
-
 ```
 
 ### Generate a `CastleEachMessagePayload`
@@ -111,7 +109,7 @@ yarn lint
 
 ## Deployment
 
-Deployment is preferment by lerna automatically on merge / push to master, but you'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
+Deployment is preferment by lerna automatically on merge / push to main, but you'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
 
 ## Contributing
 

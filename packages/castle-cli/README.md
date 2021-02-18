@@ -42,7 +42,7 @@ The config would be a json file that looks like this
 }
 ```
 
-The "schemaRegistry" config object is the configuration you'll send to `SchemaRegistry` from [@ovotech/avro-kafkajs](https://github.com/ovotech/castle/tree/master/packages/avro-kafkajs). Here are some docs for all the possible arguments https://github.com/ovotech/castle/tree/master/packages/avro-kafkajs#using-schema-registry-directly
+The "schemaRegistry" config object is the configuration you'll send to `SchemaRegistry` from [@ovotech/avro-kafkajs](https://github.com/ovotech/castle/tree/main/packages/avro-kafkajs). Here are some docs for all the possible arguments https://github.com/ovotech/castle/tree/main/packages/avro-kafkajs#using-schema-registry-directly
 
 The "kafka" config object is the config for [kafkajs](https://kafka.js.org) itself which you can read about in their excelent documentation https://kafka.js.org/docs/configuration
 
@@ -325,7 +325,7 @@ yarn lint
 
 ## Deployment
 
-Deployment is preferment by lerna automatically on merge / push to master, but you'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
+Deployment is preferment by lerna automatically on merge / push to main, but you'll need to bump the package version numbers yourself. Only updated packages with newer versions will be pushed to the npm registry.
 
 ## Contributing
 

@@ -11,7 +11,7 @@
     "avro-ts": "./scripts/avro-ts"
   },
   "repository": "git@github.com:ovotech/castle.git",
-  "homepage": "https://github.com/ovotech/castle/tree/master/packages/avro-ts-cli#readme",
+  "homepage": "https://github.com/ovotech/castle/tree/main/packages/avro-ts-cli#readme",
   "scripts": {
     "avro-ts": "node -r ts-node/register src/cli.ts",
     "build": "tsc --declaration",

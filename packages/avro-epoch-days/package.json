@@ -8,7 +8,7 @@
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
   "repository": "git@github.com:ovotech/castle.git",
-  "homepage": "https://github.com/ovotech/castle/tree/master/packages/avro-epoch-days#readme",
+  "homepage": "https://github.com/ovotech/castle/tree/main/packages/avro-epoch-days#readme",
   "scripts": {
     "test": "jest --runInBand",
     "lint:prettier": "prettier --list-different {src,test}/**/*.ts",

@@ -8,7 +8,7 @@
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "license": "Apache-2.0",
   "repository": "git@github.com:ovotech/castle.git",
-  "homepage": "https://github.com/ovotech/castle/tree/master/packages/avro-ts#readme",
+  "homepage": "https://github.com/ovotech/castle/tree/main/packages/avro-ts#readme",
   "scripts": {
     "test:js": "jest --runInBand",
     "test:ts": "tsc test/integration.ts --strict --noEmit && ! tsc test/integration-should-fail.ts --strict --noEmit",

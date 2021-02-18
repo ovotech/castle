@@ -6,7 +6,7 @@
   "description": "A kafka avro cli",
   "author": "Ivan Kerin <ikerin@gmail.com>",
   "repository": "git@github.com:ovotech/castle.git",
-  "homepage": "https://github.com/ovotech/castle/tree/master/packages/castle-cli#readme",
+  "homepage": "https://github.com/ovotech/castle/tree/main/packages/castle-cli#readme",
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/jest": "^26.0.16",

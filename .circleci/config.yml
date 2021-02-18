@@ -71,13 +71,13 @@ workflows:
       - test:
           filters:
             branches:
-              ignore: master
+              ignore: main
   deploy:
     jobs:
       - test:
           filters:
             branches:
-              only: master
+              only: main
       - publish:
           requires:
             - test
