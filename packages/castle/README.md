@@ -84,11 +84,11 @@ const eachStartEvent = consumeEachMessage<StartEvent>(async ({ message }) => {
 
 // Define a batch consumer as a pure function
 const eachBatchFeedbackEvent = consumeEachBatch<FeedbackEvent>(async ({ batch, producer }) => {
-  console.log(`Feedback ${batch.messages.map(msg => `${msg.value.id}:${msg.value.status}`)}`);
+  console.log(`Feedback ${batch.messages.map((msg) => `${msg.value.id}:${msg.value.status}`)}`);
   console.log('Sending complete events');
   sendComplete(
     producer,
-    batch.messages.map(msg => ({ value: { id: msg.value.id } })),
+    batch.messages.map((msg) => ({ value: { id: msg.value.id } })),
   );
 });
 
@@ -157,13 +157,62 @@ const main = async () => {
   await sendStart(castle.producer, [{ value: { id: 10 } }, { value: { id: 20 } }]);
 
   // - wait a bit
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   // - send feedback events which would produce the complete events
   await sendFeedback(castle.producer, [
     { value: { id: 10, status: 'Sent' } },
     { value: { id: 20, status: 'Failed' } },
   ]);
+};
+
+main();
+```
+
+## SSL, SASL and Schema registry auth
+
+Castle passes the security configs down to [kafkajs](https://kafka.js.org/docs/configuration#ssl) directly, a much better explanation of the requirements can be read there.
+Passing auth to the schema registry can be done using the uri directly.
+
+> [examples/ssl-auth.ts](examples/ssl-auth.ts)
+
+```typescript
+import { createCastle, produce, consumeEachMessage, describeCastle } from '@ovotech/castle';
+import { env } from 'process';
+import { Event, EventSchema } from './avro';
+
+// Define producers as pure functions
+// With statically setting the typescript types and avro schemas
+const mySender = produce<Event>({ topic: 'my-topic-1', schema: EventSchema });
+
+// Define consumers as pure functions
+// With statically setting which types it will accept
+const eachEvent = consumeEachMessage<Event>(async ({ message }) => {
+  console.log(message.value);
+});
+
+const main = async () => {
+  const castle = createCastle({
+    // You can pass the username and password in the uri string to the schema registry
+    schemaRegistry: { uri: 'http://username@password:localhost:8081' },
+    kafka: {
+      brokers: ['localhost:29092'],
+      // Pass ssl certs to kafkajs
+      ssl: {
+        ca: env.KAFKA_SSL_CA,
+        key: env.KAFKA_SSL_KEY,
+        cert: env.KAFKA_SSL_CERT,
+      },
+    },
+    consumers: [{ topic: 'my-topic-1', groupId: 'my-group-1', eachMessage: eachEvent }],
+  });
+
+  // Start all consumers and producers
+  await castle.start();
+
+  console.log(describeCastle(castle));
+
+  await mySender(castle.producer, [{ value: { field1: 'my-string' } }]);
 };
 
 main();
