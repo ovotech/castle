@@ -1,0 +1,59 @@
+{
+  "type": "record",
+  "name": "TrfPreNexus",
+  "namespace": "com.example.kafka.flows.event.flow.split.trfPreNexus",
+  "fields": [
+    {
+      "name": "data",
+      "type": [
+        {
+          "type": "record",
+          "name": "Deleted",
+          "namespace": "com.example.kafka.flows.event.flow",
+          "doc": "This type indicates that the data has been deleted according to the data retention policy.",
+          "fields": [
+            {
+              "name": "deleteReason",
+              "type": "string",
+              "doc": "Additional information about reason behind the delete event"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "FlowContents",
+          "fields": [
+            {
+              "name": "record",
+              "type": [
+                {
+                  "type": "record",
+                  "name": "LapsedConfirmationDets",
+                  "fields": [
+                    {
+                      "name": "groupName",
+                      "type": "string",
+                      "default": "lapsedConfirmationDets"
+                    }
+                  ]
+                },
+                {
+                  "type": "record",
+                  "name": "TransferOfOwnership",
+                  "fields": [
+                    {
+                      "name": "groupName",
+                      "type": "string",
+                      "default": "transferOfOwnership"
+                    }
+                  ]
+                }
+              ],
+              "doc": "The split flow record."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -2618,6 +2618,126 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert TrfPreNexus.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type TrfPreNexus = ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.TrfPreNexus;
+
+export namespace ComExampleKafkaFlowsEventFlow {
+    export const DeletedName = \\"com.example.kafka.flows.event.flow.Deleted\\";
+    /**
+     * This type indicates that the data has been deleted according to the data retention policy.
+     */
+    export interface Deleted {
+        /**
+         * Additional information about reason behind the delete event
+         */
+        deleteReason: string;
+    }
+}
+
+export namespace ComExampleKafkaFlowsEventFlowSplitTrfPreNexus {
+    export const LapsedConfirmationDetsName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.LapsedConfirmationDets\\";
+    export interface LapsedConfirmationDets {
+        /**
+         * Default: \\"lapsedConfirmationDets\\"
+         */
+        groupName: string;
+    }
+    export const TransferOfOwnershipName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TransferOfOwnership\\";
+    export interface TransferOfOwnership {
+        /**
+         * Default: \\"transferOfOwnership\\"
+         */
+        groupName: string;
+    }
+    export const FlowContentsName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.FlowContents\\";
+    export interface FlowContents {
+        /**
+         * The split flow record.
+         */
+        record: {
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.LapsedConfirmationDets\\": ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.LapsedConfirmationDets;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TransferOfOwnership\\"?: never;
+        } | {
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.LapsedConfirmationDets\\"?: never;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TransferOfOwnership\\": ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.TransferOfOwnership;
+        };
+    }
+    export const TrfPreNexusName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TrfPreNexus\\";
+    export interface TrfPreNexus {
+        data: {
+            \\"com.example.kafka.flows.event.flow.Deleted\\": ComExampleKafkaFlowsEventFlow.Deleted;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.FlowContents\\"?: never;
+        } | {
+            \\"com.example.kafka.flows.event.flow.Deleted\\"?: never;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.FlowContents\\": ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.FlowContents;
+        };
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert TrfPreNexus.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type TrfPreNexus = ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.TrfPreNexus;
+
+export namespace ComExampleKafkaFlowsEventFlow {
+    export const DeletedName = \\"com.example.kafka.flows.event.flow.Deleted\\";
+    /**
+     * This type indicates that the data has been deleted according to the data retention policy.
+     */
+    export interface Deleted {
+        /**
+         * Additional information about reason behind the delete event
+         */
+        deleteReason: string;
+    }
+}
+
+export namespace ComExampleKafkaFlowsEventFlowSplitTrfPreNexus {
+    export const LapsedConfirmationDetsName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.LapsedConfirmationDets\\";
+    export interface LapsedConfirmationDets {
+        /**
+         * Default: \\"lapsedConfirmationDets\\"
+         */
+        groupName?: string;
+    }
+    export const TransferOfOwnershipName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TransferOfOwnership\\";
+    export interface TransferOfOwnership {
+        /**
+         * Default: \\"transferOfOwnership\\"
+         */
+        groupName?: string;
+    }
+    export const FlowContentsName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.FlowContents\\";
+    export interface FlowContents {
+        /**
+         * The split flow record.
+         */
+        record: {
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.LapsedConfirmationDets\\": ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.LapsedConfirmationDets;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TransferOfOwnership\\"?: never;
+        } | {
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.LapsedConfirmationDets\\"?: never;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TransferOfOwnership\\": ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.TransferOfOwnership;
+        };
+    }
+    export const TrfPreNexusName = \\"com.example.kafka.flows.event.flow.split.trfPreNexus.TrfPreNexus\\";
+    export interface TrfPreNexus {
+        data: {
+            \\"com.example.kafka.flows.event.flow.Deleted\\": ComExampleKafkaFlowsEventFlow.Deleted;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.FlowContents\\"?: never;
+        } | {
+            \\"com.example.kafka.flows.event.flow.Deleted\\"?: never;
+            \\"com.example.kafka.flows.event.flow.split.trfPreNexus.FlowContents\\": ComExampleKafkaFlowsEventFlowSplitTrfPreNexus.FlowContents;
+        };
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert User.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
