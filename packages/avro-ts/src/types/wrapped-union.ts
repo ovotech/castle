@@ -19,8 +19,9 @@ export const convertWrappedUnionType: Convert<schema.RecordType[]> = (context, s
 
   const map = mapWithContext(context, resolved, (itemContext, item) => {
     const converted = convertType(itemContext, item);
+
     return {
-      context: converted.context,
+      context: { ...converted.context, namespace: context.namespace },
       type: Type.TypeLiteral({
         props: resolved.map((schemaItem) => {
           return Type.Prop({
