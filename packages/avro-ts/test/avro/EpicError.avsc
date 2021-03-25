@@ -1,0 +1,19 @@
+{
+  "type": "error",
+  "name": "EpicFailure",
+  "namespace": "namespace",
+  "fields": [
+    {
+      "name": "code",
+      "type": {
+        "type": "enum",
+        "name": "ErrorCode",
+        "symbols": ["ERROR"]
+      }
+    },
+    {
+      "name": "message",
+      "type": "string"
+    }
+  ]
+}

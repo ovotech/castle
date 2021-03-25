@@ -83,7 +83,7 @@ export const convertType: Convert = (context, type) => {
 
     return document(context, ref);
   } else {
-    throw new Error(`Cannot work out type ${type}`);
+    throw new Error(`Cannot work out type ${JSON.stringify(type)}`);
   }
 };
 
