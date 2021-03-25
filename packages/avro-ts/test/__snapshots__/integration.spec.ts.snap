@@ -1346,6 +1346,40 @@ export namespace UkCoBoostpowerSupportKafkaMessages {
 "
 `;
 
+exports[`Avro ts test Should convert EpicError.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type EpicFailure = Namespace.EpicFailure;
+
+export namespace Namespace {
+    export const ErrorCodeName = \\"namespace.ErrorCode\\";
+    export type ErrorCode = \\"ERROR\\";
+    export const EpicFailureName = \\"namespace.EpicFailure\\";
+    export interface EpicFailure {
+        code: Namespace.ErrorCode;
+        message: string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert EpicError.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type EpicFailure = Namespace.EpicFailure;
+
+export namespace Namespace {
+    export const ErrorCodeName = \\"namespace.ErrorCode\\";
+    export type ErrorCode = \\"ERROR\\";
+    export const EpicFailureName = \\"namespace.EpicFailure\\";
+    export interface EpicFailure {
+        code: Namespace.ErrorCode;
+        message: string;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert M03.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
