@@ -5,8 +5,7 @@ import { convertType } from '../convert';
 import { firstUpperCase, namedType } from '../helpers';
 
 export const isRecordType = (type: Schema): type is avroSchema.RecordType =>
-  (typeof type === 'object' && 'type' in type && type.type === 'record') ||
-  (type as any).type === 'error';
+  typeof type === 'object' && 'type' in type && (type.type === 'record' || type.type === 'error');
 
 export const withDefault = (def: unknown, doc: string | undefined): string | undefined => {
   if (def === undefined) {
