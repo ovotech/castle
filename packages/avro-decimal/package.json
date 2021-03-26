@@ -1,7 +1,7 @@
 {
   "name": "@ovotech/avro-decimal",
   "description": "A logical type representing Decimal as binary bytes",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "build:docs": "build-docs README.md"
   },
   "devDependencies": {
-    "avsc": "^5.5.3",
+    "avsc": "^5.5.6",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^7.2.0",
     "jest": "^26.6.3",
