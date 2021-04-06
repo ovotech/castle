@@ -1516,10 +1516,10 @@
     mersenne-twister "^1.1.0"
     uuid "^7.0.2"
 
-"@ovotech/schema-registry-api@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@ovotech/schema-registry-api/-/schema-registry-api-1.0.7.tgz#b6f6e0d0b7aa103e407390a82ec8f5ebc46da156"
-  integrity sha512-BEXvIZ6d7lujJrLDyJ7E94F2vgnLZzTLbQbzJlu6HPwWvA163HX2nzFd/TMPgxYQKKgPvENqO+yemsrbaIe5ZA==
+"@ovotech/schema-registry-api@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@ovotech/schema-registry-api/-/schema-registry-api-1.1.1.tgz#8d54391167aed32ff6f777a6a4232e2e288148ef"
+  integrity sha512-NeLYpy7qRSvrtuZpySnMjbJJW4I55Z06rJWKeDDdqsK4CjG5Rb6XcOQjKnkA7oFTC91LCv1C+jcbt/y846oyGw==
   dependencies:
     node-fetch "^2.6.0"
 

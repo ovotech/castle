@@ -2,6 +2,7 @@ import {
   idToSchema,
   schemaToId,
   getSubjects,
+  getSubjectVersion,
   getSubjectVersionSchema,
   getSubjectVersions,
 } from '@ovotech/schema-registry-api';
@@ -11,6 +12,13 @@ import { isDeepStrictEqual } from 'util';
 export interface AvroBuffer {
   id: number;
   buffer: Buffer;
+}
+
+export interface SchemaVersion {
+  subject: string;
+  id: number;
+  version: number;
+  schema: string;
 }
 
 export const deconstructMessage = (buffer: Buffer): AvroBuffer => {
@@ -91,6 +99,10 @@ export class SchemaRegistry {
 
   public async getSubjectVersions(subject: string): Promise<number[]> {
     return await getSubjectVersions(this.uri, subject);
+  }
+
+  public async getSubjectVersion(subject: string, version: number): Promise<SchemaVersion> {
+    return await getSubjectVersion(this.uri, subject, version);
   }
 
   public async getSubjectVersionSchema(subject: string, version: number): Promise<Schema> {

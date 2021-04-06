@@ -5,6 +5,7 @@ export {
   EncodeCache,
   DecodeCache,
   SchemaRegistryConfig,
+  SchemaVersion,
 } from './SchemaRegistry';
 export { AvroKafka } from './AvroKafka';
 export { AvroProducer } from './AvroProducer';
