@@ -13,7 +13,6 @@ import {
   Union,
   Dictionary,
   Partial,
-  Undefined,
 } from 'runtypes';
 import { readFileSync } from 'fs';
 import { Type, Schema } from 'avsc';
@@ -40,25 +39,23 @@ const ProduceFileType = Record({
       }),
     ),
   ),
-})
-  .And(
-    Record({ schema: TypeSchema, keySchema: TypeSchema.Or(Undefined) }).Or(
-      Record({ subject: String, keySubject: String.Or(Undefined) }),
-    ),
-  )
-  .And(
-    Partial({
-      timeout: Number.Or(Undefined),
-      compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)).Or(Undefined),
-    }),
-  );
+}).And(
+  Partial({
+    schema: TypeSchema,
+    keySchema: TypeSchema,
+    subject: String,
+    keySubject: String,
+    timeout: Number,
+    compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)),
+  }),
+);
 
 const loadAvroProducerRecordFile = (file: string): AvroProducerRecord => {
   const result = ProduceFileType.validate(JSON.parse(readFileSync(file, 'utf8')));
   if (result.success !== true) {
     throw new Error(`Invalid produce file. ${result.key}: ${result.message}`);
   }
-  return result.value;
+  return result.value as AvroProducerRecord;
 };
 
 interface Options {
