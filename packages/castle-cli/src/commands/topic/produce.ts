@@ -30,8 +30,6 @@ const TypeSchema = Unknown.withConstraint<Schema>((item: unknown) => {
 
 const ProduceFileType = Record({
   topic: String,
-  timeout: Number.Or(Undefined),
-  compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)).Or(Undefined),
   messages: Array(
     Record({ value: Unknown }).And(
       Partial({
@@ -42,11 +40,18 @@ const ProduceFileType = Record({
       }),
     ),
   ),
-}).And(
-  Record({ schema: TypeSchema, keySchema: TypeSchema.Or(Undefined) }).Or(
-    Record({ subject: String, keySubject: String.Or(Undefined) }),
-  ),
-);
+})
+  .And(
+    Record({ schema: TypeSchema, keySchema: TypeSchema.Or(Undefined) }).Or(
+      Record({ subject: String, keySubject: String.Or(Undefined) }),
+    ),
+  )
+  .And(
+    Partial({
+      timeout: Number.Or(Undefined),
+      compression: Union(Literal(0), Literal(1), Literal(2), Literal(3), Literal(4)).Or(Undefined),
+    }),
+  );
 
 const loadAvroProducerRecordFile = (file: string): AvroProducerRecord => {
   const result = ProduceFileType.validate(JSON.parse(readFileSync(file, 'utf8')));
