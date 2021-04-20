@@ -34,14 +34,14 @@ const main = async () => {
   await producer.send<MyMessage>({
     topic: 'my-topic',
     schema: mySchema,
-    messages: [{ value: { field1: 'my-string' } }],
+    messages: [{ value: { field1: 'my-string' }, key: null }],
   });
 
   // Producing with custom subject
   await producer.send<MyMessage>({
     topic: 'my-topic',
     subject: 'my-topic-value',
-    messages: [{ value: { field1: 'my-string-2' } }],
+    messages: [{ value: { field1: 'my-string-2' }, key: null }],
   });
 };
 

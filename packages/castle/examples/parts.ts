@@ -36,7 +36,7 @@ const main = async () => {
   console.log(describeCastle(castle));
 
   // You can use the stand alone producer elsewhere
-  await mySender(producer, [{ value: { field1: 'my-string' } }]);
+  await mySender(producer, [{ value: { field1: 'my-string' }, key: null }]);
 };
 
 main();

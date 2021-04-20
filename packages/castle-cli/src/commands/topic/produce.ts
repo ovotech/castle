@@ -13,6 +13,7 @@ import {
   Union,
   Dictionary,
   Partial,
+  Null,
 } from 'runtypes';
 import { readFileSync } from 'fs';
 import { Type, Schema } from 'avsc';
@@ -30,9 +31,8 @@ const TypeSchema = Unknown.withConstraint<Schema>((item: unknown) => {
 const ProduceFileType = Record({
   topic: String,
   messages: Array(
-    Record({ value: Unknown }).And(
+    Record({ value: Unknown, key: String.Or(Null) }).And(
       Partial({
-        key: String,
         partition: Number,
         headers: Dictionary(TypeBuffer),
         timestamp: String,

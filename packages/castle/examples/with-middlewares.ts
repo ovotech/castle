@@ -13,16 +13,16 @@ const complete = produce<CompleteEvent>({ topic: 'my-complete-3', schema: Comple
 
 const eachStart = consumeEachMessage<StartEvent, DbContext & LoggingContext>(
   async ({ message, db, logger, producer }) => {
-    logger.log('Started', message.value.id);
-    const { rows } = await db.query('SELECT avatar FROM users WHERE id = $1', [message.value.id]);
+    logger.log('Started', message.value?.id);
+    const { rows } = await db.query('SELECT avatar FROM users WHERE id = $1', [message.value?.id]);
     logger.log('Found', rows, 'Sending Complete');
-    complete(producer, [{ value: { id: message.value.id } }]);
+    complete(producer, [{ value: { id: message.value?.id ?? 0 }, key: null }]);
   },
 );
 
 const eachComplete = consumeEachMessage<CompleteEvent, LoggingContext>(
   async ({ message, logger }) => {
-    logger.log('Complete received for', message.value.id);
+    logger.log('Complete received for', message.value?.id);
   },
 );
 
@@ -57,7 +57,7 @@ const main = async () => {
 
   console.log(describeCastle(castle));
 
-  await start(castle.producer, [{ value: { id: 1 } }]);
+  await start(castle.producer, [{ value: { id: 1 }, key: null }]);
 };
 
 main();

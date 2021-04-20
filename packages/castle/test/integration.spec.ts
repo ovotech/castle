@@ -129,24 +129,24 @@ describe('Integration', () => {
       await castle.start();
 
       await Promise.all([
-        sendEvent1(castle.producer, [{ value: { field1: 'test1' }, partition: 0 }]),
+        sendEvent1(castle.producer, [{ value: { field1: 'test1' }, partition: 0, key: null }]),
         sendEvent1(castle.producer, [
-          { value: { field1: 'test2' }, partition: 1 },
-          { value: { field1: 'test3' }, partition: 2 },
-          { value: { field1: 'test4' }, partition: 0 },
+          { value: { field1: 'test2' }, partition: 1, key: null },
+          { value: { field1: 'test3' }, partition: 2, key: null },
+          { value: { field1: 'test4' }, partition: 0, key: null },
         ]),
 
         sendEvent2(castle.producer, [
-          { value: { field2: 'test5' }, partition: 1 },
-          { value: { field2: 'test6' }, partition: 1 },
-          { value: { field2: 'test7' }, partition: 0 },
+          { value: { field2: 'test5' }, partition: 1, key: null },
+          { value: { field2: 'test6' }, partition: 1, key: null },
+          { value: { field2: 'test7' }, partition: 0, key: null },
         ]),
         sendEvent3(castle.producer, [
-          { value: { field2: 'p0m1' }, partition: 0 },
-          { value: { field2: 'p0m2' }, partition: 0 },
-          { value: { field2: 'p0m3' }, partition: 0 },
-          { value: { field2: 'p0m4' }, partition: 0 },
-          { value: { field2: 'p0m5' }, partition: 0 },
+          { value: { field2: 'p0m1' }, partition: 0, key: null },
+          { value: { field2: 'p0m2' }, partition: 0, key: null },
+          { value: { field2: 'p0m3' }, partition: 0, key: null },
+          { value: { field2: 'p0m4' }, partition: 0, key: null },
+          { value: { field2: 'p0m5' }, partition: 0, key: null },
         ]),
       ]);
 

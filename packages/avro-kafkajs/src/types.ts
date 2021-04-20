@@ -41,9 +41,9 @@ export interface AvroKafkaMessage<T = unknown, KT = KafkaMessage['key']>
   value: T | null;
 }
 
-export interface AvroMessage<T = unknown, KT = Message['key']>
+export interface AvroMessage<T = unknown, KT = Exclude<Message['key'], undefined>>
   extends Omit<Message, 'value' | 'key'> {
-  key?: KT;
+  key: KT;
   value: T;
 }
 

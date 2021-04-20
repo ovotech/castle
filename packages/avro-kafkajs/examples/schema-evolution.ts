@@ -55,12 +55,12 @@ const main = async () => {
   await producer.send<MyOldMessage>({
     topic: 'my-topic-evolution',
     schema: myOldSchema,
-    messages: [{ value: { field1: 'my-string' } }],
+    messages: [{ value: { field1: 'my-string' }, key: null }],
   });
   await producer.send<MyNewMessage>({
     topic: 'my-topic-evolution',
     schema: myNewSchema,
-    messages: [{ value: { field1: 'my-string', field2: 'new-string' } }],
+    messages: [{ value: { field1: 'my-string', field2: 'new-string' }, key: null }],
   });
 };
 

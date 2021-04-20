@@ -64,7 +64,7 @@ Example:
           const messages = [
             {
               value: JSON.parse(messageJson),
-              key: keySchema && key ? JSON.parse(key) : key,
+              key: (keySchema && key ? JSON.parse(key) : key) ?? null,
               partition,
             },
           ];

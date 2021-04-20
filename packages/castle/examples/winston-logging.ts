@@ -39,7 +39,7 @@ const main = async () => {
 
   winstonLogger.info('Started');
 
-  await mySender(castle.producer, [{ value: { field1: 'my-string' } }]);
+  await mySender(castle.producer, [{ value: { field1: 'my-string' }, key: null }]);
 };
 
 main();

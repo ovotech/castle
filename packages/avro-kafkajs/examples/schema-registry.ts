@@ -45,13 +45,23 @@ const main = async () => {
   await producer.connect();
 
   // Encode the value
-  const value = await schemaRegistry.encode<MyMessage>('my-topic', 'value', mySchema, {
-    field1: 'my-string',
+  const value = await schemaRegistry.encode<MyMessage>({
+    topic: 'my-topic',
+    schemaType: 'value',
+    schema: mySchema,
+    value: {
+      field1: 'my-string',
+    },
   });
 
   // Optionally encode the key
-  const key = await schemaRegistry.encode<MyKey>('my-topic', 'key', myKeySchema, {
-    id: 10,
+  const key = await schemaRegistry.encode<MyKey>({
+    topic: 'my-topic',
+    schemaType: 'key',
+    schema: myKeySchema,
+    value: {
+      id: 10,
+    },
   });
   await producer.send({ topic: 'my-topic', messages: [{ value, key }] });
 };

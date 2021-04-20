@@ -13,43 +13,73 @@
   "messages": [
     {
       "partition": 0,
-      "value": { "field1": "test1" }
+      "value": {
+        "field1": "test1"
+      },
+      "key": null
     },
     {
       "partition": 1,
-      "value": { "field1": "test2" }
+      "value": {
+        "field1": "test2"
+      },
+      "key": null
     },
     {
       "partition": 2,
-      "value": { "field1": "test3" }
+      "value": {
+        "field1": "test3"
+      },
+      "key": null
     },
     {
       "partition": 0,
-      "value": { "field1": "test4" }
+      "value": {
+        "field1": "test4"
+      },
+      "key": null
     },
     {
       "partition": 0,
-      "value": { "field1": "test5" }
+      "value": {
+        "field1": "test5"
+      },
+      "key": null
     },
     {
       "partition": 1,
-      "value": { "field1": "test6" }
+      "value": {
+        "field1": "test6"
+      },
+      "key": null
     },
     {
       "partition": 1,
-      "value": { "field1": "test7" }
+      "value": {
+        "field1": "test7"
+      },
+      "key": null
     },
     {
       "partition": 1,
-      "value": { "field1": "test8" }
+      "value": {
+        "field1": "test8"
+      },
+      "key": null
     },
     {
       "partition": 2,
-      "value": { "field1": "test10" }
+      "value": {
+        "field1": "test10"
+      },
+      "key": null
     },
     {
       "partition": 2,
-      "value": { "field1": "test11" }
+      "value": {
+        "field1": "test11"
+      },
+      "key": null
     }
   ]
 }

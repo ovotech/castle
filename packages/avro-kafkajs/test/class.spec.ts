@@ -482,7 +482,7 @@ describe('Class', () => {
     await producer.send<MessageType>({
       topic: TOPIC_ALIAS,
       schema,
-      messages: [{ value: { stringField: '1', intField: null } }],
+      messages: [{ value: { stringField: '1', intField: null }, key: null }],
     });
 
     // Use the subject directly to produce the messages
@@ -490,8 +490,8 @@ describe('Class', () => {
       topic: TOPIC_ALIAS,
       subject: `${realTopicName}-value`,
       messages: [
-        { value: { stringField: '2', intField: null } },
-        { value: { stringField: '3', intField: null } },
+        { value: { stringField: '2', intField: null }, key: null },
+        { value: { stringField: '3', intField: null }, key: null },
       ],
     });
 

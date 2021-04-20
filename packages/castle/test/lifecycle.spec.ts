@@ -32,7 +32,7 @@ describe('Integration', () => {
       await castle.stop();
       expect(castle.isRunning()).toBe(false);
       await castle.start();
-      await sendEvent1(castle.producer, [{ value: { field1: 'test3' } }]);
+      await sendEvent1(castle.producer, [{ value: { field1: 'test3' }, key: null }]);
       expect(castle.isRunning()).toBe(true);
       await castle.stop();
       expect(castle.isRunning()).toBe(false);
