@@ -28,22 +28,22 @@ const sendFeedback = produce<FeedbackEvent>({ topic: Topic.Feedback, schema: Fee
 
 // Define a consumer as a pure function
 const eachStartEvent = consumeEachMessage<StartEvent>(async ({ message }) => {
-  console.log(`Started Processing ${message.value.id}`);
+  console.log(`Started Processing ${message.value?.id}`);
 });
 
 // Define a batch consumer as a pure function
 const eachBatchFeedbackEvent = consumeEachBatch<FeedbackEvent>(async ({ batch, producer }) => {
-  console.log(`Feedback ${batch.messages.map(msg => `${msg.value.id}:${msg.value.status}`)}`);
+  console.log(`Feedback ${batch.messages.map((msg) => `${msg.value?.id}:${msg.value?.status}`)}`);
   console.log('Sending complete events');
   sendComplete(
     producer,
-    batch.messages.map(msg => ({ value: { id: msg.value.id } })),
+    batch.messages.map((msg) => ({ value: { id: msg.value?.id ?? 0 }, key: null })),
   );
 });
 
 // Define a parallel consumer as a pure function
 const eachCompleteEvent = consumeEachMessage<CompleteEvent>(async ({ message }) => {
-  console.log(`Completed ${message.value.id}`);
+  console.log(`Completed ${message.value?.id}`);
 });
 
 const eachSizedBatch = consumeEachBatch(async ({ batch: { messages, partition } }) =>
@@ -103,15 +103,18 @@ const main = async () => {
 
   // Perform a siqeunce of events
   // - send start events, wait a bit
-  await sendStart(castle.producer, [{ value: { id: 10 } }, { value: { id: 20 } }]);
+  await sendStart(castle.producer, [
+    { value: { id: 10 }, key: null },
+    { value: { id: 20 }, key: null },
+  ]);
 
   // - wait a bit
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   // - send feedback events which would produce the complete events
   await sendFeedback(castle.producer, [
-    { value: { id: 10, status: 'Sent' } },
-    { value: { id: 20, status: 'Failed' } },
+    { value: { id: 10, status: 'Sent' }, key: null },
+    { value: { id: 20, status: 'Failed' }, key: null },
   ]);
 };
 

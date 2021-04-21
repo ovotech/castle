@@ -20,7 +20,7 @@ const sendMyMessage = (producer: AvroProducer, message: MyMessage) =>
   producer.send<MyMessage>({
     topic: MY_TOPIC,
     schema: mySchema,
-    messages: [{ value: message }],
+    messages: [{ value: message, key: null }],
   });
 
 const main = async () => {

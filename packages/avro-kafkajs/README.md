@@ -179,13 +179,23 @@ const main = async () => {
   await producer.connect();
 
   // Encode the value
-  const value = await schemaRegistry.encode<MyMessage>('my-topic', 'value', mySchema, {
-    field1: 'my-string',
+  const value = await schemaRegistry.encode<MyMessage>({
+    topic: 'my-topic',
+    schemaType: 'value',
+    schema: mySchema,
+    value: {
+      field1: 'my-string',
+    },
   });
 
   // Optionally encode the key
-  const key = await schemaRegistry.encode<MyKey>('my-topic', 'key', myKeySchema, {
-    id: 10,
+  const key = await schemaRegistry.encode<MyKey>({
+    topic: 'my-topic',
+    schemaType: 'key',
+    schema: myKeySchema,
+    value: {
+      id: 10,
+    },
   });
   await producer.send({ topic: 'my-topic', messages: [{ value, key }] });
 };
@@ -223,7 +233,7 @@ const sendMyMessage = (producer: AvroProducer, message: MyMessage) =>
   producer.send<MyMessage>({
     topic: MY_TOPIC,
     schema: mySchema,
-    messages: [{ value: message }],
+    messages: [{ value: message, key: null }],
   });
 
 const main = async () => {
@@ -315,12 +325,12 @@ const main = async () => {
   await producer.send<MyOldMessage>({
     topic: 'my-topic-evolution',
     schema: myOldSchema,
-    messages: [{ value: { field1: 'my-string' } }],
+    messages: [{ value: { field1: 'my-string' }, key: null }],
   });
   await producer.send<MyNewMessage>({
     topic: 'my-topic-evolution',
     schema: myNewSchema,
-    messages: [{ value: { field1: 'my-string', field2: 'new-string' } }],
+    messages: [{ value: { field1: 'my-string', field2: 'new-string' }, key: null }],
   });
 };
 
@@ -370,14 +380,14 @@ const main = async () => {
   await producer.send<MyMessage>({
     topic: 'my-topic',
     schema: mySchema,
-    messages: [{ value: { field1: 'my-string' } }],
+    messages: [{ value: { field1: 'my-string' }, key: null }],
   });
 
   // Producing with custom subject
   await producer.send<MyMessage>({
     topic: 'my-topic',
     subject: 'my-topic-value',
-    messages: [{ value: { field1: 'my-string-2' } }],
+    messages: [{ value: { field1: 'my-string-2' }, key: null }],
   });
 };
 

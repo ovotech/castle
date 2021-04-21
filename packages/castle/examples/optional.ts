@@ -34,7 +34,7 @@ const main = async () => {
 
   console.log(describeCastle(castle));
 
-  await mySender(castle.producer, [{ value: { field1: 'my-string' } }]);
+  await mySender(castle.producer, [{ value: { field1: 'my-string' }, key: null }]);
 };
 
 main();
