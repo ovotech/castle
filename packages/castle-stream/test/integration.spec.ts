@@ -62,6 +62,7 @@ const event2Consumer1: CastleStreamConsumerConfig<string, Event2, null> = {
       schema: Event1Schema,
       messages: messages.map((message) => ({
         value: { field1: `new-${message.value?.field2}` },
+        key: null,
       })),
     });
   },
@@ -75,7 +76,7 @@ const event2Consumer2: CastleStreamConsumerConfig<string, Event2, null> = {
     producer.send({
       topic: topic1,
       schema: Event1Schema,
-      messages: [{ value: { field1: `new-${message.value?.field2}` } }],
+      messages: [{ value: { field1: `new-${message.value?.field2}` }, key: null }],
     });
   },
 };
