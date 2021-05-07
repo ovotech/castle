@@ -1,6 +1,6 @@
 {
   "name": "@ovotech/avro-kafkajs",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "A wrapper around Kafkajs to transparently use Schema Registry for producing and consuming messages with avro schemas.",

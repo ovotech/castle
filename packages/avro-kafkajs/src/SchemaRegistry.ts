@@ -29,10 +29,10 @@ export const deconstructMessage = (buffer: Buffer): AvroBuffer => {
 };
 
 export const constructMessage = ({ id, buffer }: AvroBuffer): Buffer => {
-  const prefix = Buffer.alloc(4);
-  prefix.writeUInt32BE(id, defaultOffset);
+  const idBytes = Buffer.alloc(4);
+  idBytes.writeUInt32BE(id, defaultOffset);
 
-  return Buffer.concat([magicByte, prefix, buffer]);
+  return Buffer.concat([magicByte, idBytes, buffer]);
 };
 
 export interface DecodeItem {
