@@ -21,16 +21,18 @@ export interface SchemaVersion {
   schema: string;
 }
 
+const magicByte = Buffer.alloc(1);
+const defaultOffset = 0;
+
 export const deconstructMessage = (buffer: Buffer): AvroBuffer => {
-  return { id: buffer.readInt32BE(1), buffer: buffer.slice(5) };
+  return { id: buffer.slice(1, 5).readInt32BE(defaultOffset), buffer: buffer.slice(5) };
 };
 
 export const constructMessage = ({ id, buffer }: AvroBuffer): Buffer => {
-  const prefix = Buffer.alloc(5);
-  prefix.writeUInt8(0, 0);
-  prefix.writeUInt32BE(id, 1);
+  const prefix = Buffer.alloc(4);
+  prefix.writeUInt32BE(id, defaultOffset);
 
-  return Buffer.concat([prefix, buffer]);
+  return Buffer.concat([magicByte, prefix, buffer]);
 };
 
 export interface DecodeItem {
