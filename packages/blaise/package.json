@@ -39,7 +39,7 @@
     "preset": "../../jest.json"
   },
   "devDependencies": {
-    "@ovotech/avro-kafkajs": "^0.7.0",
+    "@ovotech/avro-kafkajs": "^0.7.1",
     "@ovotech/castle": "^0.7.0",
     "@types/lodash.merge": "^4.6.6",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
