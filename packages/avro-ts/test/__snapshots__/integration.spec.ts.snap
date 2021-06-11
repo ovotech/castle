@@ -2390,6 +2390,34 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert RecordWithWrappedPrimitive.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordWithWrappedPrimitive = ComExampleAvro.RecordWithWrappedPrimitive;
+
+export namespace ComExampleAvro {
+    export const RecordWithWrappedPrimitiveName = \\"com.example.avro.RecordWithWrappedPrimitive\\";
+    export interface RecordWithWrappedPrimitive {
+        pleaseNoNamespace: string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithWrappedPrimitive.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordWithWrappedPrimitive = ComExampleAvro.RecordWithWrappedPrimitive;
+
+export namespace ComExampleAvro {
+    export const RecordWithWrappedPrimitiveName = \\"com.example.avro.RecordWithWrappedPrimitive\\";
+    export interface RecordWithWrappedPrimitive {
+        pleaseNoNamespace: string;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert SimpleRecord.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 

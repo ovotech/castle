@@ -24,7 +24,17 @@ export const isPrimitiveType = (type: Schema): type is schema.PrimitiveType =>
   type === 'float' ||
   type === 'double' ||
   type === 'bytes' ||
-  type === 'string';
+  type === 'string' ||
+  (typeof type === 'object' &&
+    'type' in type &&
+    typeof type.type === 'string' &&
+    isPrimitiveType(type.type));
 
-export const convertPrimitiveType: Convert<schema.PrimitiveType> = (context, schema) =>
-  document(context, primitiveTypeMap[schema] ?? Type.Any);
+export const convertPrimitiveType: Convert<schema.PrimitiveType> = (context, schema) => {
+  let tmp: schema.PrimitiveType = schema;
+  if (typeof schema === 'object' && 'type' in schema) {
+    tmp = (schema as { type: 'string' }).type;
+  }
+
+  return document(context, primitiveTypeMap[tmp] ?? Type.Any);
+};
