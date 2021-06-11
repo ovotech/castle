@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "RecordWithWrappedPrimitive",
+  "name": "RecordWithNamedStringType",
   "namespace": "com.example.avro",
   "fields": [
     {

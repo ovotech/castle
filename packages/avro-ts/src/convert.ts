@@ -13,6 +13,7 @@ import { isFixedType, convertFixedType } from './types/fixed';
 import { withHeader, withImports } from '@ovotech/ts-compose/dist/document';
 import { fullName, firstUpperCase, nameParts, convertNamespace } from './helpers';
 import * as ts from 'typescript';
+import { convertNamedType, isNamedType } from './types/named-type';
 
 export const addRef = (type: schema.RecordType | schema.EnumType, context: Context): Context => ({
   ...context,
@@ -58,6 +59,8 @@ export const convertType: Convert = (context, type) => {
     return convertFixedType(context, type);
   } else if (isPrimitiveType(type)) {
     return convertPrimitiveType(context, type);
+  } else if (isNamedType(type)) {
+    return convertNamedType(context, type);
   } else if (typeof type === 'string') {
     const [name, nameNamespace] = nameParts(type);
     const namespace = nameNamespace ?? context.namespace;
