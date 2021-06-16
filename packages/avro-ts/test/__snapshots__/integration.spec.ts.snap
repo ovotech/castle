@@ -2314,6 +2314,62 @@ export namespace ComExampleAvro {
 "
 `;
 
+exports[`Avro ts test Should convert RecordWithNamedBooleanType.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordWithNamedStringType = ComExampleAvro.RecordWithNamedStringType;
+
+export namespace ComExampleAvro {
+    export const RecordWithNamedStringTypeName = \\"com.example.avro.RecordWithNamedStringType\\";
+    export interface RecordWithNamedStringType {
+        pleaseNoNamespace: boolean;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithNamedBooleanType.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordWithNamedStringType = ComExampleAvro.RecordWithNamedStringType;
+
+export namespace ComExampleAvro {
+    export const RecordWithNamedStringTypeName = \\"com.example.avro.RecordWithNamedStringType\\";
+    export interface RecordWithNamedStringType {
+        pleaseNoNamespace: boolean;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithNamedStringType.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordWithNamedStringType = ComExampleAvro.RecordWithNamedStringType;
+
+export namespace ComExampleAvro {
+    export const RecordWithNamedStringTypeName = \\"com.example.avro.RecordWithNamedStringType\\";
+    export interface RecordWithNamedStringType {
+        pleaseNoNamespace: string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithNamedStringType.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordWithNamedStringType = ComExampleAvro.RecordWithNamedStringType;
+
+export namespace ComExampleAvro {
+    export const RecordWithNamedStringTypeName = \\"com.example.avro.RecordWithNamedStringType\\";
+    export interface RecordWithNamedStringType {
+        pleaseNoNamespace: string;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert RecordWithUnion.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 

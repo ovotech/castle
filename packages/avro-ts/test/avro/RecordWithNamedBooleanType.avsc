@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "RecordWithNamedStringType",
+  "namespace": "com.example.avro",
+  "fields": [
+    {
+      "name": "pleaseNoNamespace",
+      "type": { "type": "boolean", "some.metadata.field": "dontCare" }
+    }
+  ]
+}
