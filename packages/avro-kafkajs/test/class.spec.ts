@@ -35,12 +35,14 @@ interface KeyType {
 
 interface LightType {
   userId: number;
+  enum: 'A' | 'B' | 'C';
 }
 
 interface HeavyType {
   userId: number;
   actions: string[];
   time: number;
+  enum: 'A' | 'B';
 }
 
 const schema: schema.RecordType = {
@@ -84,6 +86,7 @@ const heavySchema: schema.RecordType = {
     { name: 'time', type: 'long' },
     { name: 'userId', type: 'int' },
     { name: 'actions', type: { type: 'array', items: 'string' } },
+    { name: 'enum', type: { name: 'T', type: 'enum', symbols: ['A', 'B'] } },
   ],
 };
 
@@ -91,7 +94,10 @@ const lightSchema: schema.RecordType = {
   name: 'LightEvent',
   aliases: ['Event'],
   type: 'record',
-  fields: [{ name: 'userId', type: 'int' }],
+  fields: [
+    { name: 'userId', type: 'int' },
+    { name: 'enum', type: { name: 'T', type: 'enum', symbols: ['A', 'B', 'C'] } },
+  ],
 };
 
 const TOPIC_ALIAS = 'topic-alias';
@@ -617,7 +623,9 @@ describe('Class', () => {
     await producer.send<HeavyType>({
       topic: TOPIC_ALIAS,
       schema: heavySchema,
-      messages: [{ value: { userId: 123, actions: ['add', 'remove'], time: 100 }, key: null }],
+      messages: [
+        { value: { userId: 123, actions: ['add', 'remove'], time: 100, enum: 'A' }, key: null },
+      ],
     });
 
     await retry(
@@ -626,7 +634,7 @@ describe('Class', () => {
 
         expect(consumed).toContainEqual(
           expect.objectContaining({
-            value: { userId: 123 },
+            value: { userId: 123, enum: 'A' },
             schema: heavySchema,
           }),
         );
