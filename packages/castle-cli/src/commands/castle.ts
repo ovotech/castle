@@ -8,7 +8,7 @@ import { Output } from '../output';
 export const castle = (output = new Output(console)): commander.Command =>
   commander
     .createCommand('castle')
-    .version('0.5.13')
+    .version('0.5.14')
     .description(
       `Castle CLI - a tool for inspecting kafka topics with schema registry.
 
