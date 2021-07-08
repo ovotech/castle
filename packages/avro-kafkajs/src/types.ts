@@ -67,6 +67,7 @@ export interface AvroProducerBatch extends Omit<ProducerBatch, 'topicMessages'> 
 
 export interface AvroConsumerRun<T = unknown, KT = KafkaMessage['key']>
   extends Omit<ConsumerRunConfig, 'eachBatch' | 'eachMessage'> {
+  readerSchema?: Schema;
   encodedKey?: boolean;
   eachBatch?: (payload: AvroEachBatchPayload<T, KT>) => Promise<void>;
   eachMessage?: (payload: AvroEachMessagePayload<T, KT>) => Promise<void>;

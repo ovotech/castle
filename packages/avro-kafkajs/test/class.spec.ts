@@ -33,6 +33,18 @@ interface KeyType {
   section: 'first' | 'second';
 }
 
+interface LightType {
+  userId: number;
+  enum: 'A' | 'B' | 'C';
+}
+
+interface HeavyType {
+  userId: number;
+  actions: string[];
+  time: number;
+  enum: 'A' | 'B';
+}
+
 const schema: schema.RecordType = {
   type: 'record',
   name: 'TestMessage',
@@ -64,6 +76,27 @@ const keySchema: schema.RecordType = {
   fields: [
     { type: 'int', name: 'id' },
     { type: { type: 'enum', symbols: ['first', 'second'], name: 'SectionType' }, name: 'section' },
+  ],
+};
+
+const heavySchema: schema.RecordType = {
+  name: 'Event',
+  type: 'record',
+  fields: [
+    { name: 'time', type: 'long' },
+    { name: 'userId', type: 'int' },
+    { name: 'actions', type: { type: 'array', items: 'string' } },
+    { name: 'enum', type: { name: 'T', type: 'enum', symbols: ['A', 'B'] } },
+  ],
+};
+
+const lightSchema: schema.RecordType = {
+  name: 'LightEvent',
+  aliases: ['Event'],
+  type: 'record',
+  fields: [
+    { name: 'userId', type: 'int' },
+    { name: 'enum', type: { name: 'T', type: 'enum', symbols: ['A', 'B', 'C'] } },
   ],
 };
 
@@ -571,6 +604,42 @@ describe('Class', () => {
         );
       },
       { delay: 1000, retries: 4 },
+    );
+  });
+
+  it('Should consume avro messages with reader schema', async () => {
+    jest.setTimeout(12000);
+    const consumed: AvroKafkaMessage<LightType>[] = [];
+
+    await consumer.subscribe({ topic: TOPIC_ALIAS });
+    await consumer.run<LightType>({
+      readerSchema: lightSchema,
+      eachMessage: async (payload) => {
+        consumed.push(payload.message);
+      },
+    });
+
+    // Produce normally to create the subject
+    await producer.send<HeavyType>({
+      topic: TOPIC_ALIAS,
+      schema: heavySchema,
+      messages: [
+        { value: { userId: 123, actions: ['add', 'remove'], time: 100, enum: 'A' }, key: null },
+      ],
+    });
+
+    await retry(
+      async () => {
+        expect(consumed).toHaveLength(1);
+
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            value: { userId: 123, enum: 'A' },
+            schema: heavySchema,
+          }),
+        );
+      },
+      { delay: 1000, retries: 6 },
     );
   });
 });

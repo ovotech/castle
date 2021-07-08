@@ -6,7 +6,7 @@ import {
   getSubjectVersionSchema,
   getSubjectVersions,
 } from '@ovotech/schema-registry-api';
-import { Schema, Type, ForSchemaOptions } from 'avsc';
+import { Schema, Type, ForSchemaOptions, Resolver } from 'avsc';
 import { isDeepStrictEqual } from 'util';
 
 export interface AvroBuffer {
@@ -55,11 +55,27 @@ export interface DecodeCache {
   set(cacheKey: DecodeCacheKey, value: DecodeItem): unknown;
 }
 
+export interface ReaderCacheKey {
+  schema: Schema;
+  id: number;
+}
+
+export interface ReaderItem {
+  type: Type;
+  resolver: Resolver;
+}
+
+export interface ReaderCache {
+  get(cacheKey: ReaderCacheKey): ReaderItem | undefined;
+  set(cacheKey: ReaderCacheKey, value: ReaderItem): unknown;
+}
+
 export interface SchemaRegistryConfig {
   uri: string;
   options?: Partial<ForSchemaOptions>;
   encodeCache?: EncodeCache;
   decodeCache?: DecodeCache;
+  readerCache?: ReaderCache;
 }
 
 export type DecodeItemParams =
@@ -82,16 +98,19 @@ export class SchemaRegistry {
   private uri: string;
   private options?: Partial<ForSchemaOptions>;
   private encodeCache: EncodeCache;
+  private readerCache: ReaderCache;
   private decodeCache: DecodeCache;
   public constructor({
     uri,
     options,
     encodeCache = new Map<number, Type>(),
     decodeCache = new DecodeCacheInMemory<DecodeCacheKey, DecodeItem>(),
+    readerCache = new DecodeCacheInMemory<ReaderCacheKey, ReaderItem>(),
   }: SchemaRegistryConfig) {
     this.uri = uri;
     this.options = options;
     this.encodeCache = encodeCache;
+    this.readerCache = readerCache;
     this.decodeCache = decodeCache;
   }
 
@@ -129,6 +148,19 @@ export class SchemaRegistry {
     }
   }
 
+  public async getReaderType(key: { schema: Schema; id: number }): Promise<ReaderItem> {
+    const cached = this.readerCache.get(key);
+    if (cached) {
+      return cached;
+    } else {
+      const type = Type.forSchema(key.schema, { registry: {}, ...this.options });
+      const writerType = await this.getType(key.id);
+      const resolver = type.createResolver(writerType);
+      this.readerCache.set(key, { resolver, type });
+      return { resolver, type };
+    }
+  }
+
   public async getDecodeItem(params: DecodeItemParams): Promise<DecodeItem> {
     const cacheKey: DecodeCacheKey =
       'subject' in params
@@ -151,15 +183,24 @@ export class SchemaRegistry {
     }
   }
 
-  public async decode<T = unknown>(avroBuffer: Buffer): Promise<T> {
-    const { value } = await this.decodeWithType<T>(avroBuffer);
+  public async decode<T = unknown>(avroBuffer: Buffer, readerSchema?: Schema): Promise<T> {
+    const { value } = await this.decodeWithType<T>(avroBuffer, readerSchema);
     return value;
   }
 
-  public async decodeWithType<T = unknown>(avroBuffer: Buffer): Promise<{ value: T; type: Type }> {
+  public async decodeWithType<T = unknown>(
+    avroBuffer: Buffer,
+    readerSchema?: Schema,
+  ): Promise<{ value: T; type: Type }> {
     const { id, buffer } = deconstructMessage(avroBuffer);
     const type = await this.getType(id);
-    const value = type.fromBuffer(buffer);
+    const reader = readerSchema
+      ? await this.getReaderType({ id, schema: readerSchema })
+      : undefined;
+
+    const value = reader
+      ? reader.type.fromBuffer(buffer, reader.resolver)
+      : type.fromBuffer(buffer);
     return { type, value };
   }
 

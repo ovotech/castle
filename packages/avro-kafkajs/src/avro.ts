@@ -89,6 +89,7 @@ export const toAvroEachMessage = <T = unknown, KT = KafkaMessage['key']>(
   schemaRegistry: SchemaRegistry,
   eachMessage: AvroEachMessage<T, KT>,
   encodedKey?: boolean,
+  readerSchema?: Schema,
 ) => {
   return async (payload: EachMessagePayload): Promise<void> => {
     const key =
@@ -97,7 +98,10 @@ export const toAvroEachMessage = <T = unknown, KT = KafkaMessage['key']>(
         : payload.message.key;
 
     if (payload.message.value !== null) {
-      const { type, value } = await schemaRegistry.decodeWithType<T>(payload.message.value);
+      const { type, value } = await schemaRegistry.decodeWithType<T>(
+        payload.message.value,
+        readerSchema,
+      );
 
       return eachMessage({
         ...payload,
@@ -116,13 +120,16 @@ export const toAvroEachBatch = <T = unknown, KT = KafkaMessage['key']>(
   schemaRegistry: SchemaRegistry,
   eachBatch: AvroEachBatch<T, KT>,
   encodedKey?: boolean,
+  readerSchema?: Schema,
 ) => {
   return async (payload: EachBatchPayload): Promise<void> => {
     const avroPayload = (payload as unknown) as AvroEachBatchPayload<T, KT>;
     const messages: AvroKafkaMessage<T, KT>[] = [];
     for (const message of payload.batch.messages) {
       const key =
-        encodedKey && message.key ? await schemaRegistry.decode<KT>(message.key) : message.key;
+        encodedKey && message.key
+          ? await schemaRegistry.decode<KT>(message.key, readerSchema)
+          : message.key;
 
       if (message.value !== null) {
         const { value, type } = await schemaRegistry.decodeWithType<T>(message.value);
