@@ -1508,6 +1508,15 @@
   dependencies:
     "@octokit/openapi-types" "^5.0.0"
 
+"@ovotech/avro-kafkajs@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@ovotech/avro-kafkajs/-/avro-kafkajs-0.7.1.tgz#a60857a4197b11b37af80d4529292c74550aaeb8"
+  integrity sha512-veKjN14KLV69B/zk+Pt05S444tlV9c5ZuGNqFrLap8midtpxb6E7XsqLI/it3EKcxOjBv7YJp5xCWj8sthGpKQ==
+  dependencies:
+    "@ovotech/schema-registry-api" "^1.1.1"
+    avsc "^5.5.6"
+    long "^4.0.0"
+
 "@ovotech/avro-mock-generator@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@ovotech/avro-mock-generator/-/avro-mock-generator-2.0.3.tgz#db5ce22f1aaefd25f00183e706a6e1f5677f90c4"
@@ -1515,6 +1524,15 @@
   dependencies:
     mersenne-twister "^1.1.0"
     uuid "^7.0.2"
+
+"@ovotech/castle@^0.7.0":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@ovotech/castle/-/castle-0.7.1.tgz#781e75d3d5f91cb29c229e4d32fdbb9402d557d1"
+  integrity sha512-vqQL98wzY8+bcG2pUhL6YGjFSS/KFz7UHmAF6CgGMBhhmdSOeul78vmdt8zVpEr/mc3OoUdryT2VZvHdDE3GsA==
+  dependencies:
+    "@ovotech/avro-kafkajs" "^0.7.1"
+    kafkajs "^1.15.0"
+    lodash.chunk "^4.2.0"
 
 "@ovotech/schema-registry-api@^1.1.1":
   version "1.1.1"
@@ -2617,9 +2635,9 @@ color-name@^1.0.0, color-name@~1.1.4:
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
 color-string@^1.5.2:
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.3.tgz#c9bbc5f01b58b5492f3d6857459cb6590ce204cc"
-  integrity sha512-dC2C5qeWoYkxki5UAXapdjqO672AM4vZuPGRQfO8b5HKuKGBbKWpITyDYN7TOFKvRW7kOgAn3746clDBMDJyQw==
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.5.tgz#65474a8f0e7439625f3d27a6a19d89fc45223014"
+  integrity sha512-jgIoum0OfQfq9Whcfc2z/VhCNcmQjWbey6qBX0vqt7YICflUmBCh9E9CiQD5GSJ+Uehixm3NUwHVhqUAWRivZg==
   dependencies:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
