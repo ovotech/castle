@@ -1,0 +1,52 @@
+{
+  "type": "record",
+  "name": "UserEvent",
+  "namespace": "com.myorg.identity.events.external",
+  "aliases": ["com.myorg.identity.event.UserEvent"],
+  "fields": [
+    {
+      "name": "event",
+      "type": [
+        {
+          "type": "record",
+          "name": "CreatedOrUpdate",
+          "namespace": "com.myorg.identity.events.external.Event",
+          "aliases": ["com.myorg.identity.event.CreatedOrUpdate"],
+          "fields": [
+            {
+              "name": "user",
+              "type": {
+                "type": "record",
+                "name": "User",
+                "namespace": "com.myorg.identity.events.external",
+                "aliases": ["com.myorg.identity.event.User"],
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "title",
+                    "type": ["null", "string"]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "Deleted",
+          "namespace": "com.myorg.identity.events.external.Event",
+          "aliases": ["com.myorg.identity.event.Deleted"],
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "type": "record",
+  "name": "UserEvent",
+  "namespace": "com.myorg.identity.event",
+  "fields": [
+    {
+      "name": "event",
+      "type": [
+        {
+          "type": "record",
+          "name": "CreatedOrUpdate",
+          "fields": [
+            {
+              "name": "user",
+              "type": {
+                "type": "record",
+                "name": "User",
+                "fields": [
+                  {
+                    "name": "id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "Deleted",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
