@@ -97,7 +97,7 @@ export const toAvroEachMessage = <T = unknown, KT = KafkaMessage['key']>(
         ? await schemaRegistry.decode<KT>(payload.message.key)
         : payload.message.key;
 
-    if (payload.message.value !== null) {
+    if (payload.message.value !== null && payload.message.value.length !== 0) {
       const { type, value } = await schemaRegistry.decodeWithType<T>(
         payload.message.value,
         readerSchema,
