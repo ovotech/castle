@@ -90,28 +90,36 @@ export const toAvroEachMessage = <T = unknown, KT = KafkaMessage['key']>(
   eachMessage: AvroEachMessage<T, KT>,
   encodedKey?: boolean,
   readerSchema?: Schema,
+  skipCorrupted=false
 ) => {
   return async (payload: EachMessagePayload): Promise<void> => {
-    const key =
-      encodedKey && payload.message.key
-        ? await schemaRegistry.decode<KT>(payload.message.key)
-        : payload.message.key;
+    try {
+      const key =
+        encodedKey && payload.message.key
+          ? await schemaRegistry.decode<KT>(payload.message.key)
+          : payload.message.key;
 
-    if (payload.message.value !== null && payload.message.value.length !== 0) {
-      const { type, value } = await schemaRegistry.decodeWithType<T>(
-        payload.message.value,
-        readerSchema,
-      );
+      if (payload.message.value !== null && payload.message.value.length !== 0) {
+        const { type, value } = await schemaRegistry.decodeWithType<T>(
+          payload.message.value,
+          readerSchema,
+        );
 
-      return eachMessage({
-        ...payload,
-        message: { ...payload.message, key: key as KT, value, schema: type.schema() },
-      });
-    } else {
-      return eachMessage({
-        ...payload,
-        message: { ...payload.message, key: key as KT, value: null, schema: null },
-      });
+        return eachMessage({
+          ...payload,
+          message: { ...payload.message, key: key as KT, value, schema: type.schema() },
+        });
+      } else {
+        return eachMessage({
+          ...payload,
+          message: { ...payload.message, key: key as KT, value: null, schema: null },
+        });
+      }
+    } catch (error) {
+      if (skipCorrupted) {
+        return
+      }
+      throw error
     }
   };
 };
@@ -121,27 +129,35 @@ export const toAvroEachBatch = <T = unknown, KT = KafkaMessage['key']>(
   eachBatch: AvroEachBatch<T, KT>,
   encodedKey?: boolean,
   readerSchema?: Schema,
+  skipCorrupted=false
 ) => {
   return async (payload: EachBatchPayload): Promise<void> => {
-    const avroPayload = (payload as unknown) as AvroEachBatchPayload<T, KT>;
-    const messages: AvroKafkaMessage<T, KT>[] = [];
-    for (const message of payload.batch.messages) {
-      const key =
-        encodedKey && message.key
-          ? await schemaRegistry.decode<KT>(message.key, readerSchema)
-          : message.key;
+    try {
+      const avroPayload = (payload as unknown) as AvroEachBatchPayload<T, KT>;
+      const messages: AvroKafkaMessage<T, KT>[] = [];
+      for (const message of payload.batch.messages) {
+        const key =
+          encodedKey && message.key
+            ? await schemaRegistry.decode<KT>(message.key, readerSchema)
+            : message.key;
 
-      if (message.value !== null) {
-        const { value, type } = await schemaRegistry.decodeWithType<T>(message.value);
+        if (message.value !== null) {
+          const { value, type } = await schemaRegistry.decodeWithType<T>(message.value);
 
-        messages.push({ ...message, key: key as KT, value, schema: type.schema() });
-      } else {
-        messages.push({ ...message, key: key as KT, value: null, schema: null });
+          messages.push({ ...message, key: key as KT, value, schema: type.schema() });
+        } else {
+          messages.push({ ...message, key: key as KT, value: null, schema: null });
+        }
       }
-    }
 
-    avroPayload.batch.messages = messages;
-    return eachBatch(avroPayload);
+      avroPayload.batch.messages = messages;
+      return eachBatch(avroPayload);
+    } catch (error) {
+      if (skipCorrupted) {
+        return
+      }
+      throw error
+    }
   };
 };
 

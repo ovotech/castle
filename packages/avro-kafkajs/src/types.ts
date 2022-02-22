@@ -71,6 +71,7 @@ export interface AvroConsumerRun<T = unknown, KT = KafkaMessage['key']>
   encodedKey?: boolean;
   eachBatch?: (payload: AvroEachBatchPayload<T, KT>) => Promise<void>;
   eachMessage?: (payload: AvroEachMessagePayload<T, KT>) => Promise<void>;
+  skipCorrupted?: boolean;
 }
 
 export type TopicsAlias = { [key: string]: string };

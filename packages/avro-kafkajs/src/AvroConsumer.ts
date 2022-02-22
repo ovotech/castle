@@ -36,15 +36,15 @@ export class AvroConsumer {
   }
 
   public run<T = unknown, KT = KafkaMessage['key']>(config: AvroConsumerRun<T, KT>): Promise<void> {
-    const { eachMessage, eachBatch, readerSchema, encodedKey, ...rest } = config;
+    const { eachMessage, eachBatch, readerSchema, encodedKey, skipCorrupted, ...rest } = config;
 
     return this.consumer.run({
       ...rest,
       eachMessage: eachMessage
-        ? toAvroEachMessage<T, KT>(this.schemaRegistry, eachMessage, encodedKey, readerSchema)
+        ? toAvroEachMessage<T, KT>(this.schemaRegistry, eachMessage, encodedKey, readerSchema, skipCorrupted)
         : undefined,
       eachBatch: eachBatch
-        ? toAvroEachBatch<T, KT>(this.schemaRegistry, eachBatch, encodedKey, readerSchema)
+        ? toAvroEachBatch<T, KT>(this.schemaRegistry, eachBatch, encodedKey, readerSchema, skipCorrupted)
         : undefined,
     });
   }
