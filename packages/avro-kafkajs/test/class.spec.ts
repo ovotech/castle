@@ -12,6 +12,7 @@ import { retry } from 'ts-retry-promise';
 import * as uuid from 'uuid';
 import { schema } from 'avsc';
 import axios, { AxiosInstance } from 'axios';
+import { Buffer } from 'buffer';
 
 interface MessageType {
   stringField: string;
@@ -103,6 +104,8 @@ const lightSchema: schema.RecordType = {
 const TOPIC_ALIAS = 'topic-alias';
 
 describe('Class', () => {
+  let kafka: Kafka;
+  let schemaRegistry: SchemaRegistry;
   let producer: AvroProducer;
   let consumer: AvroConsumer;
   let admin: Admin;
@@ -111,8 +114,8 @@ describe('Class', () => {
   let realTopicName: string;
 
   beforeEach(async () => {
-    const schemaRegistry = new SchemaRegistry({ uri: 'http://localhost:8081' });
-    const kafka = new Kafka({ brokers: ['localhost:29092'], logLevel: logLevel.NOTHING });
+    schemaRegistry = new SchemaRegistry({ uri: 'http://localhost:8081' });
+    kafka = new Kafka({ brokers: ['localhost:29092'], logLevel: logLevel.NOTHING });
     realTopicName = `dev_avroKafkajs_${uuid.v4()}`;
 
     const avroKafka = new AvroKafka(schemaRegistry, kafka, { [TOPIC_ALIAS]: realTopicName });
@@ -636,6 +639,64 @@ describe('Class', () => {
           expect.objectContaining({
             value: { userId: 123, enum: 'A' },
             schema: heavySchema,
+          }),
+        );
+      },
+      { delay: 1000, retries: 6 },
+    );
+  });
+
+  it('Should consume avro messages and skip corrupted messages', async () => {
+    jest.setTimeout(12000);
+    const consumed: AvroKafkaMessage<LightType>[] = [];
+    await consumer.subscribe({ topic: TOPIC_ALIAS });
+
+    await consumer.run<LightType>({
+      skipCorrupted: true,
+      readerSchema: lightSchema,
+      eachMessage: async (payload) => {
+        consumed.push(payload.message);
+      },
+    });
+
+    const rawProducer = kafka.producer();
+    await rawProducer.connect();
+
+    // Encode the value
+    const value = await schemaRegistry.encode<MessageType>({
+      topic: TOPIC_ALIAS,
+      schemaType: 'value',
+      schema,
+      value: { intField: 10, stringField: 'test1' },
+    });
+    //
+    // Optionally encode the key
+    const key = await schemaRegistry.encode<KeyType>({
+      topic: TOPIC_ALIAS,
+      schemaType: 'key',
+      schema: keySchema,
+      value: {
+        id: 1, section: 'second'
+      },
+    });
+    const blob = Buffer.from('x');
+    // @ts-ignore
+    await rawProducer.send({
+      topic: TOPIC_ALIAS,
+      messages: [
+        { value: blob },
+        { value, key }
+      ],
+    });
+
+    await retry(
+      async () => {
+        expect(consumed).toHaveLength(1);
+
+        expect(consumed).toContainEqual(
+          expect.objectContaining({
+            value: { intField: 10, stringField: 'test1' },
+            schema,
           }),
         );
       },
