@@ -679,12 +679,12 @@ describe('Class', () => {
         id: 1, section: 'second'
       },
     });
-    const blob = Buffer.from('x');
-    // @ts-ignore
+    const buffer = Buffer.alloc(250);
+    buffer.write("Very long string....................................", "utf-8")
     await rawProducer.send({
       topic: TOPIC_ALIAS,
       messages: [
-        { value: blob },
+        { value: buffer },
         { value, key }
       ],
     });
