@@ -1,0 +1,6 @@
+{
+  "type": "record",
+  "name": "record-value",
+  "namespace": "com.acme.myapp",
+  "fields": [{ "name": "name", "type": "string" }]
+}

@@ -3115,3 +3115,31 @@ export namespace ComExampleAvro {
 }
 "
 `;
+
+exports[`Avro ts test Should convert WeirdName.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordValue = ComAcmeMyapp.RecordValue;
+
+export namespace ComAcmeMyapp {
+    export const RecordValueName = \\"com.acme.myapp.record-value\\";
+    export interface RecordValue {
+        name: string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert WeirdName.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RecordValue = ComAcmeMyapp.RecordValue;
+
+export namespace ComAcmeMyapp {
+    export const RecordValueName = \\"com.acme.myapp.record-value\\";
+    export interface RecordValue {
+        name: string;
+    }
+}
+"
+`;

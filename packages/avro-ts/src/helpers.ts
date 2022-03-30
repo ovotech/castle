@@ -11,8 +11,11 @@ export const fullName = (
 export const firstUpperCase = (name: string): string =>
   name ? name[0].toUpperCase() + name.slice(1) : name;
 
-export const convertNamespace = (namespace: string): string =>
-  namespace.split('.').map(firstUpperCase).join('');
+export const convertName = (namespace: string): string =>
+  namespace
+    .split(/[^a-zA-Z0-9\_]+/)
+    .map(firstUpperCase)
+    .join('');
 
 export const nameParts = (fullName: string): [string] | [string, string] => {
   const parts = fullName.split('.');
@@ -27,8 +30,8 @@ export const namedType = (
   schema: avroSchema.RecordType | avroSchema.EnumType,
   namespace?: string,
 ): Document<ts.TypeNode, Context> => {
-  const name = firstUpperCase(schema.name);
-  const namespaceName = namespace ? convertNamespace(namespace) : undefined;
+  const name = convertName(firstUpperCase(schema.name));
+  const namespaceName = namespace ? convertName(namespace) : undefined;
   const fullName = namespaceName ? [namespaceName, name] : name;
 
   const contextWithRef = namespace

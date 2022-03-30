@@ -2,7 +2,7 @@ import { schema as avroSchema, Schema } from 'avsc';
 import { Convert } from '../types';
 import { Type, document, mapWithContext } from '@ovotech/ts-compose';
 import { convertType } from '../convert';
-import { firstUpperCase, namedType } from '../helpers';
+import { convertName, firstUpperCase, namedType } from '../helpers';
 
 export const isRecordType = (type: Schema): type is avroSchema.RecordType =>
   typeof type === 'object' && 'type' in type && (type.type === 'record' || type.type === 'error');
@@ -39,7 +39,7 @@ export const convertRecordType: Convert<avroSchema.RecordType> = (context, schem
   );
 
   const record = Type.Interface({
-    name: firstUpperCase(schema.name),
+    name: convertName(firstUpperCase(schema.name)),
     props: fields.items,
     isExport: true,
     jsDoc: schema.doc,
