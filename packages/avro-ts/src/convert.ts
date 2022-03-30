@@ -11,7 +11,7 @@ import { isEnumType, convertEnumType } from './types/enum';
 import { isPrimitiveType, convertPrimitiveType } from './types/primitive';
 import { isFixedType, convertFixedType } from './types/fixed';
 import { withHeader, withImports } from '@ovotech/ts-compose/dist/document';
-import { fullName, firstUpperCase, nameParts, convertNamespace } from './helpers';
+import { fullName, firstUpperCase, nameParts, convertName } from './helpers';
 import * as ts from 'typescript';
 import { convertNamedType, isNamedType } from './types/named-type';
 
@@ -68,10 +68,10 @@ export const convertType: Convert = (context, type) => {
     if (namespace && context.external && !context.refs?.[type]) {
       for (const module in context.external) {
         if (context.external[module][type]) {
-          const externalNamespace = convertNamespace(namespace);
+          const externalNamespace = convertName(namespace);
           const alias = `${externalNamespace}${firstUpperCase(name)}`;
           const externalContext = withImports(context, {
-            named: [{ name: convertNamespace(namespace), as: alias }],
+            named: [{ name: convertName(namespace), as: alias }],
             module,
           });
           const ref = Type.Referance([alias, firstUpperCase(name)]);
@@ -81,7 +81,7 @@ export const convertType: Convert = (context, type) => {
     }
 
     const ref = namespace
-      ? Type.Referance([convertNamespace(namespace), firstUpperCase(name)])
+      ? Type.Referance([convertName(namespace), firstUpperCase(name)])
       : Type.Referance(firstUpperCase(name));
 
     return document(context, ref);
