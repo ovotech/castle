@@ -62,7 +62,7 @@ jobs:
       - npm-login
       - run: git config user.email "ovotech-ci@ovoenergy.com"
       - run: git config user.name "Ovotech CI"
-      - run: yarn lerna publish from-package --yes
+      - run: yarn lerna publish from-package --yes --no-verify-access
 
 workflows:
   version: 2
