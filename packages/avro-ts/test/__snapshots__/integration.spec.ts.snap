@@ -344,7 +344,19 @@ export namespace ComExampleKafkaComms {
         /**
          * Default: null
          */
-        recipient: null | ComExampleKafkaCommsRecipient.Email | ComExampleKafkaCommsRecipient.Phone | ComExampleKafkaCommsRecipient.Postal;
+        recipient: null | {
+            \\"com.example.kafka.comms.Recipient.Email\\": ComExampleKafkaCommsRecipient.Email;
+            \\"com.example.kafka.comms.Recipient.Phone\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Postal\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Recipient.Email\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Phone\\": ComExampleKafkaCommsRecipient.Phone;
+            \\"com.example.kafka.comms.Recipient.Postal\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Recipient.Email\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Phone\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Postal\\": ComExampleKafkaCommsRecipient.Postal;
+        };
         /**
          * Default: null
          */
@@ -356,7 +368,19 @@ export namespace ComExampleKafkaComms {
         /**
          * Default: null
          */
-        content: null | ComExampleKafkaCommsContent.Email | ComExampleKafkaCommsContent.Sms | ComExampleKafkaCommsContent.Print;
+        content: null | {
+            \\"com.example.kafka.comms.Content.Email\\": ComExampleKafkaCommsContent.Email;
+            \\"com.example.kafka.comms.Content.Sms\\"?: never;
+            \\"com.example.kafka.comms.Content.Print\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Content.Email\\"?: never;
+            \\"com.example.kafka.comms.Content.Sms\\": ComExampleKafkaCommsContent.Sms;
+            \\"com.example.kafka.comms.Content.Print\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Content.Email\\"?: never;
+            \\"com.example.kafka.comms.Content.Sms\\"?: never;
+            \\"com.example.kafka.comms.Content.Print\\": ComExampleKafkaCommsContent.Print;
+        };
         /**
          * Default: []
          */
@@ -551,7 +575,19 @@ export namespace ComExampleKafkaComms {
         /**
          * Default: null
          */
-        recipient?: null | ComExampleKafkaCommsRecipient.Email | ComExampleKafkaCommsRecipient.Phone | ComExampleKafkaCommsRecipient.Postal;
+        recipient?: null | {
+            \\"com.example.kafka.comms.Recipient.Email\\": ComExampleKafkaCommsRecipient.Email;
+            \\"com.example.kafka.comms.Recipient.Phone\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Postal\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Recipient.Email\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Phone\\": ComExampleKafkaCommsRecipient.Phone;
+            \\"com.example.kafka.comms.Recipient.Postal\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Recipient.Email\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Phone\\"?: never;
+            \\"com.example.kafka.comms.Recipient.Postal\\": ComExampleKafkaCommsRecipient.Postal;
+        };
         /**
          * Default: null
          */
@@ -563,7 +599,19 @@ export namespace ComExampleKafkaComms {
         /**
          * Default: null
          */
-        content?: null | ComExampleKafkaCommsContent.Email | ComExampleKafkaCommsContent.Sms | ComExampleKafkaCommsContent.Print;
+        content?: null | {
+            \\"com.example.kafka.comms.Content.Email\\": ComExampleKafkaCommsContent.Email;
+            \\"com.example.kafka.comms.Content.Sms\\"?: never;
+            \\"com.example.kafka.comms.Content.Print\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Content.Email\\"?: never;
+            \\"com.example.kafka.comms.Content.Sms\\": ComExampleKafkaCommsContent.Sms;
+            \\"com.example.kafka.comms.Content.Print\\"?: never;
+        } | {
+            \\"com.example.kafka.comms.Content.Email\\"?: never;
+            \\"com.example.kafka.comms.Content.Sms\\"?: never;
+            \\"com.example.kafka.comms.Content.Print\\": ComExampleKafkaCommsContent.Print;
+        };
         /**
          * Default: []
          */
@@ -1796,6 +1844,98 @@ export namespace ComExampleAvro {
             \\"com.example.avro.FieldTypeA\\"?: never;
             \\"com.example.avro.FieldTypeB\\"?: never;
             \\"com.example.avro.NestedFieldType\\": ComExampleAvro.NestedFieldType;
+        };
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert NullableWrappedUnion.avsc successfully 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type Test = ComOvoenergyKafkaTestEvent.Test;
+
+export namespace ComOvoenergyKafkaTestEvent {
+    export const AName = \\"com.ovoenergy.kafka.test.event.A\\";
+    export interface A {
+        foo: string;
+        bar: string;
+    }
+    export const BName = \\"com.ovoenergy.kafka.test.event.B\\";
+    export interface B {
+        /**
+         * Default: true
+         */
+        fuzz: boolean;
+    }
+    export const CName = \\"com.ovoenergy.kafka.test.event.C\\";
+    export interface C {
+        foo: string;
+        bar: string;
+    }
+    export const TestName = \\"com.ovoenergy.kafka.test.event.test\\";
+    export interface Test {
+        /**
+         * Default: \\"null\\"
+         */
+        event: null | {
+            \\"com.ovoenergy.kafka.test.event.A\\": ComOvoenergyKafkaTestEvent.A;
+            \\"com.ovoenergy.kafka.test.event.B\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.C\\"?: never;
+        } | {
+            \\"com.ovoenergy.kafka.test.event.A\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.B\\": ComOvoenergyKafkaTestEvent.B;
+            \\"com.ovoenergy.kafka.test.event.C\\"?: never;
+        } | {
+            \\"com.ovoenergy.kafka.test.event.A\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.B\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.C\\": ComOvoenergyKafkaTestEvent.C;
+        };
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert NullableWrappedUnion.avsc successfully with default as optional 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type Test = ComOvoenergyKafkaTestEvent.Test;
+
+export namespace ComOvoenergyKafkaTestEvent {
+    export const AName = \\"com.ovoenergy.kafka.test.event.A\\";
+    export interface A {
+        foo: string;
+        bar: string;
+    }
+    export const BName = \\"com.ovoenergy.kafka.test.event.B\\";
+    export interface B {
+        /**
+         * Default: true
+         */
+        fuzz?: boolean;
+    }
+    export const CName = \\"com.ovoenergy.kafka.test.event.C\\";
+    export interface C {
+        foo: string;
+        bar: string;
+    }
+    export const TestName = \\"com.ovoenergy.kafka.test.event.test\\";
+    export interface Test {
+        /**
+         * Default: \\"null\\"
+         */
+        event?: null | {
+            \\"com.ovoenergy.kafka.test.event.A\\": ComOvoenergyKafkaTestEvent.A;
+            \\"com.ovoenergy.kafka.test.event.B\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.C\\"?: never;
+        } | {
+            \\"com.ovoenergy.kafka.test.event.A\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.B\\": ComOvoenergyKafkaTestEvent.B;
+            \\"com.ovoenergy.kafka.test.event.C\\"?: never;
+        } | {
+            \\"com.ovoenergy.kafka.test.event.A\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.B\\"?: never;
+            \\"com.ovoenergy.kafka.test.event.C\\": ComOvoenergyKafkaTestEvent.C;
         };
     }
 }

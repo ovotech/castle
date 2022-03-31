@@ -1,0 +1,59 @@
+{
+  "type": "record",
+  "name": "test",
+  "namespace": "com.ovoenergy.kafka.test.event",
+  "fields": [
+    {
+      "name": "event",
+      "default": "null",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "A",
+          "fields": [
+            {
+              "name": "foo",
+              "type": "string"
+            },
+            {
+              "name": "bar",
+              "type": {
+                "type": "int",
+                "logicalType": "date"
+              }
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "B",
+          "fields": [
+            {
+              "name": "fuzz",
+              "type": "boolean",
+              "default": true
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "C",
+          "fields": [
+            {
+              "name": "foo",
+              "type": "string"
+            },
+            {
+              "name": "bar",
+              "type": {
+                "type": "int",
+                "logicalType": "date"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

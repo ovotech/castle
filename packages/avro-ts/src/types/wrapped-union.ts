@@ -9,28 +9,32 @@ import { fullName } from '../helpers';
 const resolveItem = (context: Context, item: Schema): Schema =>
   typeof item === 'string' && context.refs?.[item] ? context.refs?.[item] : item;
 
-export const isWrappedUnion = (type: Schema, context: Context): type is schema.RecordType[] =>
+type WrappedUnionItem = schema.RecordType | 'null';
+
+export const isWrappedUnion = (type: Schema, context: Context): type is WrappedUnionItem[] =>
   isUnion(type) &&
-  type.length > 1 &&
-  type.every((item) => isRecordType(resolveItem(context, item)));
+  type.filter((item) => item !== 'null').length > 1 &&
+  type.filter((item) => item !== 'null').every((item) => isRecordType(resolveItem(context, item)));
 
 export const convertWrappedUnionType: Convert<schema.RecordType[]> = (context, schema) => {
-  const resolved = schema.map((item) => resolveItem(context, item) as schema.RecordType);
+  const resolved = schema.map((item) => resolveItem(context, item) as WrappedUnionItem);
 
   const map = mapWithContext(context, resolved, (itemContext, item) => {
     const converted = convertType(itemContext, item);
 
     return {
       context: { ...converted.context, namespace: context.namespace },
-      type: Type.TypeLiteral({
-        props: resolved.map((schemaItem) => {
-          return Type.Prop({
-            name: fullName(context, schemaItem),
-            isOptional: schemaItem.name === item.name ? false : true,
-            type: schemaItem.name === item.name ? converted.type : Type.Never,
-          });
-        }),
-      }),
+      type: isRecordType(item)
+        ? Type.TypeLiteral({
+            props: resolved.filter(isRecordType).map((schemaItem) => {
+              return Type.Prop({
+                name: fullName(context, schemaItem),
+                isOptional: schemaItem.name === item.name ? false : true,
+                type: schemaItem.name === item.name ? converted.type : Type.Never,
+              });
+            }),
+          })
+        : Type.Null,
     };
   });
 
