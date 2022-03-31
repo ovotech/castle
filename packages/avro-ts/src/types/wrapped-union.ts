@@ -16,7 +16,7 @@ export const isWrappedUnion = (type: Schema, context: Context): type is WrappedU
   type.filter((item) => item !== 'null').length > 1 &&
   type.filter((item) => item !== 'null').every((item) => isRecordType(resolveItem(context, item)));
 
-export const convertWrappedUnionType: Convert<schema.RecordType[]> = (context, schema) => {
+export const convertWrappedUnionType: Convert<WrappedUnionItem[]> = (context, schema) => {
   const resolved = schema.map((item) => resolveItem(context, item) as WrappedUnionItem);
 
   const map = mapWithContext(context, resolved, (itemContext, item) => {
