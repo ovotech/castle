@@ -1394,6 +1394,20 @@ export namespace UkCoBoostpowerSupportKafkaMessages {
 "
 `;
 
+exports[`Avro ts test Should convert EnumWithFullName.avsc successfully 1`] = `
+"export type AvroType = ComExampleAvroMyEnum;
+
+export type ComExampleAvroMyEnum = \\"ACTIVE\\" | \\"INACTIVE\\";
+"
+`;
+
+exports[`Avro ts test Should convert EnumWithFullName.avsc successfully with default as optional 1`] = `
+"export type AvroType = ComExampleAvroMyEnum;
+
+export type ComExampleAvroMyEnum = \\"ACTIVE\\" | \\"INACTIVE\\";
+"
+`;
+
 exports[`Avro ts test Should convert EpicError.avsc successfully 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 
