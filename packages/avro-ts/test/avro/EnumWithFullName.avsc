@@ -1,0 +1,5 @@
+{
+  "name": "com.example.avro.MyEnum",
+  "type": "enum",
+  "symbols": ["ACTIVE", "INACTIVE"]
+}
