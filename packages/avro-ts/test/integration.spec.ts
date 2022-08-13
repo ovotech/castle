@@ -38,4 +38,18 @@ describe('Avro ts test', () => {
     writeFileSync(join(__dirname, '__generated__', file + '.ts'), ts);
     expect(ts).toMatchSnapshot();
   });
+
+  it.each(avscFiles)('Should convert %s successfully using Typescript Enums', (file) => {
+    const avro: schema.RecordType = JSON.parse(String(readFileSync(join(__dirname, 'avro', file))));
+    const ts = toTypeScript(avro, {
+      withTypescriptEnums: true,
+      logicalTypes: {
+        'timestamp-millis': { module: 'moment', named: 'Moment' },
+        date: 'string',
+        decimal: { module: 'decimal.js', named: 'Decimal' },
+      },
+    });
+    writeFileSync(join(__dirname, '__generated__', file + '.ts'), ts);
+    expect(ts).toMatchSnapshot();
+  });
 });
