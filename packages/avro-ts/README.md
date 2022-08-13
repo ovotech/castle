@@ -252,6 +252,34 @@ const ts = toTypeScript(avro, { defaultsAsOptional: true });
 console.log(ts);
 ```
 
+## Typescript Enums
+
+By default AVRO enums are converted to a string union. If you prefer to use Typescript enums instead, you can use withTypescriptEnums option.
+
+> [examples/with-typescript-enums.ts](examples/with-typescript-enums.ts)
+
+```typescript
+import { toTypeScript } from '@ovotech/avro-ts';
+import { Schema } from 'avsc';
+
+const avro: Schema = {
+  type: 'record',
+  name: 'User',
+  fields: [
+    { name: 'id', type: 'int' },
+    {
+      "name": "status",
+      "type": { "type": "enum", "name": "Status", "symbols": ["Active", "Inactive"] },
+      "doc": "The status of the user account"
+    },
+  ],
+};
+
+const ts = toTypeScript(avro, { withTypescriptEnums: true });
+
+console.log(ts);
+```
+
 ## External references
 
 AvroTs supports external references to schemas in other files. In order to do that you'll need to convert the external schemas first, and then pass them as "external" in the initial context. This can be used as a building blocks to process multiple schemas at once.

@@ -17,5 +17,3 @@ const avro: Schema = {
 const ts = toTypeScript(avro, { withTypescriptEnums: true });
 
 console.log(ts);
-
-
