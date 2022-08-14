@@ -4,14 +4,10 @@ import { Node, Type } from '@ovotech/ts-compose';
 import { convertName, namedType, firstUpperCase } from '../helpers';
 import { withDefault } from './record';
 
-interface EnumWithDefault extends schema.EnumType {
-  default?: string,
-}
-
-export const isEnumType = (type: Schema): type is EnumWithDefault =>
+export const isEnumType = (type: Schema): type is schema.EnumType =>
   typeof type === 'object' && 'type' in type && type.type === 'enum';
 
-export const convertEnumType: Convert<EnumWithDefault> = (context, schema) => {
+export const convertEnumType: Convert<schema.EnumType> = (context, schema) => {
   const namespace = schema.namespace ?? context.namespace;
   let type;
 
