@@ -1,7 +1,7 @@
-import { Context } from './types';
+import { Document, document, Node, Type, withIdentifier } from '@ovotech/ts-compose';
 import { schema as avroSchema } from 'avsc';
-import { Document, Node, withIdentifier, document, Type } from '@ovotech/ts-compose';
 import * as ts from 'typescript';
+import { Context } from './types';
 
 export const fullName = (
   context: Context,
@@ -32,19 +32,46 @@ export const namedType = (
 ): Document<ts.TypeNode, Context> => {
   const name = convertName(firstUpperCase(schema.name));
   const namespaceName = namespace ? convertName(namespace) : undefined;
-  const fullName = namespaceName ? [namespaceName, name] : name;
 
-  const contextWithRef = namespace
-    ? withIdentifier(
+  const fullName = namespaceName ? [namespaceName, name] : name;
+  const fieldName = `${name}Name`;
+  const schemaName = `${namespace}.${fieldName}`;
+
+  let contextWithRef: Context;
+
+  if (namespace) {
+    // If there is already a ref with the same name as our "named type", it means there is already
+    // a type with the same name and we're about to have a naming collision. To avoid this, we
+    // use the fully qualified name instead.
+    if (context.refs && schemaName in context.refs) {
+      contextWithRef = withIdentifier(
         context,
         Node.Const({
-          name: `${name}Name`,
+          name: `${namespaceName}${fieldName}`,
           isExport: true,
           value: `${namespace}.${schema.name}`,
         }),
         namespaceName,
-      )
-    : context;
+      );
+    } else {
+      contextWithRef = withIdentifier(
+        context,
+        Node.Const({
+          name: fieldName,
+          isExport: true,
+          value: `${namespace}.${schema.name}`,
+        }),
+        namespaceName,
+      );
+    }
+  } else {
+    contextWithRef = context;
+  }
 
-  return document(withIdentifier(contextWithRef, type, namespaceName), Type.Referance(fullName));
+  const result = document(
+    withIdentifier(contextWithRef, type, namespaceName),
+    Type.Referance(fullName),
+  );
+
+  return result;
 };
