@@ -36,42 +36,26 @@ export const namedType = (
   const fullName = namespaceName ? [namespaceName, name] : name;
   const fieldName = `${name}Name`;
   const schemaName = `${namespace}.${fieldName}`;
+  const value = `${namespace}.${schema.name}`;
 
-  let contextWithRef: Context;
+  const contextWithRef = namespace
+    ? /**
+       * If there is already a ref with the same name as our "named type", it means there is already
+       * a type with the same name and we're about to have a naming collision. To avoid this, we
+       * use the fully qualified name instead.
+       */
+      context.refs && schemaName in context.refs
+      ? withIdentifier(
+          context,
+          Node.Const({ name: `${namespaceName}${fieldName}`, isExport: true, value }),
+          namespaceName,
+        )
+      : withIdentifier(
+          context,
+          Node.Const({ name: fieldName, isExport: true, value }),
+          namespaceName,
+        )
+    : context;
 
-  if (namespace) {
-    // If there is already a ref with the same name as our "named type", it means there is already
-    // a type with the same name and we're about to have a naming collision. To avoid this, we
-    // use the fully qualified name instead.
-    if (context.refs && schemaName in context.refs) {
-      contextWithRef = withIdentifier(
-        context,
-        Node.Const({
-          name: `${namespaceName}${fieldName}`,
-          isExport: true,
-          value: `${namespace}.${schema.name}`,
-        }),
-        namespaceName,
-      );
-    } else {
-      contextWithRef = withIdentifier(
-        context,
-        Node.Const({
-          name: fieldName,
-          isExport: true,
-          value: `${namespace}.${schema.name}`,
-        }),
-        namespaceName,
-      );
-    }
-  } else {
-    contextWithRef = context;
-  }
-
-  const result = document(
-    withIdentifier(contextWithRef, type, namespaceName),
-    Type.Referance(fullName),
-  );
-
-  return result;
+  return document(withIdentifier(contextWithRef, type, namespaceName), Type.Referance(fullName));
 };
