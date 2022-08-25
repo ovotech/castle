@@ -1,7 +1,7 @@
-import { Context } from './types';
+import { Document, document, Node, Type, withIdentifier } from '@ovotech/ts-compose';
 import { schema as avroSchema } from 'avsc';
-import { Document, Node, withIdentifier, document, Type } from '@ovotech/ts-compose';
 import * as ts from 'typescript';
+import { Context } from './types';
 
 export const fullName = (
   context: Context,
@@ -32,18 +32,29 @@ export const namedType = (
 ): Document<ts.TypeNode, Context> => {
   const name = convertName(firstUpperCase(schema.name));
   const namespaceName = namespace ? convertName(namespace) : undefined;
+
   const fullName = namespaceName ? [namespaceName, name] : name;
+  const fieldName = `${name}Name`;
+  const schemaName = `${namespace}.${fieldName}`;
+  const value = `${namespace}.${schema.name}`;
 
   const contextWithRef = namespace
-    ? withIdentifier(
-        context,
-        Node.Const({
-          name: `${name}Name`,
-          isExport: true,
-          value: `${namespace}.${schema.name}`,
-        }),
-        namespaceName,
-      )
+    ? /**
+       * If there is already a ref with the same name as our "named type", it means there is already
+       * a type with the same name and we're about to have a naming collision. To avoid this, we
+       * use the fully qualified name instead.
+       */
+      context.refs && schemaName in context.refs
+      ? withIdentifier(
+          context,
+          Node.Const({ name: `${namespaceName}${fieldName}`, isExport: true, value }),
+          namespaceName,
+        )
+      : withIdentifier(
+          context,
+          Node.Const({ name: fieldName, isExport: true, value }),
+          namespaceName,
+        )
     : context;
 
   return document(withIdentifier(contextWithRef, type, namespaceName), Type.Referance(fullName));
