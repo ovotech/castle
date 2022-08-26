@@ -29,13 +29,10 @@ export namespace ComExampleAvro {
     }
     export const StatusName = "com.example.avro.status";
     /**
-     * * `PENDING`: the user has started authorizing, but not yet finished
      * * `ACTIVE`: the token should work
-     * * `DENIED`: the user declined the authorization
-     * * `EXPIRED`: the token used to work, but now it doesn't
      * * `REVOKED`: the user has explicitly revoked the token
      */
-    export type Status = "ACTIVE" | "INACTIVE";
+    export type Status = "ACTIVE" | "REVOKED";
     export const UserName = "com.example.avro.User";
     /**
      * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
