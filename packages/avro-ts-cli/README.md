@@ -21,6 +21,7 @@ Options:
 - `-h, --help` - output usage information
 - `-e, --defaults-as-optional` - Fields with defaults as optional
 - `-O, --output-dir <outputDir>` - Directory to write typescript files to
+- `--with-typescript-enums` - Typescript Enum declarations instead of string union
 - `--logical-type <logicalType>` - Logical type, example: date=string (default: {})
 - `--logical-type-import <logicalType>` - Logical type import custom module, example: date=Decimal:decimal.js (default: {})
 - `--logical-type-import-all <logicalType>`- Logical type import custom module as \*, example: date=Decimal:decimal.js (default: {})

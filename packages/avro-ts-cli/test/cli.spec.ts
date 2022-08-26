@@ -48,6 +48,16 @@ describe('Cli', () => {
     expect(file).toMatchSnapshot();
   });
 
+  it('Should convert with typescript enums', async () => {
+    const input = `cmd avro-ts ${join(avroDir, 'ComplexRecord.avsc')} --with-typescript-enums`;
+    convert(logger).parse(input.split(' '));
+
+    const file = readFileSync(join(avroDir, 'ComplexRecord.avsc.ts'), 'utf8');
+
+    expect(logger.std).toMatchSnapshot();
+    expect(file).toMatchSnapshot();
+  });
+
   it('Should convert multiple files', async () => {
     const input1 = join(avroDir, 'ComplexRecord.avsc');
     const input2 = join(avroDir, 'ComplexUnionLogicalTypes.avsc');

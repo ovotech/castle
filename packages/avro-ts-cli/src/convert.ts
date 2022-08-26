@@ -14,6 +14,7 @@ interface Options {
   logicalTypeImportDefault?: { [key: string]: { defaultAs: string; module: string } };
   outputDir?: string;
   defaultsAsOptional?: boolean;
+  withTypescriptEnums?: boolean;
 }
 
 export const convert = (logger: { log: (msg: string) => void } = console): commander.Command =>
@@ -22,6 +23,7 @@ export const convert = (logger: { log: (msg: string) => void } = console): comma
     .arguments('[input...]')
     .option('-O, --output-dir <outputDir>', 'Directory to write typescript files to')
     .option('-e, --defaults-as-optional', 'Fields with defaults as optional')
+    .option('--with-typescript-enums', 'Flag to use Typescript Enums for Avro Enums instead of string union')
     .option(
       '-l, --logical-type <logicalType>',
       'Logical type, example: date=string',
@@ -73,6 +75,7 @@ Example:
   avro-ts avro/*.avsc
   avro-ts avro/*.avsc --output-dir other/dir
   avro-ts avro/*.avsc --defaults-as-optional
+  avro-ts avro/*.avsc --with-typescript-enums
   avro-ts avro/*.avsc --logical-type date=string --logical-type datetime=string
   avro-ts avro/*.avsc --logical-type-import decimal=Decimal:decimal.js
   avro-ts avro/*.avsc --logical-type-import-default decimal=Decimal:decimal.js
@@ -89,6 +92,7 @@ Example:
           logicalTypeImportDefault,
           outputDir,
           defaultsAsOptional,
+          withTypescriptEnums,
         }: Options,
       ) => {
         if (files.length === 0) {
@@ -139,7 +143,7 @@ Example:
               {},
             );
 
-            const ts = toTypeScript(schema, { logicalTypes, external, defaultsAsOptional });
+            const ts = toTypeScript(schema, { logicalTypes, external, defaultsAsOptional, withTypescriptEnums });
             const outputFile = outputDir ? join(outputDir, `${basename(file)}.ts`) : `${file}.ts`;
             writeFileSync(outputFile, ts);
             const shortFile = file.replace(process.cwd(), '.');

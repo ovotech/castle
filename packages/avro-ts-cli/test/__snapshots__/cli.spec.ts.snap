@@ -1997,3 +1997,92 @@ export namespace UkCoBoostpowerSupportKafkaMessages {
 }
 "
 `;
+
+exports[`Cli Should convert with typescript enums 1`] = `
+"Converting Avro to TypeScript
+
+Avro Schema                    | TypeScript File                  
+./test/avro/ComplexRecord.avsc | ./test/avro/ComplexRecord.avsc.ts
+"
+`;
+
+exports[`Cli Should convert with typescript enums 2`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type User = ComExampleAvro.User;
+
+export namespace ComExampleAvro {
+    export const FooName = \\"com.example.avro.Foo\\";
+    export interface Foo {
+        label: string;
+    }
+    export const EmailAddressName = \\"com.example.avro.EmailAddress\\";
+    /**
+     * Stores details about an email address that a user has associated with their account.
+     */
+    export interface EmailAddress {
+        /**
+         * The email address, e.g. \`foo@example.com\`
+         */
+        address: string;
+        /**
+         * true if the user has clicked the link in a confirmation email to this address.
+         *
+         * Default: false
+         */
+        verified: boolean;
+        /**
+         * Timestamp (milliseconds since epoch) when the email address was added to the account.
+         */
+        dateAdded: number;
+    }
+    export const StatusName = \\"com.example.avro.status\\";
+    /**
+     * * \`PENDING\`: the user has started authorizing, but not yet finished
+     * * \`ACTIVE\`: the token should work
+     * * \`DENIED\`: the user declined the authorization
+     * * \`EXPIRED\`: the token used to work, but now it doesn't
+     * * \`REVOKED\`: the user has explicitly revoked the token
+     */
+    export enum Status {
+        ACTIVE = \\"ACTIVE\\",
+        INACTIVE = \\"INACTIVE\\"
+    }
+    export const UserName = \\"com.example.avro.User\\";
+    /**
+     * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+     *
+     * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+     */
+    export interface User {
+        /**
+         * System-assigned numeric user ID. Cannot be changed by the user.
+         */
+        id: number;
+        /**
+         * The username chosen by the user. Can be changed by the user.
+         */
+        username: string;
+        /**
+         * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+         */
+        passwordHash: string;
+        /**
+         * Timestamp (milliseconds since epoch) when the user signed up
+         */
+        signupDate: number;
+        mapField: {
+            [index: string]: ComExampleAvro.Foo;
+        };
+        /**
+         * All email addresses on the user's account
+         */
+        emailAddresses: ComExampleAvro.EmailAddress[];
+        /**
+         * Indicator of whether this authorization is currently active, or has been revoked
+         */
+        status: ComExampleAvro.Status;
+    }
+}
+"
+`;
