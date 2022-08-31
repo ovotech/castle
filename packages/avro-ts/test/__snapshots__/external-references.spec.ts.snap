@@ -1,5 +1,124 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Avro ts test Should convert %s successfully using Typescript Enums: Address.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type Address = MyNamespaceData.Address;
+
+export namespace MyNamespaceData {
+    export const AddressName = \\"my.namespace.data.Address\\";
+    export interface Address {
+        street: string;
+        zipcode: string;
+        country: string;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert %s successfully using Typescript Enums: AvroJobStatus.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type AvroJobStatus = ComZenatonJobManagerData.AvroJobStatus;
+
+export namespace ComZenatonJobManagerData {
+    export const AvroJobStatusName = \\"com.zenaton.jobManager.data.AvroJobStatus\\";
+    export enum AvroJobStatus {
+        RUNNING_OK = \\"RUNNING_OK\\",
+        RUNNING_WARNING = \\"RUNNING_WARNING\\",
+        RUNNING_ERROR = \\"RUNNING_ERROR\\",
+        TERMINATED_COMPLETED = \\"TERMINATED_COMPLETED\\",
+        TERMINATED_CANCELED = \\"TERMINATED_CANCELED\\"
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert %s successfully using Typescript Enums: AvroJobStatusUpdated.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { ComZenatonJobManagerData as ComZenatonJobManagerDataAvroJobStatus } from \\"./AvroJobStatus.avsc.external\\";
+
+export type AvroJobStatusUpdated = ComZenatonJobManagerMessages.AvroJobStatusUpdated;
+
+export namespace ComZenatonJobManagerMessages {
+    export const AvroJobStatusUpdatedName = \\"com.zenaton.jobManager.messages.AvroJobStatusUpdated\\";
+    export interface AvroJobStatusUpdated {
+        jobId: string;
+        jobName: string;
+        oldStatus: null | ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
+        newStatus: ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert %s successfully using Typescript Enums: CreateUser.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
+
+export type CreateUser = MyNamespaceMessages.CreateUser;
+
+export namespace MyNamespaceMessages {
+    export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
+    export interface CreateUser {
+        userId: string;
+        name: string;
+        address: MyNamespaceDataAddress.Address;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert %s successfully using Typescript Enums: Message.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { MyNamespaceMessages as MyNamespaceMessagesCreateUser } from \\"./CreateUser.avsc.external\\";
+
+import { MyNamespaceMessages as MyNamespaceMessagesUpdateAddress } from \\"./UpdateAddress.avsc.external\\";
+
+export type Message = MyNamespace.Message;
+
+export namespace MyNamespace {
+    export const MessageTypeName = \\"my.namespace.MessageType\\";
+    export enum MessageType {
+        CreateUser = \\"CreateUser\\",
+        UpdateAddress = \\"UpdateAddress\\"
+    }
+    export const MessageName = \\"my.namespace.Message\\";
+    export interface Message {
+        type: MyNamespace.MessageType;
+        /**
+         * Default: null
+         */
+        CreateUser: null | MyNamespaceMessagesCreateUser.CreateUser;
+        /**
+         * Default: null
+         */
+        UpdateAddress: null | MyNamespaceMessagesUpdateAddress.UpdateAddress;
+    }
+}
+"
+`;
+
+exports[`Avro ts test Should convert %s successfully using Typescript Enums: UpdateAddress.avsc 1`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
+
+export type UpdateAddress = MyNamespaceMessages.UpdateAddress;
+
+export namespace MyNamespaceMessages {
+    export const UpdateAddressName = \\"my.namespace.messages.UpdateAddress\\";
+    export interface UpdateAddress {
+        userId: string;
+        address: MyNamespaceDataAddress.Address;
+    }
+}
+"
+`;
+
 exports[`Avro ts test Should convert %s successfully: Address.avsc 1`] = `
 "/* eslint-disable @typescript-eslint/no-namespace */
 

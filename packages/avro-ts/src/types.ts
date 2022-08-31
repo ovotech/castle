@@ -13,6 +13,7 @@ export interface Context extends DocumentContext {
   refs?: { [key: string]: Schema };
   external?: { [file: string]: { [key: string]: Schema } };
   defaultsAsOptional?: boolean;
+  withTypescriptEnums?: boolean;
 }
 
 export type Convert<TSchema = Schema, TType = ts.TypeNode> = (

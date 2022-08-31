@@ -25,7 +25,7 @@ export const nameParts = (fullName: string): [string] | [string, string] => {
 };
 
 export const namedType = (
-  type: ts.InterfaceDeclaration | ts.TypeAliasDeclaration,
+  type: ts.InterfaceDeclaration | ts.TypeAliasDeclaration | ts.EnumDeclaration,
   context: Context,
   schema: avroSchema.RecordType | avroSchema.EnumType,
   namespace?: string,
