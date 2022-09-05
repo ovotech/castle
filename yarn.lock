@@ -2151,11 +2151,6 @@ avsc@^5.5.6:
   resolved "https://registry.yarnpkg.com/avsc/-/avsc-5.6.0.tgz#b05d308f719dc7c24a427a55dff4e1fb2fa41fca"
   integrity sha512-aZ/tCgSaXnIgYomdtSiYkJb5iStk9D0Qls/VXIGb+Z+seOQmgEA8YfzEPw9qgJYi3JyLVRwfta06ztVXtrhekA==
 
-avsc@^5.7.5:
-  version "5.7.5"
-  resolved "https://artifactory.nordstrom.com/artifactory/api/npm/npm/avsc/-/avsc-5.7.5.tgz#da1840506b3ff69e14b5f87ce511e9c384405166"
-  integrity sha512-vkyt1+sj6qaD9oMtqqLE2pZ2IcHI66kFx8lpnVuXp55SnNPjKghfOhVfZpaDwDPpY0oVWP3Qu1uHZWxF3E856A==
-
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
