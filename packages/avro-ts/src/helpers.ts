@@ -38,6 +38,8 @@ export const namedType = (
   const schemaName = `${namespace}.${fieldName}`;
   const value = `${namespace}.${schema.name}`;
 
+  const schemaValue = (name : string) => Node.Const({ name, isExport: true, value: JSON.stringify(schema) });
+
   const contextWithRef = namespace
     ? /**
        * If there is already a ref with the same name as our "named type", it means there is already
@@ -46,12 +48,12 @@ export const namedType = (
        */
       context.refs && schemaName in context.refs
       ? withIdentifier(
-          context,
+          withIdentifier(context, schemaValue(`${namespaceName}${name}Schema`), namespaceName),
           Node.Const({ name: `${namespaceName}${fieldName}`, isExport: true, value }),
           namespaceName,
         )
       : withIdentifier(
-          context,
+          withIdentifier(context, schemaValue(`${name}Schema`), namespaceName),
           Node.Const({ name: fieldName, isExport: true, value }),
           namespaceName,
         )
