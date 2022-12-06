@@ -1517,13 +1517,13 @@
     avsc "^5.5.6"
     long "^4.0.0"
 
-"@ovotech/avro-mock-generator@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@ovotech/avro-mock-generator/-/avro-mock-generator-2.0.3.tgz#db5ce22f1aaefd25f00183e706a6e1f5677f90c4"
-  integrity sha512-+dHr+yw+73m8AWg0GL0rAtoAT52wdlUn/FtSsBBP4hrRCEdZn8aMkjcdHFMeXGwdvRlOl3hR42DdBimjicokCA==
+"@ovotech/avro-mock-generator@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@ovotech/avro-mock-generator/-/avro-mock-generator-3.0.0.tgz#565dc132b3d3c8769bdcedac96ff9fbd9e3ccd9e"
+  integrity sha512-5vd0r82r4nKh75z9xFZPgIaG0+dYKsHMlkHJAheSbddnG8rTt5wwXtvZ1rrgr57hX6pfgYifo2L0e8nKANhl+Q==
   dependencies:
     mersenne-twister "^1.1.0"
-    uuid "^7.0.2"
+    uuid "^9.0.0"
 
 "@ovotech/castle@^0.7.0":
   version "0.7.1"
@@ -2983,9 +2983,9 @@ decimal.js@^10.2.1:
   integrity sha512-KaL7+6Fw6i5A2XSnsbhm/6B+NuEA7TZ4vqxnd5tXz9sbKtrN9Srj8ab4vKVdK8YAqZO9P1kg45Y6YLoduPf+kw==
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 dedent@^0.7.0:
   version "0.7.0"
@@ -8167,15 +8167,15 @@ uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
 
-uuid@^7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.2.tgz#7ff5c203467e91f5e0d85cfcbaaf7d2ebbca9be6"
-  integrity sha512-vy9V/+pKG+5ZTYKf+VcphF5Oc6EFiu3W8Nv3P3zIh0EqVI80ZxOzuPfe9EHjkFNvf8+xuTHVeei4Drydlx4zjw==
-
 uuid@^8.3.0, uuid@^8.3.1:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
+  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 v8-compile-cache@^2.0.3:
   version "2.1.0"
