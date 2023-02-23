@@ -95,3 +95,6 @@ packages/*/dist
 
 .vscode
 **/coverage/**
+
+# Nix
+shell.nix

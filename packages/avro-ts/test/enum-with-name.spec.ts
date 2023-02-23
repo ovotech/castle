@@ -27,8 +27,10 @@ describe('enum with "Name" name in name', () => {
 export type Status = ComExampleAvro.Status;
 
 export namespace ComExampleAvro {
+    export const StatusNameSchema = ${JSON.stringify(JSON.stringify(schema.fields[0].type))};
     export const StatusNameName = "com.example.avro.StatusName";
     export type StatusName = "ACTIVE" | "INACTIVE";
+    export const ComExampleAvroStatusSchema = ${JSON.stringify(JSON.stringify(schema))};
     export const ComExampleAvroStatusName = "com.example.avro.Status";
     export interface Status {
         statusName: ComExampleAvro.StatusName;
