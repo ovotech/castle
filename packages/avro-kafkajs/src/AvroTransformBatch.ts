@@ -1,6 +1,6 @@
 import { Transform, TransformCallback } from 'stream';
 import { AvroKafkaMessage, AvroEachBatchPayload, AvroBatch, Optional } from './types';
-import * as Long from 'long';
+import Long = require('long');
 
 export interface StreamKafkaMessage<TValue = unknown, TKey = AvroKafkaMessage['key']>
   extends Optional<AvroKafkaMessage<TValue, TKey>, 'attributes' | 'timestamp' | 'size' | 'offset'> {
