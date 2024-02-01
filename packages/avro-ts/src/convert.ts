@@ -15,14 +15,19 @@ import { fullName, firstUpperCase, nameParts, convertName } from './helpers';
 import * as ts from 'typescript';
 import { convertNamedType, isNamedType } from './types/named-type';
 
-export const addRef = (type: schema.RecordType | schema.EnumType, context: Context): Context => ({
-  ...context,
-  namespace: type.namespace ?? context.namespace,
-  refs: {
-    ...context.refs,
-    [fullName(context, type)]: { ...type, namespace: type.namespace ?? context.namespace },
-  },
-});
+export const addRef = (type: schema.RecordType | schema.EnumType, context: Context): Context => {
+  if (context.ignoreNamespaces) {
+    delete type.namespace;
+  }
+  return {
+    ...context,
+    namespace: type.namespace ?? context.namespace,
+    refs: {
+      ...context.refs,
+      [fullName(context, type)]: { ...type, namespace: type.namespace ?? context.namespace },
+    },
+  };
+};
 
 export const collectRefs = (type: Schema, context: Context): Context => {
   if (isUnion(type)) {
@@ -63,7 +68,7 @@ export const convertType: Convert = (context, type) => {
     return convertNamedType(context, type);
   } else if (typeof type === 'string') {
     const [name, nameNamespace] = nameParts(type);
-    const namespace = nameNamespace ?? context.namespace;
+    const namespace = !context.ignoreNamespaces ? nameNamespace ?? context.namespace : undefined;
 
     if (namespace && context.external && !context.refs?.[type]) {
       for (const module in context.external) {

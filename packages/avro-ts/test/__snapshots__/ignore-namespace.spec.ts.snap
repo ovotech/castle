@@ -1,0 +1,1410 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Avro ts test Should convert BalanceAdjustment.avsc successfully without namespaces 1`] = `
+"import { Moment } from \\"moment\\";
+
+export type AvroType = BalanceAdjustment;
+
+export interface Config {
+    tokenId: string;
+}
+
+export interface ConfigExtended {
+    tokenId: string;
+    extensionId: string;
+}
+
+/**
+ * Metadata, to be used in each event class
+ */
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: Moment;
+    config: {
+        \\"undefined.Config\\": Config;
+        \\"undefined.ConfigExtended\\"?: never;
+    } | {
+        \\"undefined.Config\\"?: never;
+        \\"undefined.ConfigExtended\\": ConfigExtended;
+    };
+}
+
+export type Fuel = \\"Gas\\" | \\"Electricity\\";
+
+/**
+ * Balance Adjustment request has been sent
+ */
+export interface BalanceAdjustmentRequest {
+    /**
+     * A unique balance adjustment job id. Will correspond with the jobId of BalanceAdjustmentResponse
+     */
+    jobId: string;
+    /**
+     * Unique identifier for the customer. Gentrack Account ID. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * Meter Serial Number of the meter having its balance adjusted
+     */
+    msn: string;
+    /**
+     * A Meter Point Administration Number (Electricity) or Meter Point Reference Number (Gas). It is expected that the specified meter supplies this Supply Point.
+     */
+    mpxn: string;
+    /**
+     * Type of fuel of the meter
+     */
+    fuel: Fuel;
+    /**
+     * The amount the balance was adjusted with, in thousands of a penny
+     */
+    amount: number;
+}
+
+export type Status = \\"Error\\" | \\"Success\\";
+
+/**
+ * Balance Adjustment Completion
+ */
+export interface BalanceAdjustmentResponse {
+    /**
+     * A unique adjustment job id. Will correspond with the jobId S2BalanceAdjustmentRequest
+     */
+    jobId: string;
+    /**
+     * The status of the balance adjustment when its completed
+     */
+    status: Status;
+    /**
+     * The resulting the balance after the adjustemt, in thousands of a penny
+     */
+    balance: number;
+}
+
+/**
+ * A balance adjustment request and response events
+ */
+export interface BalanceAdjustment {
+    metadata: EventMetadata;
+    event: {
+        \\"undefined.BalanceAdjustmentRequest\\": BalanceAdjustmentRequest;
+        \\"undefined.BalanceAdjustmentResponse\\"?: never;
+    } | {
+        \\"undefined.BalanceAdjustmentRequest\\"?: never;
+        \\"undefined.BalanceAdjustmentResponse\\": BalanceAdjustmentResponse;
+    };
+}
+"
+`;
+
+exports[`Avro ts test Should convert CommUpdateType.avsc successfully without namespaces 1`] = `
+"import { Moment } from \\"moment\\";
+
+export type AvroType = CommunicationUpdate;
+
+export interface EventMetadata {
+    eventId: string;
+    traceToken: string;
+    createdAt: Moment;
+}
+
+export interface TemplateManifest {
+    id: string;
+    version: string;
+}
+
+export interface Template {
+    manifest: TemplateManifest;
+    name: string;
+    commType: string;
+}
+
+export interface PostalAddress {
+    /**
+     * Default: null
+     */
+    contactName: null | string;
+    /**
+     * Default: null
+     */
+    company: null | string;
+    line1: string;
+    /**
+     * Default: null
+     */
+    line2: null | string;
+    town: string;
+    /**
+     * Default: null
+     */
+    county: null | string;
+    postcode: string;
+    /**
+     * Default: null
+     */
+    country: null | string;
+}
+
+export interface ContactDetails {
+    /**
+     * Default: null
+     */
+    emailAddress: null | string;
+    /**
+     * Default: null
+     */
+    phoneNumber: null | string;
+    /**
+     * Default: null
+     */
+    postalAddress: null | PostalAddress;
+}
+
+export interface Customer {
+    profileId: string;
+    /**
+     * Default: null
+     */
+    contactDetails: null | ContactDetails;
+}
+
+export interface Email {
+    sender: string;
+    subject: string;
+    body: string;
+    /**
+     * Default: null
+     */
+    textBody: null | string;
+}
+
+export interface Phone {
+    phoneNumber: string;
+}
+
+export interface Postal {
+    postalAddress: PostalAddress;
+}
+
+export interface Failure {
+    at: Moment;
+    code: string;
+    reason: string;
+}
+
+export interface Sms {
+    body: string;
+}
+
+export interface Print {
+    body: string;
+}
+
+export interface Attachment {
+    uri: string;
+    fileName: string;
+}
+
+export interface SpecialRequirements {
+    preferences: string[];
+}
+
+export interface Communication {
+    id: string;
+    traceToken: string;
+    brand: string;
+    template: Template;
+    status: string;
+    description: string;
+    source: string;
+    isCanary: boolean;
+    triggeredAt: Moment;
+    /**
+     * Default: null
+     */
+    scheduledAt: null | Moment;
+    /**
+     * Default: null
+     */
+    orchestratedAt: null | Moment;
+    /**
+     * Default: null
+     */
+    composedAt: null | Moment;
+    /**
+     * Default: null
+     */
+    issuedForDeliveryAt: null | Moment;
+    /**
+     * Default: null
+     */
+    deliveredAt: null | Moment;
+    /**
+     * Default: null
+     */
+    expireAt: null | Moment;
+    deliverTo: Customer | ContactDetails;
+    /**
+     * Default: null
+     */
+    recipient: null | {
+        \\"undefined.Email\\": Email;
+        \\"undefined.Phone\\"?: never;
+        \\"undefined.Postal\\"?: never;
+    } | {
+        \\"undefined.Email\\"?: never;
+        \\"undefined.Phone\\": Phone;
+        \\"undefined.Postal\\"?: never;
+    } | {
+        \\"undefined.Email\\"?: never;
+        \\"undefined.Phone\\"?: never;
+        \\"undefined.Postal\\": Postal;
+    };
+    /**
+     * Default: null
+     */
+    channel: null | string;
+    /**
+     * Default: null
+     */
+    failure: null | Failure;
+    /**
+     * Default: null
+     */
+    content: null | {
+        \\"undefined.Email\\": Email;
+        \\"undefined.Sms\\"?: never;
+        \\"undefined.Print\\"?: never;
+    } | {
+        \\"undefined.Email\\"?: never;
+        \\"undefined.Sms\\": Sms;
+        \\"undefined.Print\\"?: never;
+    } | {
+        \\"undefined.Email\\"?: never;
+        \\"undefined.Sms\\"?: never;
+        \\"undefined.Print\\": Print;
+    };
+    /**
+     * Default: []
+     */
+    attachments: Attachment[];
+    /**
+     * Default: null
+     */
+    specialRequirements: null | SpecialRequirements;
+}
+
+export interface CommunicationUpdate {
+    metadata: EventMetadata;
+    communication: Communication;
+}
+"
+`;
+
+exports[`Avro ts test Should convert ComplexRecord.avsc successfully without namespaces 1`] = `
+"export type AvroType = User;
+
+export interface Foo {
+    label: string;
+}
+
+/**
+ * Stores details about an email address that a user has associated with their account.
+ */
+export interface EmailAddress {
+    /**
+     * The email address, e.g. \`foo@example.com\`
+     */
+    address: string;
+    /**
+     * true if the user has clicked the link in a confirmation email to this address.
+     *
+     * Default: false
+     */
+    verified: boolean;
+    /**
+     * Timestamp (milliseconds since epoch) when the email address was added to the account.
+     */
+    dateAdded: number;
+}
+
+/**
+ * * \`PENDING\`: the user has started authorizing, but not yet finished
+ * * \`ACTIVE\`: the token should work
+ * * \`DENIED\`: the user declined the authorization
+ * * \`EXPIRED\`: the token used to work, but now it doesn't
+ * * \`REVOKED\`: the user has explicitly revoked the token
+ */
+export type Status = \\"ACTIVE\\" | \\"INACTIVE\\";
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    mapField: {
+        [index: string]: Foo;
+    };
+    /**
+     * All email addresses on the user's account
+     */
+    emailAddresses: EmailAddress[];
+    /**
+     * Indicator of whether this authorization is currently active, or has been revoked
+     *
+     * Default: \\"INACTIVE\\"
+     */
+    status: Status;
+}
+"
+`;
+
+exports[`Avro ts test Should convert ComplexUnionLogicalTypes.avsc successfully without namespaces 1`] = `
+"import { Moment } from \\"moment\\";
+
+export type AvroType = AccountMigrationEvent;
+
+/**
+ * Metadata, to be used in each event class
+ */
+export interface EventMetadata {
+    /**
+     * A globally unique ID for this Kafka message
+     */
+    eventId: string;
+    /**
+     * An ID that can be used to link all the requests and Kafka messages in a given transaction. If you already have a trace token from a previous event/request, you should copy it here. If this is the very start of a transaction, you should generate a fresh trace token and put it here. A UUID is suitable
+     */
+    traceToken: string;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: Moment;
+}
+
+/**
+ * Triggered by Migration Service. Before T2 signals that a siemens account migration has been cancelled. Migration is about to be restarted for the same account that means a new AccountMigrationScheduledEvent with a new flow id will be sent.Consumers should not react on this in normal case.
+ */
+export interface AccountMigrationCancelledEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was cancelled (in epoch millis)
+     */
+    cancelledAt: Moment;
+}
+
+/**
+ * Triggered by SMILE. After SMILE processed the AccountMigrationValidatedEvent and switched over to Billy from Siemens they trigger this event to inform consumers like BIT CSA portal and Salesforce to do the necessary steps for the switchover
+ */
+export interface AccountMigrationCompletedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was completed (in epoch millis)
+     */
+    completedAt: Moment;
+}
+
+/**
+ * Triggered by Migration Service. After T2 it signals that a siemens account migration roll back was initiated. SMILE should change the data master system for the account from Billy to Siemens and inform other system about the result.
+ */
+export interface AccountMigrationRollBackInitiatedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration rollback was initiated (in epoch millis)
+     */
+    rollBackInitiatedAt: Moment;
+}
+
+/**
+ * Triggered by SMILE. As the response to the AccountMigrationRollBackInitiatedEvent, SMILE indicates that mastering system for account data has been restored to be Siemens.As an action to this Billy, BIT CSA portal and Salesforce can do the necessary steps to clean up internal data and switch over to use Siemens data.
+ */
+export interface AccountMigrationRolledBackEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was rolled back (in epoch millis)
+     */
+    rolledBackAt: Moment;
+}
+
+/**
+ * Triggered by Migration Service. At T-2 it signals that a siemens account migration has been scheduled for T0 (effectiveEnrollmentDate).Consumers should do the necessary steps like removing primary card functionality in PAYG account service. If consumers see a new AccountMigrationScheduledEvent with a new flow id then they have to update their internal state with the new flow id since every subsequent message in the migration flow will use the same id
+ */
+export interface AccountMigrationScheduledEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the customer came on supply with Boost (in epoch days)
+     */
+    supplyStartDate: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migration was scheduled (in epoch millis)
+     */
+    scheduledAt: Moment;
+}
+
+/**
+ * Triggered by Balance Service. At T2 it signals that a siemens balance and transaction history was migrated to the new balance platform and the validation was successful. Billy is ready to be the source for balance and transaction history data. SMILE should change the data master system for the account from Siemens to Billy and inform other system about the result
+ */
+export interface AccountMigrationValidatedEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the migrated balance and transactions were validated (in epoch millis)
+     */
+    validatedAt: Moment;
+}
+
+/**
+ * Triggered by Migration Service. At T1 signals that a siemens balance and transaction history is available for Billy. Contains details.
+ */
+export interface BalanceRetrievedMigrationEvent {
+    metadata: EventMetadata;
+    /**
+     * Globally unique identifier for the enrollment
+     */
+    enrollmentId: string;
+    /**
+     * Unique identifier for the customer. GentrackId/SiemensId. Usually 7 digits.
+     */
+    accountId: string;
+    /**
+     * The unique national reference for Meter Point Administration Number
+     */
+    mpan: string;
+    /**
+     * The date when the account is going to be enrolled for the new balance platform (in epoch days)
+     */
+    effectiveEnrollmentDate: string;
+    /**
+     * The time when the balance and transaction history was fetched (in epoch millis)
+     */
+    retrievedAt: Moment;
+}
+
+/**
+ * Account migration related events. It describes several flows: 1. Happy path: AccountMigrationScheduledEvent -> BalanceRetrievedMigrationEvent -> AccountMigrationValidatedEvent -> AccountMigrationCompletedEvent 2. Cancel where the migration is about the be restarted: AccountMigrationScheduledEvent -> BalanceRetrievedMigrationEvent -> AccountMigrationCancelledEvent -> Start from the beginning, AccountMigrationScheduledEvent -> AccountMigrationCancelledEvent -> Start from the beginning 3. Rollback: AccountMigrationScheduledEvent -> BalanceRetrievedMigrationEvent -> AccountMigrationValidatedEvent -> AccountMigrationCompletedEvent -> AccountMigrationRollBackInitiatedEvent -> AccountMigrationRolledBackEvent -> Start from the beginning AccountMigrationScheduledEvent generates a flow id which is used in every subsequent migration message to be grouped together
+ */
+export interface AccountMigrationEvent {
+    event: {
+        \\"undefined.AccountMigrationCancelledEvent\\": AccountMigrationCancelledEvent;
+        \\"undefined.AccountMigrationCompletedEvent\\"?: never;
+        \\"undefined.AccountMigrationRollBackInitiatedEvent\\"?: never;
+        \\"undefined.AccountMigrationRolledBackEvent\\"?: never;
+        \\"undefined.AccountMigrationScheduledEvent\\"?: never;
+        \\"undefined.AccountMigrationValidatedEvent\\"?: never;
+        \\"undefined.BalanceRetrievedMigrationEvent\\"?: never;
+    } | {
+        \\"undefined.AccountMigrationCancelledEvent\\"?: never;
+        \\"undefined.AccountMigrationCompletedEvent\\": AccountMigrationCompletedEvent;
+        \\"undefined.AccountMigrationRollBackInitiatedEvent\\"?: never;
+        \\"undefined.AccountMigrationRolledBackEvent\\"?: never;
+        \\"undefined.AccountMigrationScheduledEvent\\"?: never;
+        \\"undefined.AccountMigrationValidatedEvent\\"?: never;
+        \\"undefined.BalanceRetrievedMigrationEvent\\"?: never;
+    } | {
+        \\"undefined.AccountMigrationCancelledEvent\\"?: never;
+        \\"undefined.AccountMigrationCompletedEvent\\"?: never;
+        \\"undefined.AccountMigrationRollBackInitiatedEvent\\": AccountMigrationRollBackInitiatedEvent;
+        \\"undefined.AccountMigrationRolledBackEvent\\"?: never;
+        \\"undefined.AccountMigrationScheduledEvent\\"?: never;
+        \\"undefined.AccountMigrationValidatedEvent\\"?: never;
+        \\"undefined.BalanceRetrievedMigrationEvent\\"?: never;
+    } | {
+        \\"undefined.AccountMigrationCancelledEvent\\"?: never;
+        \\"undefined.AccountMigrationCompletedEvent\\"?: never;
+        \\"undefined.AccountMigrationRollBackInitiatedEvent\\"?: never;
+        \\"undefined.AccountMigrationRolledBackEvent\\": AccountMigrationRolledBackEvent;
+        \\"undefined.AccountMigrationScheduledEvent\\"?: never;
+        \\"undefined.AccountMigrationValidatedEvent\\"?: never;
+        \\"undefined.BalanceRetrievedMigrationEvent\\"?: never;
+    } | {
+        \\"undefined.AccountMigrationCancelledEvent\\"?: never;
+        \\"undefined.AccountMigrationCompletedEvent\\"?: never;
+        \\"undefined.AccountMigrationRollBackInitiatedEvent\\"?: never;
+        \\"undefined.AccountMigrationRolledBackEvent\\"?: never;
+        \\"undefined.AccountMigrationScheduledEvent\\": AccountMigrationScheduledEvent;
+        \\"undefined.AccountMigrationValidatedEvent\\"?: never;
+        \\"undefined.BalanceRetrievedMigrationEvent\\"?: never;
+    } | {
+        \\"undefined.AccountMigrationCancelledEvent\\"?: never;
+        \\"undefined.AccountMigrationCompletedEvent\\"?: never;
+        \\"undefined.AccountMigrationRollBackInitiatedEvent\\"?: never;
+        \\"undefined.AccountMigrationRolledBackEvent\\"?: never;
+        \\"undefined.AccountMigrationScheduledEvent\\"?: never;
+        \\"undefined.AccountMigrationValidatedEvent\\": AccountMigrationValidatedEvent;
+        \\"undefined.BalanceRetrievedMigrationEvent\\"?: never;
+    } | {
+        \\"undefined.AccountMigrationCancelledEvent\\"?: never;
+        \\"undefined.AccountMigrationCompletedEvent\\"?: never;
+        \\"undefined.AccountMigrationRollBackInitiatedEvent\\"?: never;
+        \\"undefined.AccountMigrationRolledBackEvent\\"?: never;
+        \\"undefined.AccountMigrationScheduledEvent\\"?: never;
+        \\"undefined.AccountMigrationValidatedEvent\\"?: never;
+        \\"undefined.BalanceRetrievedMigrationEvent\\": BalanceRetrievedMigrationEvent;
+    };
+}
+"
+`;
+
+exports[`Avro ts test Should convert EnumWithFullName.avsc successfully without namespaces 1`] = `
+"export type AvroType = ComExampleAvroMyEnum;
+
+export type ComExampleAvroMyEnum = \\"ACTIVE\\" | \\"INACTIVE\\";
+"
+`;
+
+exports[`Avro ts test Should convert EpicError.avsc successfully without namespaces 1`] = `
+"export type AvroType = EpicFailure;
+
+export type ErrorCode = \\"ERROR\\";
+
+export interface EpicFailure {
+    code: ErrorCode;
+    message: string;
+}
+"
+`;
+
+exports[`Avro ts test Should convert M03.avsc successfully without namespaces 1`] = `
+"export type AvroType = M03;
+
+export interface Items {
+    Record_Count: string;
+}
+
+export interface MetaV1 {
+    eventId: string;
+    createdAt: number;
+    traceToken: string;
+    /**
+     * The url of the parsed Avro Data file from which the record was extracted.
+     */
+    sourcePath: string;
+    /**
+     * The md5Hash of the parsed Avro Data file from which the record was extracted.
+     */
+    md5Hash: string;
+    /**
+     * The url of the original raw flow file.
+     */
+    rawSourcePath: string;
+    /**
+     * The md5Hash of the original raw flow file.
+     */
+    rawSourceMd5Hash: string;
+}
+
+export interface A00 {
+    groupName: string;
+    items: Items;
+}
+
+export interface Z99 {
+    groupName: string;
+    items: Items;
+}
+
+export interface M03 {
+    groupName: string;
+    items: Items;
+    /**
+     * the Id of this record. Each record gets assigned a unique Id.
+     */
+    recordId: string;
+    metadata: MetaV1;
+    header: A00;
+    footer: Z99;
+}
+"
+`;
+
+exports[`Avro ts test Should convert NestedRecordNamespace.avsc successfully without namespaces 1`] = `
+"export type AvroType = NestRecordEvent;
+
+export interface Level2Record {
+    id: string;
+}
+
+export interface Level2Sibling {
+    id: string;
+}
+
+export interface Level1Record {
+    id: string;
+    child: {
+        \\"undefined.Level2Record\\": Level2Record;
+        \\"undefined.Level2Sibling\\"?: never;
+    } | {
+        \\"undefined.Level2Record\\"?: never;
+        \\"undefined.Level2Sibling\\": Level2Sibling;
+    };
+}
+
+export interface Level1Sibling {
+    id: string;
+}
+
+export interface NestRecordEvent {
+    event: {
+        \\"undefined.Level1Record\\": Level1Record;
+        \\"undefined.Level1Sibling\\"?: never;
+    } | {
+        \\"undefined.Level1Record\\"?: never;
+        \\"undefined.Level1Sibling\\": Level1Sibling;
+    };
+}
+"
+`;
+
+exports[`Avro ts test Should convert NestedWrappedType.avsc successfully without namespaces 1`] = `
+"export type AvroType = Event;
+
+export interface NestedFieldType {
+    id: string;
+}
+
+export interface FieldTypeA {
+    id: string;
+    nested: NestedFieldType;
+}
+
+export interface FieldTypeB {
+    id: string;
+}
+
+export interface Event {
+    field: FieldTypeA | FieldTypeB | NestedFieldType;
+}
+"
+`;
+
+exports[`Avro ts test Should convert NullableWrappedUnion.avsc successfully without namespaces 1`] = `
+"export type AvroType = Test;
+
+export interface A {
+    foo: string;
+    bar: string;
+}
+
+export interface B {
+    /**
+     * Default: true
+     */
+    fuzz: boolean;
+}
+
+export interface C {
+    foo: string;
+    bar: string;
+}
+
+export interface Test {
+    /**
+     * Default: \\"null\\"
+     */
+    event: null | {
+        \\"undefined.A\\": A;
+        \\"undefined.B\\"?: never;
+        \\"undefined.C\\"?: never;
+    } | {
+        \\"undefined.A\\"?: never;
+        \\"undefined.B\\": B;
+        \\"undefined.C\\"?: never;
+    } | {
+        \\"undefined.A\\"?: never;
+        \\"undefined.B\\"?: never;
+        \\"undefined.C\\": C;
+    };
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithDefault.avsc successfully without namespaces 1`] = `
+"export type AvroType = RecordWithDefault;
+
+export interface NoNeedForNamespace {
+    /**
+     * A fictitious id
+     */
+    id: string;
+}
+
+export interface RecordWithDefault {
+    /**
+     * Default: null
+     */
+    pleaseNoNamespace: null | NoNeedForNamespace;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithDefaults.avsc successfully without namespaces 1`] = `
+"export type AvroType = CreateUser;
+
+export interface CreateUser {
+    userId: string;
+    /**
+     * Default: \\"John\\"
+     */
+    firstname: string | null;
+    /**
+     * Default: null
+     */
+    lastname: null | string;
+    /**
+     * Default: \\"john.doe@example.com\\"
+     */
+    email: string;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithEnum.avsc successfully without namespaces 1`] = `
+"export type AvroType = User;
+
+/**
+ * * \`PENDING\`: the user has started authorizing, but not yet finished
+ * * \`ACTIVE\`: the token should work
+ * * \`DENIED\`: the user declined the authorization
+ * * \`EXPIRED\`: the token used to work, but now it doesn't
+ * * \`REVOKED\`: the user has explicitly revoked the token
+ */
+export type Status = \\"ACTIVE\\" | \\"INACTIVE\\";
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    /**
+     * Indicator of whether this authorization is currently active, or has been revoked
+     */
+    status: Status;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithInterface.avsc successfully without namespaces 1`] = `
+"export type AvroType = User;
+
+/**
+ * Stores details about an email address that a user has associated with their account.
+ */
+export interface EmailAddress {
+    /**
+     * The email address, e.g. \`foo@example.com\`
+     */
+    address: string;
+    /**
+     * true if the user has clicked the link in a confirmation email to this address.
+     *
+     * Default: false
+     */
+    verified: boolean;
+    /**
+     * Timestamp (milliseconds since epoch) when the email address was added to the account.
+     */
+    dateAdded: number;
+}
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    /**
+     * All email addresses on the user's account
+     */
+    emailAddresses: EmailAddress[];
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithLogicalTypes.avsc successfully without namespaces 1`] = `
+"import { Moment } from \\"moment\\";
+
+export type AvroType = Event;
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface Event {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * A timestamp for when the event was created (in epoch millis)
+     */
+    createdAt: Moment;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithLogicalTypesImport.avsc successfully without namespaces 1`] = `
+"import { Decimal } from \\"decimal.js\\";
+
+export type AvroType = Event;
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface Event {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * A Decimal that we need a library for
+     */
+    decimalValue: Decimal;
+    /**
+     * Another decimal to make sure we don't add the import more than once
+     */
+    anotherDecimal: Decimal;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithMap.avsc successfully without namespaces 1`] = `
+"export type AvroType = User;
+
+export interface Foo {
+    label: string;
+}
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    mapField: {
+        [index: string]: Foo;
+    };
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithNamedBooleanType.avsc successfully without namespaces 1`] = `
+"export type AvroType = RecordWithNamedStringType;
+
+export interface RecordWithNamedStringType {
+    pleaseNoNamespace: boolean;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithNamedStringType.avsc successfully without namespaces 1`] = `
+"export type AvroType = RecordWithNamedStringType;
+
+export interface RecordWithNamedStringType {
+    pleaseNoNamespace: string;
+}
+"
+`;
+
+exports[`Avro ts test Should convert RecordWithUnion.avsc successfully without namespaces 1`] = `
+"export type AvroType = User;
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    /**
+     * Default: null
+     */
+    unionType: null | string;
+}
+"
+`;
+
+exports[`Avro ts test Should convert SimpleRecord.avsc successfully without namespaces 1`] = `
+"export type AvroType = User;
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+}
+"
+`;
+
+exports[`Avro ts test Should convert TopLevelUnion.avsc successfully without namespaces 1`] = `
+"export type AvroType = {
+    \\"undefined.Cancelled\\": Cancelled;
+    \\"undefined.Creation\\"?: never;
+} | {
+    \\"undefined.Cancelled\\"?: never;
+    \\"undefined.Creation\\": Creation;
+};
+
+export interface EventMetadata {
+    eventId: string;
+}
+
+export interface Cancelled {
+    metadata: EventMetadata;
+    CancellationId: string;
+}
+
+export interface Creation {
+    metadata: EventMetadata;
+    creationId: string;
+}
+"
+`;
+
+exports[`Avro ts test Should convert TradeCollection.avsc successfully without namespaces 1`] = `
+"export type AvroType = TradeCollection;
+
+export type TradeType = \\"Market\\" | \\"Limit\\";
+
+export type TradeDirection = \\"Buy\\" | \\"Sell\\";
+
+export interface Trade {
+    /**
+     * Default: \\"\\"
+     */
+    id: string;
+    /**
+     * Default: 0
+     */
+    price: number;
+    /**
+     * Default: 0
+     */
+    amount: number;
+    /**
+     * Default: \\"\\"
+     */
+    datetime: string;
+    /**
+     * Default: 0
+     */
+    timestamp: number;
+    /**
+     * Default: null
+     */
+    type: null | TradeType;
+    /**
+     * Default: null
+     */
+    side: null | TradeDirection;
+}
+
+export interface TradeCollection {
+    /**
+     * Default: \\"\\"
+     */
+    producerId: string;
+    /**
+     * Default: \\"\\"
+     */
+    exchange: string;
+    /**
+     * Default: \\"\\"
+     */
+    market: string;
+    /**
+     * Default: []
+     */
+    trades: Trade[];
+}
+"
+`;
+
+exports[`Avro ts test Should convert TrfPreNexus.avsc successfully without namespaces 1`] = `
+"export type AvroType = TrfPreNexus;
+
+/**
+ * This type indicates that the data has been deleted according to the data retention policy.
+ */
+export interface Deleted {
+    /**
+     * Additional information about reason behind the delete event
+     */
+    deleteReason: string;
+}
+
+export interface LapsedConfirmationDets {
+    /**
+     * Default: \\"lapsedConfirmationDets\\"
+     */
+    groupName: string;
+}
+
+export interface TransferOfOwnership {
+    /**
+     * Default: \\"transferOfOwnership\\"
+     */
+    groupName: string;
+}
+
+export interface FlowContents {
+    /**
+     * The split flow record.
+     */
+    record: {
+        \\"undefined.LapsedConfirmationDets\\": LapsedConfirmationDets;
+        \\"undefined.TransferOfOwnership\\"?: never;
+    } | {
+        \\"undefined.LapsedConfirmationDets\\"?: never;
+        \\"undefined.TransferOfOwnership\\": TransferOfOwnership;
+    };
+}
+
+export interface TrfPreNexus {
+    data: {
+        \\"undefined.Deleted\\": Deleted;
+        \\"undefined.FlowContents\\"?: never;
+    } | {
+        \\"undefined.Deleted\\"?: never;
+        \\"undefined.FlowContents\\": FlowContents;
+    };
+}
+"
+`;
+
+exports[`Avro ts test Should convert User.avsc successfully without namespaces 1`] = `
+"export type AvroType = User;
+
+/**
+ * Stores details about an email address that a user has associated with their account.
+ */
+export interface EmailAddress {
+    /**
+     * The email address, e.g. \`foo@example.com\`
+     */
+    address: string;
+    /**
+     * true if the user has clicked the link in a confirmation email to this address.
+     *
+     * Default: false
+     */
+    verified: boolean;
+    /**
+     * Timestamp (milliseconds since epoch) when the email address was added to the account.
+     */
+    dateAdded: number;
+    /**
+     * Timestamp (milliseconds since epoch) when an email sent to this address last bounced. Reset to null when the address no longer bounces.
+     */
+    dateBounced: null | number;
+}
+
+/**
+ * * \`PENDING\`: the user has started authorizing, but not yet finished
+ * * \`ACTIVE\`: the token should work
+ * * \`DENIED\`: the user declined the authorization
+ * * \`EXPIRED\`: the token used to work, but now it doesn't
+ * * \`REVOKED\`: the user has explicitly revoked the token
+ */
+export type OAuthStatus = \\"PENDING\\" | \\"ACTIVE\\" | \\"DENIED\\" | \\"EXPIRED\\" | \\"REVOKED\\";
+
+/**
+ * Stores access credentials for one Twitter account, as granted to us by the user by OAuth.
+ */
+export interface TwitterAccount {
+    /**
+     * Indicator of whether this authorization is currently active, or has been revoked
+     */
+    status: OAuthStatus;
+    /**
+     * Twitter's numeric ID for this user
+     */
+    userId: number;
+    /**
+     * The twitter username for this account (can be changed by the user)
+     */
+    screenName: string;
+    /**
+     * The OAuth token for this Twitter account
+     */
+    oauthToken: string;
+    /**
+     * The OAuth secret, used for signing requests on behalf of this Twitter account. \`null\` whilst the OAuth flow is not yet complete.
+     */
+    oauthTokenSecret: null | string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user last authorized this Twitter account
+     */
+    dateAuthorized: number;
+}
+
+/**
+ * * \`HIDDEN\`: not currently visible, e.g. because it becomes actionable in future
+ * * \`ACTIONABLE\`: appears in the current to-do list
+ * * \`DONE\`: marked as done, but still appears in the list
+ * * \`ARCHIVED\`: marked as done and no longer visible
+ * * \`DELETED\`: not done and removed from list (preserved for undo purposes)
+ */
+export type ToDoStatus = \\"HIDDEN\\" | \\"ACTIONABLE\\" | \\"DONE\\" | \\"ARCHIVED\\" | \\"DELETED\\";
+
+/**
+ * A record is one node in a To-Do item tree (every record can contain nested sub-records).
+ */
+export interface ToDoItem {
+    /**
+     * User-selected state for this item (e.g. whether or not it is marked as done)
+     */
+    status: ToDoStatus;
+    /**
+     * One-line summary of the item
+     */
+    title: string;
+    /**
+     * Detailed description (may contain HTML markup)
+     */
+    description: null | string;
+    /**
+     * Timestamp (milliseconds since epoch) at which the item should go from \`HIDDEN\` to \`ACTIONABLE\` status
+     */
+    snoozeDate: null | number;
+    /**
+     * List of children of this to-do tree node
+     */
+    subItems: ToDoItem[];
+}
+
+/**
+ * This is a user record in a fictitious to-do-list management app. It supports arbitrary grouping and nesting of items, and allows you to add items by email or by tweeting.
+ *
+ * Note this app doesn't actually exist. The schema is just a demo for [Avrodoc](https://github.com/ept/avrodoc)!
+ */
+export interface User {
+    /**
+     * System-assigned numeric user ID. Cannot be changed by the user.
+     */
+    id: number;
+    /**
+     * The username chosen by the user. Can be changed by the user.
+     */
+    username: string;
+    /**
+     * The user's password, hashed using [scrypt](http://www.tarsnap.com/scrypt.html).
+     */
+    passwordHash: string;
+    /**
+     * Timestamp (milliseconds since epoch) when the user signed up
+     */
+    signupDate: number;
+    /**
+     * All email addresses on the user's account
+     */
+    emailAddresses: EmailAddress[];
+    /**
+     * All Twitter accounts that the user has OAuthed
+     */
+    twitterAccounts: TwitterAccount[];
+    /**
+     * The top-level items in the user's to-do list
+     */
+    toDoItems: ToDoItem[];
+}
+"
+`;
+
+exports[`Avro ts test Should convert WeirdName.avsc successfully without namespaces 1`] = `
+"export type AvroType = RecordValue;
+
+export interface RecordValue {
+    name: string;
+}
+"
+`;
