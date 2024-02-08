@@ -1,10 +1,10 @@
+import { document, mapWithContext, Type } from '@ovotech/ts-compose';
 import { schema, Schema } from 'avsc';
-import { Convert, Context } from '../types';
-import { Type, mapWithContext, document } from '@ovotech/ts-compose';
-import { isUnion } from './union';
-import { isRecordType } from './record';
 import { convertType } from '../convert';
 import { fullName } from '../helpers';
+import { Context, Convert } from '../types';
+import { isRecordType } from './record';
+import { isUnion } from './union';
 
 const resolveItem = (context: Context, item: Schema): Schema =>
   typeof item === 'string' && context.refs?.[item] ? context.refs?.[item] : item;
@@ -13,6 +13,7 @@ type WrappedUnionItem = schema.RecordType | 'null';
 
 export const isWrappedUnion = (type: Schema, context: Context): type is WrappedUnionItem[] =>
   isUnion(type) &&
+  !!context.wrapUnions &&
   type.filter((item) => item !== 'null').length > 1 &&
   type.filter((item) => item !== 'null').every((item) => isRecordType(resolveItem(context, item)));
 

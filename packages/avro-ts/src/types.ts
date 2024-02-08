@@ -1,6 +1,6 @@
-import * as ts from 'typescript';
 import { Document, DocumentContext } from '@ovotech/ts-compose';
 import { Schema } from 'avsc';
+import * as ts from 'typescript';
 
 export type CustomLogicalType =
   | { module: string; named: string }
@@ -14,6 +14,7 @@ export interface Context extends DocumentContext {
   external?: { [file: string]: { [key: string]: Schema } };
   defaultsAsOptional?: boolean;
   withTypescriptEnums?: boolean;
+  disableAutoWrapUnions?: boolean;
 }
 
 export type Convert<TSchema = Schema, TType = ts.TypeNode> = (

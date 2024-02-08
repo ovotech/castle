@@ -1,17 +1,18 @@
-import * as commander from 'commander';
-import { toTypeScript, toExternalContext } from '@ovotech/avro-ts';
+import { toExternalContext, toTypeScript } from '@ovotech/avro-ts';
 import { Schema } from 'avsc';
-import { join, basename, relative, dirname } from 'path';
-import { readFileSync, writeFileSync } from 'fs';
 import * as chalk from 'chalk';
-import { table } from './output';
+import * as commander from 'commander';
+import { readFileSync, writeFileSync } from 'fs';
+import { basename, dirname, join, relative } from 'path';
 import { inspect } from 'util';
+import { table } from './output';
 
 interface Options {
   logicalType?: { [key: string]: string };
   logicalTypeImport?: { [key: string]: { named: string; module: string } };
   logicalTypeImportAll?: { [key: string]: { allAs: string; module: string } };
   logicalTypeImportDefault?: { [key: string]: { defaultAs: string; module: string } };
+  disableAutoWrapUnions?: boolean;
   outputDir?: string;
   defaultsAsOptional?: boolean;
   withTypescriptEnums?: boolean;
@@ -80,6 +81,7 @@ Example:
   avro-ts avro/*.avsc --logical-type-import decimal=Decimal:decimal.js
   avro-ts avro/*.avsc --logical-type-import-default decimal=Decimal:decimal.js
   avro-ts avro/*.avsc --logical-type-import-all decimal=Decimal:decimal.js
+  avro-ts avro/*.avsc --disable-auto-wrap-unions
   `,
     )
     .action(
@@ -90,6 +92,7 @@ Example:
           logicalTypeImport,
           logicalTypeImportAll,
           logicalTypeImportDefault,
+          disableAutoWrapUnions,
           outputDir,
           defaultsAsOptional,
           withTypescriptEnums,
@@ -143,7 +146,7 @@ Example:
               {},
             );
 
-            const ts = toTypeScript(schema, { logicalTypes, external, defaultsAsOptional, withTypescriptEnums });
+            const ts = toTypeScript(schema, { logicalTypes, external, defaultsAsOptional, withTypescriptEnums, disableAutoWrapUnions });
             const outputFile = outputDir ? join(outputDir, `${basename(file)}.ts`) : `${file}.ts`;
             writeFileSync(outputFile, ts);
             const shortFile = file.replace(process.cwd(), '.');
