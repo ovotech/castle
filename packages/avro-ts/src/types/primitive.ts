@@ -6,7 +6,7 @@ import { Type, document } from '@ovotech/ts-compose';
 const primitiveTypeMap: {
   [key in schema.PrimitiveType]: ts.TypeNode;
 } = {
-  long: Type.Number,
+  long: Type.Union([Type.Referance('bigint'), Type.Number]),
   int: Type.Number,
   double: Type.Number,
   float: Type.Number,
