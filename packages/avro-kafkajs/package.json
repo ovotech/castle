@@ -41,7 +41,7 @@
     "preset": "../../jest.json"
   },
   "peerDependencies": {
-    "kafkajs": "^1.15.0"
+    "kafkajs": "1.15.0"
   },
   "dependencies": {
     "@ovotech/schema-registry-api": "^1.1.1",

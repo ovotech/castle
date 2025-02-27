@@ -43,7 +43,7 @@
     "ansi-regex": "^5.0.0",
     "chalk": "^4.1.0",
     "commander": "^7.1.0",
-    "kafkajs": "^1.15.0",
+    "kafkajs": "1.15.0",
     "long": "^4.0.0",
     "runtypes": "^5.0.1",
     "uuid": "^8.3.1"

@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@ovotech/avro-kafkajs": "^0.8.1",
-    "kafkajs": "^1.15.0",
+    "kafkajs": "1.15.0",
     "lodash.chunk": "^4.2.0"
   }
 }
