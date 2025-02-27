@@ -101,7 +101,7 @@ export class Output {
     try {
       await action();
     } catch (error) {
-      this.logger.error(chalk.red(error.message));
+      this.logger.error(chalk.red(error instanceof Error? error.message: 'unknown message'));
       if (this.exit) {
         process.exit(1);
       }
