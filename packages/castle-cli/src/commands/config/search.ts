@@ -8,7 +8,7 @@ const loadConfig = (file: string): string => {
   try {
     return connection(JSON.parse(readFileSync(file, 'utf8')));
   } catch (error) {
-    return `[Error: ${error.message}]`;
+    return `[Error: ${error instanceof Error ? error.message : 'unknown error'}]`;
   }
 };
 
