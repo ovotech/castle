@@ -70,7 +70,7 @@ export const createLogging = <TLogger extends Logger = Logger>(
     }
     await next({ ...ctx, logger });
   } catch (errorOrFailure) {
-    const error = errorOrFailure instanceof Error ? errorOrFailure : new Error(errorOrFailure);
+    const error = errorOrFailure instanceof Error ? errorOrFailure : new Error('unknown failure');
     if (options.error) {
       logger.log('error', ...options.error(error));
     }
