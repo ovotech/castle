@@ -152,7 +152,7 @@ export class AvroTransformBatch<
       }
       callback();
     } catch (error) {
-      callback(error);
+      callback(error instanceof Error?  error : null);
     }
   }
 }
