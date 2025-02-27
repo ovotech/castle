@@ -30,7 +30,7 @@ export class ConsumerWritable<TValue = unknown, TKey = KafkaMessage['key']> exte
       }
       callback();
     } catch (error) {
-      callback(error);
+      callback(error instanceof Error ? error : null);
     }
   }
 }
