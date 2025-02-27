@@ -25,6 +25,7 @@ export class ConsumerWritable<TValue = unknown, TKey = KafkaMessage['key']> exte
             producer: this.producer,
             partition: data.batch.partition,
             topic: data.batch.topic,
+            heartbeat: async () => {}
           });
         }
       }
