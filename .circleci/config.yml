@@ -29,7 +29,7 @@ jobs:
         environment:
           ZOOKEEPER_CLIENT_PORT: 2181
           ZOOKEEPER_TICK_TIME: 2000
-      - image: postgres:11
+      - image: postgres:16
         environment:
           POSTGRES_DB: boost-statements-api
           POSTGRES_USER: boost-statements-api
