@@ -4295,10 +4295,10 @@ int64-buffer@^0.99.1007:
   resolved "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-0.99.1007.tgz#211ea089a2fdb960070a2e77cd6d17dc456a5220"
   integrity sha512-XDBEu44oSTqlvCSiOZ/0FoUkpWu/vwjJLGSKDabNISPQNZ5wub1FodGHBljRsrR0IXRPq7SslshZYMuA55CgTQ==
 
-int64-buffer@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-1.0.0.tgz#580068cdb411a11287e0f569a2ae7021414f2ce4"
-  integrity sha512-yD4sihjB6Puqlk7hL3Cz0/0C6dtueUcf70mUbgioNQacgi4+pkoC9t0TkRetHvm+zvajyb7WaJZ6Bq4Xax3nTQ==
+int64-buffer@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-1.1.0.tgz#7ebe9822196a93bbedf93ec6b73b569561b5ae3a"
+  integrity sha512-94smTCQOvigN4d/2R/YDjz8YVG0Sufvv2aAh8P5m42gwhCsDAJqnbNOrxJsrADuAFAA69Q/ptGzxvNcNuIJcvw==
 
 interpret@^1.0.0:
   version "1.4.0"
