@@ -20,6 +20,6 @@
     "preset": "./jest.json"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^8.2.1"
   }
 }

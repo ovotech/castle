@@ -24,12 +24,12 @@ commands:
 jobs:
   test:
     docker:
-      - image: circleci/node:10
+      - image: cimg/node:22.14
       - image: confluentinc/cp-zookeeper:5.0.1
         environment:
           ZOOKEEPER_CLIENT_PORT: 2181
           ZOOKEEPER_TICK_TIME: 2000
-      - image: postgres:11
+      - image: postgres:16
         environment:
           POSTGRES_DB: boost-statements-api
           POSTGRES_USER: boost-statements-api
@@ -54,7 +54,7 @@ jobs:
 
   publish:
     docker:
-      - image: circleci/node:10
+      - image: cimg/node:22.14
     steps:
       - checkout
       - yarn-install

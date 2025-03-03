@@ -31,8 +31,8 @@
     "avsc": "^5.5.3"
   },
   "dependencies": {
-    "decimal.js": "^10.2.1",
-    "int64-buffer": "^1.0.0"
+    "decimal.js": "^10.5.0",
+    "int64-buffer": "^1.1.0"
   },
   "jest": {
     "preset": "../../jest.json"
