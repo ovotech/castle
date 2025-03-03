@@ -24,7 +24,7 @@ commands:
 jobs:
   test:
     docker:
-      - image: circleci/node:10
+      - image: cimg/node:22.11.10
       - image: confluentinc/cp-zookeeper:5.0.1
         environment:
           ZOOKEEPER_CLIENT_PORT: 2181
@@ -54,7 +54,7 @@ jobs:
 
   publish:
     docker:
-      - image: circleci/node:10
+      - image: cimg/node:22.11.10
     steps:
       - checkout
       - yarn-install
