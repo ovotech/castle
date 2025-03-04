@@ -36,5 +36,9 @@
   },
   "jest": {
     "preset": "../../jest.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   }
 }
