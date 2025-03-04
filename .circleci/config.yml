@@ -13,6 +13,7 @@ commands:
     description: Set npm login
     steps:
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      - run: echo "//npm.pkg.github.com/:_authToken=${GITHUB_NPM_TOKEN}" >> ~/.npmrc
 
   yarn-save-cache:
     description: Save yarn packages cache
@@ -62,7 +63,7 @@ jobs:
       - npm-login
       - run: git config user.email "ovotech-ci@ovoenergy.com"
       - run: git config user.name "Ovotech CI"
-      - run: yarn lerna publish from-package --yes --no-verify-access
+      - run: yarn lerna publish from-package --yes
 
 workflows:
   version: 2
