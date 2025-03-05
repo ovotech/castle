@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Avro simple and full name related tests Should properly generate union type names when inheriting a namespace 1`] = `
+RootRecord {
+  "unionField": Branch$ {
+    "RootNamespace.SomeRecordA": SomeRecordA {
+      "someRecordAField": "test",
+    },
+  },
+}
+`;
+
+exports[`Avro simple and full name related tests Should properly generate union type names when inheriting a namespace 2`] = `
+"/* eslint-disable @typescript-eslint/no-namespace */
+
+export type RootRecord = RootNamespace.RootRecord;
+
+export namespace RootNamespace {
+    export const SomeRecordASchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"SomeRecordA\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"someRecordAField\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]}\\";
+    export const SomeRecordAName = \\"RootNamespace.SomeRecordA\\";
+    export interface SomeRecordA {
+        someRecordAField: string;
+    }
+    export const SomeRecordBSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"SomeRecordB\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"someRecordBField\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]}\\";
+    export const SomeRecordBName = \\"RootNamespace.SomeRecordB\\";
+    export interface SomeRecordB {
+        someRecordBField: string;
+    }
+    export const RootRecordSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"RootRecord\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"RootNamespace\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"unionField\\\\\\",\\\\\\"type\\\\\\":[{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"SomeRecordA\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"someRecordAField\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]},{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"SomeRecordB\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"someRecordBField\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]}]}]}\\";
+    export const RootRecordName = \\"RootNamespace.RootRecord\\";
+    export interface RootRecord {
+        unionField: {
+            \\"RootNamespace.SomeRecordA\\": RootNamespace.SomeRecordA;
+            \\"RootNamespace.SomeRecordB\\"?: never;
+        } | {
+            \\"RootNamespace.SomeRecordA\\"?: never;
+            \\"RootNamespace.SomeRecordB\\": RootNamespace.SomeRecordB;
+        };
+    }
+}
+"
+`;
+
+exports[`Avro simple and full name related tests Should properly generate union type names when specifying a full name 1`] = `
+RootRecord {
+  "unionField": Branch$ {
+    "RecordANamespace.SomeRecordA": SomeRecordA {
+      "someRecordAField": "test",
+    },
+  },
+}
+`;
+
+exports[`Avro simple and full name related tests Should properly generate union type names when specifying a full name 2`] = `
+"export type AvroType = RootRecord;
+
+export interface RecordANamespaceSomeRecordA {
+    someRecordAField: string;
+}
+
+export interface RecordBNamespaceSomeRecordB {
+    someRecordBField: string;
+}
+
+export interface RootRecord {
+    unionField: {
+        \\"RecordANamespace.SomeRecordA\\": RecordANamespaceSomeRecordA;
+        \\"RecordBNamespace.SomeRecordB\\"?: never;
+    } | {
+        \\"RecordANamespace.SomeRecordA\\"?: never;
+        \\"RecordBNamespace.SomeRecordB\\": RecordBNamespaceSomeRecordB;
+    };
+}
+"
+`;
+
+exports[`Avro simple and full name related tests Should properly generate union type names when there are no namespaces 1`] = `
+RootRecord {
+  "unionField": Branch$ {
+    "SomeRecordA": SomeRecordA {
+      "someRecordAField": "test",
+    },
+  },
+}
+`;
+
+exports[`Avro simple and full name related tests Should properly generate union type names when there are no namespaces 2`] = `
+"export type AvroType = RootRecord;
+
+export interface SomeRecordA {
+    someRecordAField: string;
+}
+
+export interface SomeRecordB {
+    someRecordBField: string;
+}
+
+export interface RootRecord {
+    unionField: {
+        SomeRecordA: SomeRecordA;
+        SomeRecordB?: never;
+    } | {
+        SomeRecordA?: never;
+        SomeRecordB: SomeRecordB;
+    };
+}
+"
+`;
