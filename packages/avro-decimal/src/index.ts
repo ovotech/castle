@@ -72,10 +72,14 @@ export class AvroDecimal extends types.LogicalType {
   }
 
   public _toValue(val: unknown): Buffer {
-    if (!(val instanceof Decimal)) {
+    // Workaround for `val instanceof Decimal` returning false negavites
+    // across versions of ts, gives some level of sanity checking/better
+    // error when accidentally passing in garbage
+    const dVal = val as Decimal;
+    if (!dVal.mul) {
       throw new Error('expecting Decimal type');
     }
 
-    return decimalToBuffer(val, this.scale);
+    return decimalToBuffer(dVal, this.scale);
   }
 }

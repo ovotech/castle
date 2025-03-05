@@ -26,6 +26,10 @@ describe('DecimalSchema', () => {
       decimalSchema.fromBuffer(decimalSchema.toBuffer(d)),
     );
   });
+
+  it('throws when trying to encode non-decimal', () => {
+    expect(() => decimalSchema.toBuffer(123)).toThrowError('expecting Decimal type');
+  });
 });
 
 describe('to64Bit', () => {
