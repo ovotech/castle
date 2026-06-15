@@ -1,14 +1,10 @@
-/* eslint-disable @typescript-eslint/no-namespace */
+import { Address } from "./Address.avsc";
 
-import { MyNamespaceData as MyNamespaceDataAddress } from "./Address.avsc";
+export const UpdateAddressSchema = "{\"type\":\"record\",\"name\":\"UpdateAddress\",\"namespace\":\"my.namespace.messages\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\",\"logicalType\":\"uuid\"},{\"name\":\"address\",\"type\":\"my.namespace.data.Address\"}]}";
 
-export type UpdateAddress = MyNamespaceMessages.UpdateAddress;
+export const UpdateAddressName = "my.namespace.messages.UpdateAddress";
 
-export namespace MyNamespaceMessages {
-    export const UpdateAddressSchema = "{\"type\":\"record\",\"name\":\"UpdateAddress\",\"namespace\":\"my.namespace.messages\",\"fields\":[{\"name\":\"userId\",\"type\":\"string\",\"logicalType\":\"uuid\"},{\"name\":\"address\",\"type\":\"my.namespace.data.Address\"}]}";
-    export const UpdateAddressName = "my.namespace.messages.UpdateAddress";
-    export interface UpdateAddress {
-        userId: string;
-        address: MyNamespaceDataAddress.Address;
-    }
+export interface UpdateAddress {
+    userId: string;
+    address: Address;
 }

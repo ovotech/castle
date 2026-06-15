@@ -22,20 +22,21 @@ describe('enum with "Name" name in name', () => {
 
     const tsCode = toTypeScript(schema);
 
-    expect(tsCode).toEqual(`/* eslint-disable @typescript-eslint/no-namespace */
+    expect(tsCode).toMatchInlineSnapshot(`
+      "export const StatusNameSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"StatusName\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"ACTIVE\\\\\\",\\\\\\"INACTIVE\\\\\\"]}\\";
 
-export type Status = ComExampleAvro.Status;
+      export const StatusNameName = \\"com.example.avro.StatusName\\";
 
-export namespace ComExampleAvro {
-    export const StatusNameSchema = ${JSON.stringify(JSON.stringify(schema.fields[0].type))};
-    export const StatusNameName = "com.example.avro.StatusName";
-    export type StatusName = "ACTIVE" | "INACTIVE";
-    export const ComExampleAvroStatusSchema = ${JSON.stringify(JSON.stringify(schema))};
-    export const ComExampleAvroStatusName = "com.example.avro.Status";
-    export interface Status {
-        statusName: ComExampleAvro.StatusName;
-    }
-}
-`);
+      export type StatusName = \\"ACTIVE\\" | \\"INACTIVE\\";
+
+      export const ComExampleAvroStatusSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Status\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.example.avro\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"statusName\\\\\\",\\\\\\"type\\\\\\":{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"StatusName\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"ACTIVE\\\\\\",\\\\\\"INACTIVE\\\\\\"]}}]}\\";
+
+      export const ComExampleAvroStatusName = \\"com.example.avro.Status\\";
+
+      export interface Status {
+          statusName: StatusName;
+      }
+      "
+    `);
   });
 });

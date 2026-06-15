@@ -1,5 +1,5 @@
 import { Schema, schema } from 'avsc';
-import { document, Type, printDocument } from '@ovotech/ts-compose';
+import { document, Node, Type, printNode } from '@ovotech/ts-compose';
 import { Convert, Context } from './types';
 import { isWrappedUnion, convertWrappedUnionType } from './types/wrapped-union';
 import { isUnion, convertUnionType } from './types/union';
@@ -10,7 +10,7 @@ import { isMapType, convertMapType } from './types/map';
 import { isEnumType, convertEnumType } from './types/enum';
 import { isPrimitiveType, convertPrimitiveType } from './types/primitive';
 import { isFixedType, convertFixedType } from './types/fixed';
-import { withHeader, withImports } from '@ovotech/ts-compose/dist/document';
+import {  withImports } from '@ovotech/ts-compose/dist/document';
 import { fullName, firstUpperCase, nameParts, convertName } from './helpers';
 import * as ts from 'typescript';
 import { convertNamedType, isNamedType } from './types/named-type';
@@ -64,27 +64,18 @@ export const convertType: Convert = (context, type) => {
   } else if (typeof type === 'string') {
     const [name, nameNamespace] = nameParts(type);
     const namespace = nameNamespace ?? context.namespace;
+    const typeName = convertName(firstUpperCase(name));
 
     if (namespace && context.external && !context.refs?.[type]) {
       for (const module in context.external) {
         if (context.external[module][type]) {
-          const externalNamespace = convertName(namespace);
-          const alias = `${externalNamespace}${firstUpperCase(name)}`;
-          const externalContext = withImports(context, {
-            named: [{ name: convertName(namespace), as: alias }],
-            module,
-          });
-          const ref = Type.Referance([alias, firstUpperCase(name)]);
-          return document(externalContext, ref);
+          const externalContext = withImports(context, { named: [{ name: typeName }], module });
+          return document(externalContext, Type.Referance(typeName));
         }
       }
     }
 
-    const ref = namespace
-      ? Type.Referance([convertName(namespace), firstUpperCase(name)])
-      : Type.Referance(firstUpperCase(name));
-
-    return document(context, ref);
+    return document(context, Type.Referance(typeName));
   } else {
     throw new Error(`Cannot work out type ${JSON.stringify(type)}`);
   }
@@ -94,16 +85,21 @@ export const toTypeScript = (schema: Schema, initial: Context = {}): string => {
   const contextWithRefs = collectRefs(schema, initial);
   const { context, type } = convertType(contextWithRefs, schema);
 
-  const contextWithHeader = context.namespaces
-    ? withHeader(context, '/* eslint-disable @typescript-eslint/no-namespace */')
-    : context;
+  const isNamedRoot =
+    ts.isTypeReferenceNode(type) &&
+    ts.isIdentifier(type.typeName) &&
+    context.identifiers?.[type.typeName.text] !== undefined;
 
-  const name =
-    ts.isTypeReferenceNode(type) && ts.isQualifiedName(type.typeName)
-      ? type.typeName.right
-      : 'AvroType';
+  const contextWithRoot = isNamedRoot
+    ? context
+    : { ...context, identifiers: { ...context.identifiers, AvroType: Type.Alias({ name: 'AvroType', isExport: true, type }) } };
 
-  return printDocument(document(contextWithHeader, Type.Alias({ name, isExport: true, type })));
+  const imports = contextWithRoot.imports ? Object.values(contextWithRoot.imports) : [];
+  const identifiers = contextWithRoot.identifiers ? Object.values(contextWithRoot.identifiers) : [];
+
+  return (
+    [...imports.map((item) => Node.Import(item)), ...identifiers].map(printNode).join('\n\n') + '\n'
+  );
 };
 
 export const toExternalContext = (

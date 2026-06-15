@@ -1,19 +1,16 @@
-import { User as ComplexRecord } from './__generated__/ComplexRecord.avsc';
-import {
-  UkCoBoostpowerSupportKafkaMessages as AccountNames,
-  AccountMigrationEvent as ComplexUnionLogicalTypes,
-} from './__generated__/ComplexUnionLogicalTypes.avsc';
-import { User as RecordWithEnum } from './__generated__/RecordWithEnum.avsc';
-import { User as RecordWithInterface } from './__generated__/RecordWithInterface.avsc';
-import { Event as RecordWithLogicalTypes } from './__generated__/RecordWithLogicalTypes.avsc';
-import { User as RecordWithMap } from './__generated__/RecordWithMap.avsc';
-import { User as RecordWithUnion } from './__generated__/RecordWithUnion.avsc';
-import { User as SimpleRecord } from './__generated__/SimpleRecord.avsc';
-import { TradeCollection } from './__generated__/TradeCollection.avsc';
-import { User } from './__generated__/User.avsc';
+import * as ComplexRecord from './__generated__/ComplexRecord.avsc';
+import * as ComplexUnionLogicalTypes from './__generated__/ComplexUnionLogicalTypes.avsc';
+import * as RecordWithEnum from './__generated__/RecordWithEnum.avsc';
+import * as RecordWithInterface from './__generated__/RecordWithInterface.avsc';
+import * as RecordWithLogicalTypes from './__generated__/RecordWithLogicalTypes.avsc';
+import * as RecordWithMap from './__generated__/RecordWithMap.avsc';
+import * as RecordWithUnion from './__generated__/RecordWithUnion.avsc';
+import * as SimpleRecord from './__generated__/SimpleRecord.avsc';
+import * as TradeCollection from './__generated__/TradeCollection.avsc';
+import * as User from './__generated__/User.avsc';
 import * as moment from 'moment';
 
-const complexRecord: ComplexRecord = {
+const complexRecord: ComplexRecord.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
@@ -27,9 +24,9 @@ const complexRecord: ComplexRecord = {
   status: 'ACTIVE',
 };
 
-const complexUnionLogicalTypes: ComplexUnionLogicalTypes = {
+const complexUnionLogicalTypes: ComplexUnionLogicalTypes.AccountMigrationEvent = {
   event: {
-    [AccountNames.AccountMigrationCancelledEventName]: {
+    [ComplexUnionLogicalTypes.AccountMigrationCancelledEventName]: {
       metadata: {
         eventId: '123',
         traceToken: '123',
@@ -44,7 +41,7 @@ const complexUnionLogicalTypes: ComplexUnionLogicalTypes = {
   },
 };
 
-const recordWithEnum: RecordWithEnum = {
+const recordWithEnum: RecordWithEnum.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
@@ -52,7 +49,7 @@ const recordWithEnum: RecordWithEnum = {
   status: 'ACTIVE',
 };
 
-const recordWithInterface: RecordWithInterface = {
+const recordWithInterface: RecordWithInterface.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
@@ -60,12 +57,12 @@ const recordWithInterface: RecordWithInterface = {
   emailAddresses: [{ address: 'test@example.com', verified: true, dateAdded: 1233 }],
 };
 
-const recordWithLogicalTypes: RecordWithLogicalTypes = {
+const recordWithLogicalTypes: RecordWithLogicalTypes.Event = {
   id: 123,
   createdAt: moment('2009-02-02'),
 };
 
-const recordwithMap: RecordWithMap = {
+const recordwithMap: RecordWithMap.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
@@ -77,7 +74,7 @@ const recordwithMap: RecordWithMap = {
   },
 };
 
-const recordWithUnion1: RecordWithUnion = {
+const recordWithUnion1: RecordWithUnion.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
@@ -85,7 +82,7 @@ const recordWithUnion1: RecordWithUnion = {
   unionType: null,
 };
 
-const recordWithUnion2: RecordWithUnion = {
+const recordWithUnion2: RecordWithUnion.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
@@ -93,7 +90,7 @@ const recordWithUnion2: RecordWithUnion = {
   unionType: null,
 };
 
-const recordWithUnion3: RecordWithUnion = {
+const recordWithUnion3: RecordWithUnion.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
@@ -101,14 +98,14 @@ const recordWithUnion3: RecordWithUnion = {
   unionType: 'test',
 };
 
-const simpleRecord: SimpleRecord = {
+const simpleRecord: SimpleRecord.User = {
   id: 123,
   username: 'test',
   passwordHash: 'hkjas',
   signupDate: 112233,
 };
 
-const tradeCollection: TradeCollection = {
+const tradeCollection: TradeCollection.TradeCollection = {
   producerId: '123',
   exchange: '123',
   market: '123',
@@ -134,7 +131,7 @@ const tradeCollection: TradeCollection = {
   ],
 };
 
-const user: User = {
+const user: User.User = {
   id: 123,
   username: '123',
   passwordHash: '123',
@@ -184,5 +181,5 @@ console.log(
   simpleRecord,
   tradeCollection,
   user,
-  complexUnionLogicalTypes.event[AccountNames.AccountMigrationCancelledEventName],
+  complexUnionLogicalTypes.event[ComplexUnionLogicalTypes.AccountMigrationCancelledEventName],
 );

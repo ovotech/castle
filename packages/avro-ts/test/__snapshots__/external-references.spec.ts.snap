@@ -1,244 +1,202 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Avro ts test Should convert %s successfully using Typescript Enums: Address.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"export const AddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Address\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.data\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"street\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"zipcode\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"country\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]}\\";
 
-export type Address = MyNamespaceData.Address;
+export const AddressName = \\"my.namespace.data.Address\\";
 
-export namespace MyNamespaceData {
-    export const AddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Address\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.data\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"street\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"zipcode\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"country\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]}\\";
-    export const AddressName = \\"my.namespace.data.Address\\";
-    export interface Address {
-        street: string;
-        zipcode: string;
-        country: string;
-    }
+export interface Address {
+    street: string;
+    zipcode: string;
+    country: string;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully using Typescript Enums: AvroJobStatus.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"export const AvroJobStatusSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatus\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.data\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"RUNNING_OK\\\\\\",\\\\\\"RUNNING_WARNING\\\\\\",\\\\\\"RUNNING_ERROR\\\\\\",\\\\\\"TERMINATED_COMPLETED\\\\\\",\\\\\\"TERMINATED_CANCELED\\\\\\"]}\\";
 
-export type AvroJobStatus = ComZenatonJobManagerData.AvroJobStatus;
+export const AvroJobStatusName = \\"com.zenaton.jobManager.data.AvroJobStatus\\";
 
-export namespace ComZenatonJobManagerData {
-    export const AvroJobStatusSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatus\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.data\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"RUNNING_OK\\\\\\",\\\\\\"RUNNING_WARNING\\\\\\",\\\\\\"RUNNING_ERROR\\\\\\",\\\\\\"TERMINATED_COMPLETED\\\\\\",\\\\\\"TERMINATED_CANCELED\\\\\\"]}\\";
-    export const AvroJobStatusName = \\"com.zenaton.jobManager.data.AvroJobStatus\\";
-    export enum AvroJobStatus {
-        RUNNING_OK = \\"RUNNING_OK\\",
-        RUNNING_WARNING = \\"RUNNING_WARNING\\",
-        RUNNING_ERROR = \\"RUNNING_ERROR\\",
-        TERMINATED_COMPLETED = \\"TERMINATED_COMPLETED\\",
-        TERMINATED_CANCELED = \\"TERMINATED_CANCELED\\"
-    }
+export enum AvroJobStatus {
+    RUNNING_OK = \\"RUNNING_OK\\",
+    RUNNING_WARNING = \\"RUNNING_WARNING\\",
+    RUNNING_ERROR = \\"RUNNING_ERROR\\",
+    TERMINATED_COMPLETED = \\"TERMINATED_COMPLETED\\",
+    TERMINATED_CANCELED = \\"TERMINATED_CANCELED\\"
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully using Typescript Enums: AvroJobStatusUpdated.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { AvroJobStatus } from \\"./AvroJobStatus.avsc.external\\";
 
-import { ComZenatonJobManagerData as ComZenatonJobManagerDataAvroJobStatus } from \\"./AvroJobStatus.avsc.external\\";
+export const AvroJobStatusUpdatedSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatusUpdated\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"jobId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"jobName\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"oldStatus\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"]},{\\\\\\"name\\\\\\":\\\\\\"newStatus\\\\\\",\\\\\\"type\\\\\\":\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"}]}\\";
 
-export type AvroJobStatusUpdated = ComZenatonJobManagerMessages.AvroJobStatusUpdated;
+export const AvroJobStatusUpdatedName = \\"com.zenaton.jobManager.messages.AvroJobStatusUpdated\\";
 
-export namespace ComZenatonJobManagerMessages {
-    export const AvroJobStatusUpdatedSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatusUpdated\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"jobId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"jobName\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"oldStatus\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"]},{\\\\\\"name\\\\\\":\\\\\\"newStatus\\\\\\",\\\\\\"type\\\\\\":\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"}]}\\";
-    export const AvroJobStatusUpdatedName = \\"com.zenaton.jobManager.messages.AvroJobStatusUpdated\\";
-    export interface AvroJobStatusUpdated {
-        jobId: string;
-        jobName: string;
-        oldStatus: null | ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
-        newStatus: ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
-    }
+export interface AvroJobStatusUpdated {
+    jobId: string;
+    jobName: string;
+    oldStatus: null | AvroJobStatus;
+    newStatus: AvroJobStatus;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully using Typescript Enums: CreateUser.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { Address } from \\"./Address.avsc.external\\";
 
-import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
+export const CreateUserSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"name\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
 
-export type CreateUser = MyNamespaceMessages.CreateUser;
+export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
 
-export namespace MyNamespaceMessages {
-    export const CreateUserSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"name\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
-    export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
-    export interface CreateUser {
-        userId: string;
-        name: string;
-        address: MyNamespaceDataAddress.Address;
-    }
+export interface CreateUser {
+    userId: string;
+    name: string;
+    address: Address;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully using Typescript Enums: Message.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { CreateUser } from \\"./CreateUser.avsc.external\\";
 
-import { MyNamespaceMessages as MyNamespaceMessagesCreateUser } from \\"./CreateUser.avsc.external\\";
+import { UpdateAddress } from \\"./UpdateAddress.avsc.external\\";
 
-import { MyNamespaceMessages as MyNamespaceMessagesUpdateAddress } from \\"./UpdateAddress.avsc.external\\";
+export const MessageTypeSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}\\";
 
-export type Message = MyNamespace.Message;
+export const MessageTypeName = \\"my.namespace.MessageType\\";
 
-export namespace MyNamespace {
-    export const MessageTypeSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}\\";
-    export const MessageTypeName = \\"my.namespace.MessageType\\";
-    export enum MessageType {
-        CreateUser = \\"CreateUser\\",
-        UpdateAddress = \\"UpdateAddress\\"
-    }
-    export const MessageSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Message\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"type\\\\\\",\\\\\\"type\\\\\\":{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}},{\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.CreateUser\\\\\\"],\\\\\\"default\\\\\\":null},{\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.UpdateAddress\\\\\\"],\\\\\\"default\\\\\\":null}]}\\";
-    export const MessageName = \\"my.namespace.Message\\";
-    export interface Message {
-        type: MyNamespace.MessageType;
-        /**
-         * Default: null
-         */
-        CreateUser: null | MyNamespaceMessagesCreateUser.CreateUser;
-        /**
-         * Default: null
-         */
-        UpdateAddress: null | MyNamespaceMessagesUpdateAddress.UpdateAddress;
-    }
+export enum MessageType {
+    CreateUser = \\"CreateUser\\",
+    UpdateAddress = \\"UpdateAddress\\"
+}
+
+export const MessageSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Message\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"type\\\\\\",\\\\\\"type\\\\\\":{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}},{\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.CreateUser\\\\\\"],\\\\\\"default\\\\\\":null},{\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.UpdateAddress\\\\\\"],\\\\\\"default\\\\\\":null}]}\\";
+
+export const MessageName = \\"my.namespace.Message\\";
+
+export interface Message {
+    type: MessageType;
+    /**
+     * Default: null
+     */
+    CreateUser: null | CreateUser;
+    /**
+     * Default: null
+     */
+    UpdateAddress: null | UpdateAddress;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully using Typescript Enums: UpdateAddress.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { Address } from \\"./Address.avsc.external\\";
 
-import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
+export const UpdateAddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
 
-export type UpdateAddress = MyNamespaceMessages.UpdateAddress;
+export const UpdateAddressName = \\"my.namespace.messages.UpdateAddress\\";
 
-export namespace MyNamespaceMessages {
-    export const UpdateAddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
-    export const UpdateAddressName = \\"my.namespace.messages.UpdateAddress\\";
-    export interface UpdateAddress {
-        userId: string;
-        address: MyNamespaceDataAddress.Address;
-    }
+export interface UpdateAddress {
+    userId: string;
+    address: Address;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully: Address.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"export const AddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Address\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.data\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"street\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"zipcode\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"country\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]}\\";
 
-export type Address = MyNamespaceData.Address;
+export const AddressName = \\"my.namespace.data.Address\\";
 
-export namespace MyNamespaceData {
-    export const AddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Address\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.data\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"street\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"zipcode\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"country\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"}]}\\";
-    export const AddressName = \\"my.namespace.data.Address\\";
-    export interface Address {
-        street: string;
-        zipcode: string;
-        country: string;
-    }
+export interface Address {
+    street: string;
+    zipcode: string;
+    country: string;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully: AvroJobStatus.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"export const AvroJobStatusSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatus\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.data\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"RUNNING_OK\\\\\\",\\\\\\"RUNNING_WARNING\\\\\\",\\\\\\"RUNNING_ERROR\\\\\\",\\\\\\"TERMINATED_COMPLETED\\\\\\",\\\\\\"TERMINATED_CANCELED\\\\\\"]}\\";
 
-export type AvroJobStatus = ComZenatonJobManagerData.AvroJobStatus;
+export const AvroJobStatusName = \\"com.zenaton.jobManager.data.AvroJobStatus\\";
 
-export namespace ComZenatonJobManagerData {
-    export const AvroJobStatusSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatus\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.data\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"RUNNING_OK\\\\\\",\\\\\\"RUNNING_WARNING\\\\\\",\\\\\\"RUNNING_ERROR\\\\\\",\\\\\\"TERMINATED_COMPLETED\\\\\\",\\\\\\"TERMINATED_CANCELED\\\\\\"]}\\";
-    export const AvroJobStatusName = \\"com.zenaton.jobManager.data.AvroJobStatus\\";
-    export type AvroJobStatus = \\"RUNNING_OK\\" | \\"RUNNING_WARNING\\" | \\"RUNNING_ERROR\\" | \\"TERMINATED_COMPLETED\\" | \\"TERMINATED_CANCELED\\";
-}
+export type AvroJobStatus = \\"RUNNING_OK\\" | \\"RUNNING_WARNING\\" | \\"RUNNING_ERROR\\" | \\"TERMINATED_COMPLETED\\" | \\"TERMINATED_CANCELED\\";
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully: AvroJobStatusUpdated.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { AvroJobStatus } from \\"./AvroJobStatus.avsc.external\\";
 
-import { ComZenatonJobManagerData as ComZenatonJobManagerDataAvroJobStatus } from \\"./AvroJobStatus.avsc.external\\";
+export const AvroJobStatusUpdatedSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatusUpdated\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"jobId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"jobName\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"oldStatus\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"]},{\\\\\\"name\\\\\\":\\\\\\"newStatus\\\\\\",\\\\\\"type\\\\\\":\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"}]}\\";
 
-export type AvroJobStatusUpdated = ComZenatonJobManagerMessages.AvroJobStatusUpdated;
+export const AvroJobStatusUpdatedName = \\"com.zenaton.jobManager.messages.AvroJobStatusUpdated\\";
 
-export namespace ComZenatonJobManagerMessages {
-    export const AvroJobStatusUpdatedSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"AvroJobStatusUpdated\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"com.zenaton.jobManager.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"jobId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"jobName\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"oldStatus\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"]},{\\\\\\"name\\\\\\":\\\\\\"newStatus\\\\\\",\\\\\\"type\\\\\\":\\\\\\"com.zenaton.jobManager.data.AvroJobStatus\\\\\\"}]}\\";
-    export const AvroJobStatusUpdatedName = \\"com.zenaton.jobManager.messages.AvroJobStatusUpdated\\";
-    export interface AvroJobStatusUpdated {
-        jobId: string;
-        jobName: string;
-        oldStatus: null | ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
-        newStatus: ComZenatonJobManagerDataAvroJobStatus.AvroJobStatus;
-    }
+export interface AvroJobStatusUpdated {
+    jobId: string;
+    jobName: string;
+    oldStatus: null | AvroJobStatus;
+    newStatus: AvroJobStatus;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully: CreateUser.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { Address } from \\"./Address.avsc.external\\";
 
-import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
+export const CreateUserSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"name\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
 
-export type CreateUser = MyNamespaceMessages.CreateUser;
+export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
 
-export namespace MyNamespaceMessages {
-    export const CreateUserSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"name\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
-    export const CreateUserName = \\"my.namespace.messages.CreateUser\\";
-    export interface CreateUser {
-        userId: string;
-        name: string;
-        address: MyNamespaceDataAddress.Address;
-    }
+export interface CreateUser {
+    userId: string;
+    name: string;
+    address: Address;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully: Message.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { CreateUser } from \\"./CreateUser.avsc.external\\";
 
-import { MyNamespaceMessages as MyNamespaceMessagesCreateUser } from \\"./CreateUser.avsc.external\\";
+import { UpdateAddress } from \\"./UpdateAddress.avsc.external\\";
 
-import { MyNamespaceMessages as MyNamespaceMessagesUpdateAddress } from \\"./UpdateAddress.avsc.external\\";
+export const MessageTypeSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}\\";
 
-export type Message = MyNamespace.Message;
+export const MessageTypeName = \\"my.namespace.MessageType\\";
 
-export namespace MyNamespace {
-    export const MessageTypeSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}\\";
-    export const MessageTypeName = \\"my.namespace.MessageType\\";
-    export type MessageType = \\"CreateUser\\" | \\"UpdateAddress\\";
-    export const MessageSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Message\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"type\\\\\\",\\\\\\"type\\\\\\":{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}},{\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.CreateUser\\\\\\"],\\\\\\"default\\\\\\":null},{\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.UpdateAddress\\\\\\"],\\\\\\"default\\\\\\":null}]}\\";
-    export const MessageName = \\"my.namespace.Message\\";
-    export interface Message {
-        type: MyNamespace.MessageType;
-        /**
-         * Default: null
-         */
-        CreateUser: null | MyNamespaceMessagesCreateUser.CreateUser;
-        /**
-         * Default: null
-         */
-        UpdateAddress: null | MyNamespaceMessagesUpdateAddress.UpdateAddress;
-    }
+export type MessageType = \\"CreateUser\\" | \\"UpdateAddress\\";
+
+export const MessageSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Message\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"type\\\\\\",\\\\\\"type\\\\\\":{\\\\\\"type\\\\\\":\\\\\\"enum\\\\\\",\\\\\\"name\\\\\\":\\\\\\"MessageType\\\\\\",\\\\\\"symbols\\\\\\":[\\\\\\"CreateUser\\\\\\",\\\\\\"UpdateAddress\\\\\\"]}},{\\\\\\"name\\\\\\":\\\\\\"CreateUser\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.CreateUser\\\\\\"],\\\\\\"default\\\\\\":null},{\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"type\\\\\\":[\\\\\\"null\\\\\\",\\\\\\"my.namespace.messages.UpdateAddress\\\\\\"],\\\\\\"default\\\\\\":null}]}\\";
+
+export const MessageName = \\"my.namespace.Message\\";
+
+export interface Message {
+    type: MessageType;
+    /**
+     * Default: null
+     */
+    CreateUser: null | CreateUser;
+    /**
+     * Default: null
+     */
+    UpdateAddress: null | UpdateAddress;
 }
 "
 `;
 
 exports[`Avro ts test Should convert %s successfully: UpdateAddress.avsc 1`] = `
-"/* eslint-disable @typescript-eslint/no-namespace */
+"import { Address } from \\"./Address.avsc.external\\";
 
-import { MyNamespaceData as MyNamespaceDataAddress } from \\"./Address.avsc.external\\";
+export const UpdateAddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
 
-export type UpdateAddress = MyNamespaceMessages.UpdateAddress;
+export const UpdateAddressName = \\"my.namespace.messages.UpdateAddress\\";
 
-export namespace MyNamespaceMessages {
-    export const UpdateAddressSchema = \\"{\\\\\\"type\\\\\\":\\\\\\"record\\\\\\",\\\\\\"name\\\\\\":\\\\\\"UpdateAddress\\\\\\",\\\\\\"namespace\\\\\\":\\\\\\"my.namespace.messages\\\\\\",\\\\\\"fields\\\\\\":[{\\\\\\"name\\\\\\":\\\\\\"userId\\\\\\",\\\\\\"type\\\\\\":\\\\\\"string\\\\\\",\\\\\\"logicalType\\\\\\":\\\\\\"uuid\\\\\\"},{\\\\\\"name\\\\\\":\\\\\\"address\\\\\\",\\\\\\"type\\\\\\":\\\\\\"my.namespace.data.Address\\\\\\"}]}\\";
-    export const UpdateAddressName = \\"my.namespace.messages.UpdateAddress\\";
-    export interface UpdateAddress {
-        userId: string;
-        address: MyNamespaceDataAddress.Address;
-    }
+export interface UpdateAddress {
+    userId: string;
+    address: Address;
 }
 "
 `;

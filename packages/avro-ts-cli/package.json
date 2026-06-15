@@ -6,6 +6,9 @@
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "author": "Ivan Kerin <ikerin@gmail.com>",
+  "contributors": [
+    "Michael Rutter <michael.rutter@ovo.com>"
+  ],
   "license": "Apache-2.0",
   "bin": {
     "avro-ts": "./scripts/avro-ts"
