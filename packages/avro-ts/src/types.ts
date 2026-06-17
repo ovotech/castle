@@ -14,6 +14,11 @@ export interface Context extends DocumentContext {
   external?: { [file: string]: { [key: string]: Schema } };
   defaultsAsOptional?: boolean;
   withTypescriptEnums?: boolean;
+  /**
+   * Emit type-only namespaces, moving runtime consts into a sibling object literal so the output is
+   * compatible with TypeScript type stripping. Cannot be combined with `withTypescriptEnums`.
+   */
+  experimentalTypeOnlyNamespaces?: boolean;
 }
 
 export type Convert<TSchema = Schema, TType = ts.TypeNode> = (

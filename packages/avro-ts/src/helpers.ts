@@ -24,40 +24,104 @@ export const nameParts = (fullName: string): [string] | [string, string] => {
     : [parts[0]];
 };
 
-export const namedType = (
+// A single const, like `UserName = "com.example.User"`.
+interface NamespaceConst {
+  name: string;
+  value: string;
+}
+
+// private symbol so that our internal accumlator it stays internal and doesn't pollute either public api
+// or ts-compose internals
+const siblingConsts = Symbol('siblingConsts');
+
+type Namespace = string;
+
+// The consts destined for each namespace's sibling object literal.
+type SiblingConsts = Record<Namespace, NamespaceConst[]>;
+
+type ContextWithSiblingConsts = Context & { [siblingConsts]?: SiblingConsts };
+
+// collect consts for a namespace's sibling object literal, returning a new context.
+const withSiblingConsts = (
+  context: ContextWithSiblingConsts,
+  namespaceName: Namespace,
+  consts: NamespaceConst[],
+): ContextWithSiblingConsts => {
+  const collected = context[siblingConsts] ?? {};
+  const existing = collected[namespaceName] ?? [];
+
+  return {
+    ...context,
+    [siblingConsts]: {
+      ...collected,
+      [namespaceName]: [...existing, ...consts],
+    },
+  };
+};
+
+// Declare consts inside the namespace.
+const withNamespaceConsts = (
+  context: Context,
+  namespaceName: Namespace,
+  consts: NamespaceConst[],
+): Context => {
+  let result = context;
+  for (const { name, value } of consts) {
+    result = withIdentifier(result, Node.Const({ name, isExport: true, value }), namespaceName);
+  }
+  return result;
+};
+
+// Emit each namespace's collected consts as a sibling `const <Namespace> = { ... }` object literal.
+export function withSiblingObjects(context: ContextWithSiblingConsts): Context {
+  let result: Context = context;
+
+  for (const [namespaceName, consts] of Object.entries(context[siblingConsts] ?? {})) {
+    const members: Record<string, string> = {};
+    for (const { name, value } of consts) {
+      members[name] = value;
+    }
+    result = withIdentifier(
+      result,
+      Node.Const({ name: namespaceName, isExport: true, multiline: true, value: members }),
+    );
+  }
+  return result;
+}
+
+export function namedType(
   type: ts.InterfaceDeclaration | ts.TypeAliasDeclaration | ts.EnumDeclaration,
   context: Context,
   schema: avroSchema.RecordType | avroSchema.EnumType,
   namespace?: string,
-): Document<ts.TypeNode, Context> => {
+): Document<ts.TypeNode, Context> {
   const name = convertName(firstUpperCase(schema.name));
   const namespaceName = namespace ? convertName(namespace) : undefined;
 
-  const fullName = namespaceName ? [namespaceName, name] : name;
+  // No namespace: the type is emitted at the top level, with no schema/name consts.
+  if (!namespace || !namespaceName) {
+    return document(withIdentifier(context, type), Type.Referance(name));
+  }
+
+  const reference = Type.Referance([namespaceName, name]);
   const fieldName = `${name}Name`;
   const schemaName = `${namespace}.${fieldName}`;
   const value = `${namespace}.${schema.name}`;
+  const schemaJson = JSON.stringify(schema);
 
-  const schemaValue = (name : string) => Node.Const({ name, isExport: true, value: JSON.stringify(schema) });
+  // On a name collision with an existing ref, prefix the const names with the namespace.
+  const prefix = context.refs && schemaName in context.refs ? namespaceName : '';
+  const schemaConstName = `${prefix}${name}Schema`;
+  const nameConstName = `${prefix}${fieldName}`;
 
-  const contextWithRef = namespace
-    ? /**
-       * If there is already a ref with the same name as our "named type", it means there is already
-       * a type with the same name and we're about to have a naming collision. To avoid this, we
-       * use the fully qualified name instead.
-       */
-      context.refs && schemaName in context.refs
-      ? withIdentifier(
-          withIdentifier(context, schemaValue(`${namespaceName}${name}Schema`), namespaceName),
-          Node.Const({ name: `${namespaceName}${fieldName}`, isExport: true, value }),
-          namespaceName,
-        )
-      : withIdentifier(
-          withIdentifier(context, schemaValue(`${name}Schema`), namespaceName),
-          Node.Const({ name: fieldName, isExport: true, value }),
-          namespaceName,
-        )
-    : context;
+  const consts: NamespaceConst[] = [
+    { name: schemaConstName, value: schemaJson },
+    { name: nameConstName, value },
+  ];
 
-  return document(withIdentifier(contextWithRef, type, namespaceName), Type.Referance(fullName));
-};
+  const contextWithConsts = context.experimentalTypeOnlyNamespaces
+    ? withSiblingConsts(context, namespaceName, consts)
+    : withNamespaceConsts(context, namespaceName, consts);
+
+  return document(withIdentifier(contextWithConsts, type, namespaceName), reference);
+}
