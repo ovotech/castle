@@ -11,7 +11,13 @@ import { isEnumType, convertEnumType } from './types/enum';
 import { isPrimitiveType, convertPrimitiveType } from './types/primitive';
 import { isFixedType, convertFixedType } from './types/fixed';
 import { withHeader, withImports } from '@ovotech/ts-compose/dist/document';
-import { fullName, firstUpperCase, nameParts, convertName } from './helpers';
+import {
+  fullName,
+  firstUpperCase,
+  nameParts,
+  convertName,
+  withSiblingObjects,
+} from './helpers';
 import * as ts from 'typescript';
 import { convertNamedType, isNamedType } from './types/named-type';
 
@@ -91,12 +97,22 @@ export const convertType: Convert = (context, type) => {
 };
 
 export const toTypeScript = (schema: Schema, initial: Context = {}): string => {
+  if (initial.experimentalTypeOnlyNamespaces && initial.withTypescriptEnums) {
+    throw new Error(
+      'experimentalTypeOnlyNamespaces cannot be combined with withTypescriptEnums: TypeScript enums cannot be stripped from type-only namespaces.',
+    );
+  }
+
   const contextWithRefs = collectRefs(schema, initial);
   const { context, type } = convertType(contextWithRefs, schema);
 
-  const contextWithHeader = context.namespaces
-    ? withHeader(context, '/* eslint-disable @typescript-eslint/no-namespace */')
+  const contextWithSiblings = context.experimentalTypeOnlyNamespaces
+    ? withSiblingObjects(context)
     : context;
+
+  const contextWithHeader = contextWithSiblings.namespaces
+    ? withHeader(contextWithSiblings, '/* eslint-disable @typescript-eslint/no-namespace */')
+    : contextWithSiblings;
 
   const name =
     ts.isTypeReferenceNode(type) && ts.isQualifiedName(type.typeName)

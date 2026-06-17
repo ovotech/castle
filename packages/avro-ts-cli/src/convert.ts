@@ -15,6 +15,7 @@ interface Options {
   outputDir?: string;
   defaultsAsOptional?: boolean;
   withTypescriptEnums?: boolean;
+  experimentalTypeOnlyNamespaces?: boolean;
 }
 
 export const convert = (logger: { log: (msg: string) => void } = console): commander.Command =>
@@ -23,7 +24,14 @@ export const convert = (logger: { log: (msg: string) => void } = console): comma
     .arguments('[input...]')
     .option('-O, --output-dir <outputDir>', 'Directory to write typescript files to')
     .option('-e, --defaults-as-optional', 'Fields with defaults as optional')
-    .option('--with-typescript-enums', 'Flag to use Typescript Enums for Avro Enums instead of string union')
+    .option(
+      '--with-typescript-enums',
+      'Flag to use Typescript Enums for Avro Enums instead of string union',
+    )
+    .option(
+      '--experimental-type-only-namespaces',
+      'Emit type-only namespaces with runtime values in a sibling const object, compatible with TypeScript type stripping. Incompatible with --with-typescript-enums.',
+    )
     .option(
       '-l, --logical-type <logicalType>',
       'Logical type, example: date=string',
@@ -76,6 +84,7 @@ Example:
   avro-ts avro/*.avsc --output-dir other/dir
   avro-ts avro/*.avsc --defaults-as-optional
   avro-ts avro/*.avsc --with-typescript-enums
+  avro-ts avro/*.avsc --experimental-type-only-namespaces
   avro-ts avro/*.avsc --logical-type date=string --logical-type datetime=string
   avro-ts avro/*.avsc --logical-type-import decimal=Decimal:decimal.js
   avro-ts avro/*.avsc --logical-type-import-default decimal=Decimal:decimal.js
@@ -93,6 +102,7 @@ Example:
           outputDir,
           defaultsAsOptional,
           withTypescriptEnums,
+          experimentalTypeOnlyNamespaces,
         }: Options,
       ) => {
         if (files.length === 0) {
@@ -143,7 +153,13 @@ Example:
               {},
             );
 
-            const ts = toTypeScript(schema, { logicalTypes, external, defaultsAsOptional, withTypescriptEnums });
+            const ts = toTypeScript(schema, {
+              logicalTypes,
+              external,
+              defaultsAsOptional,
+              withTypescriptEnums,
+              experimentalTypeOnlyNamespaces,
+            });
             const outputFile = outputDir ? join(outputDir, `${basename(file)}.ts`) : `${file}.ts`;
             writeFileSync(outputFile, ts);
             const shortFile = file.replace(process.cwd(), '.');

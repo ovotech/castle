@@ -11,6 +11,7 @@ const complexUnionLogicalTypes: Messages.AccountMigrationEvent = {
         eventId: '123',
         traceToken: '123',
         // createdAt type is Moment
+        // @ts-expect-error testing a fail case failing
         createdAt: '123',
       },
       enrollmentId: '123',
@@ -29,9 +30,11 @@ function isAccountMigrationCancelled(
 }
 
 if (isAccountMigrationCancelled(complexUnionLogicalTypes)) {
+  // @ts-expect-error testing a fail case failing
   // .wat does not exist
   complexUnionLogicalTypes.event[Messages.AccountMigrationCancelledEventName].wat; // should fail
   // Our type is AccountMigrationCancelled, not AccountMigrationScheduled
   // even though AccountMigrationScheduled has a `scheduledAt` property.
+  // @ts-expect-error testing a fail case failing
   complexUnionLogicalTypes.event[Messages.AccountMigrationScheduledEventName].scheduledAt; // should fail
 }
